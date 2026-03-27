@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDI P Meranti - Dashboard Elite</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDI P Meranti - Dashboard Elite</title>
 
-  <!-- FIREBASE -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <style>
-    body { margin:0; font-family:Segoe UI; background:#0f172a; color:white; }
-    header { background:#dc2626; padding:15px; text-align:center; font-weight:bold; }
-    .container { padding:15px; display:grid; gap:15px; }
-    .card { background:#1e293b; padding:15px; border-radius:12px; }
-    input, textarea { width:100%; padding:10px; margin-top:8px; border:none; border-radius:8px; }
-    button { margin-top:10px; padding:10px; background:#dc2626; color:white; border:none; border-radius:8px; }
-    ul { padding-left:20px; }
-  </style>
+<style>
+body {margin:0;font-family:Segoe UI;background:#0f172a;color:white;}
+header {background:#dc2626;padding:15px;text-align:center;font-weight:bold;}
+.container {padding:15px;display:grid;gap:15px;}
+.card {background:#1e293b;padding:15px;border-radius:12px;}
+input, textarea {width:100%;padding:10px;margin-top:8px;border:none;border-radius:8px;}
+button {margin-top:10px;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;}
+ul {padding-left:20px;}
+</style>
 </head>
 
 <body>
@@ -34,19 +33,20 @@ Dashboard Elite Kader
 <h3>🔐 Login / Signup</h3>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
+
+<div id="authArea">
 <button onclick="login()">Login</button>
 <button onclick="signup()">Daftar</button>
-<button onclick="logout()">Logout</button>
+</div>
+
 <p id="user">Belum login</p>
 </div>
 
 <div class="card">
 <h3>📩 Input Laporan</h3>
 <input id="nama" placeholder="Nama">
-<input id="lokasi" placeholder="Lokasi">
 <textarea id="masalah" placeholder="Masalah"></textarea>
-<button onclick="getLocation()">📍 Ambil Lokasi</button>
-<button onclick="kirim()">Kirim</button>
+<button onclick="kirim()">Kirim Laporan</button>
 </div>
 
 <div class="card">
@@ -68,7 +68,6 @@ Dashboard Elite Kader
 
 <script>
 
-// CONFIG FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
@@ -80,22 +79,33 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 
-// 🔥 AUTO LOGIN (FIX UTAMA)
+// 🔥 AUTO LOGIN + UI DINAMIS
 auth.onAuthStateChanged(user => {
   if(user){
     document.getElementById('user').innerText = "Login: " + user.email;
+
+    document.getElementById("authArea").innerHTML = `
+      <button onclick="logout()">Logout</button>
+    `;
+
     loadData();
     loadLeaderboard();
+
   } else {
     document.getElementById('user').innerText = "Belum login";
+
+    document.getElementById("authArea").innerHTML = `
+      <button onclick="login()">Login</button>
+      <button onclick="signup()">Daftar</button>
+    `;
   }
 });
 
 
 // SIGNUP
 function signup(){
-  let email = document.getElementById('email').value;
-  let pass = document.getElementById('password').value;
+  let email = emailInput();
+  let pass = passInput();
 
   if(!email || !pass) return alert("Isi email & password");
 
@@ -105,7 +115,7 @@ function signup(){
       email: email,
       poin: 0
     });
-    alert("Akun berhasil dibuat");
+    alert("✅ Akun berhasil dibuat");
   })
   .catch(err=>alert(err.message));
 }
@@ -113,10 +123,7 @@ function signup(){
 
 // LOGIN
 function login(){
-  let email = document.getElementById('email').value;
-  let pass = document.getElementById('password').value;
-
-  auth.signInWithEmailAndPassword(email, pass)
+  auth.signInWithEmailAndPassword(emailInput(), passInput())
   .catch(err=>alert(err.message));
 }
 
@@ -127,40 +134,43 @@ function logout(){
 }
 
 
-// GPS
-function getLocation(){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-    document.getElementById('lokasi').value = link;
-  });
-}
+// 🔥 INPUT AUTO
+function emailInput(){ return document.getElementById('email').value; }
+function passInput(){ return document.getElementById('password').value; }
 
 
-// KIRIM DATA
+// 🔥 KIRIM LAPORAN (LOKASI OTOMATIS)
 function kirim(){
   let user = auth.currentUser;
-
   if(!user) return alert("Login dulu!");
 
   let nama = document.getElementById('nama').value;
-  let lokasi = document.getElementById('lokasi').value;
   let masalah = document.getElementById('masalah').value;
 
-  if(!nama || !lokasi || !masalah) return alert("Lengkapi data!");
+  if(!nama || !masalah) return alert("Lengkapi data!");
 
-  db.collection("laporan").add({
-    nama, lokasi, masalah,
-    email: user.email,
-    waktu: new Date()
-  });
+  navigator.geolocation.getCurrentPosition(pos=>{
+    let lokasi = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
 
-  db.collection("users").doc(user.uid).update({
-    poin: firebase.firestore.FieldValue.increment(10)
+    db.collection("laporan").add({
+      nama, lokasi, masalah,
+      email: user.email,
+      waktu: new Date()
+    });
+
+    db.collection("users").doc(user.uid).update({
+      poin: firebase.firestore.FieldValue.increment(10)
+    });
+
+    alert("✅ Laporan berhasil dikirim!");
+
+    document.getElementById('nama').value = "";
+    document.getElementById('masalah').value = "";
   });
 }
 
 
-// LOAD DATA
+// LOAD DATA REALTIME
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
@@ -185,7 +195,7 @@ function loadData(){
 }
 
 
-// LEADERBOARD
+// LEADERBOARD REALTIME
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc").limit(10)
   .onSnapshot(snapshot=>{
