@@ -1,36 +1,166 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Sistem Partai PRO</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Partai PRO</title>  <style>
+    * { box-sizing: border-box; }
 
-<h1>Sistem Partai PRO</h1>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: white;
+    }
 
-<!-- FORM MASYARAKAT -->
-<div class="card">
-  <h2>Laporan Masyarakat</h2>
-  <input id="nama" placeholder="Nama">
-  <input id="lokasi" placeholder="Lokasi">
-  <input id="masalah" placeholder="Masalah">
-  <button onclick="kirim()">Kirim</button>
-</div>
+    header {
+      background: linear-gradient(135deg, #dc2626, #7f1d1d);
+      padding: 20px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
 
-<!-- DASHBOARD KADER -->
-<div class="card">
-  <h2>Dashboard Kader</h2>
-  <p>Poin: <span id="poin">0</span></p>
-  <ul id="tugas"></ul>
-</div>
+    .container {
+      padding: 20px;
+      display: grid;
+      gap: 20px;
+    }
 
-<!-- LEADERBOARD -->
-<div class="card">
-  <h2>Leaderboard</h2>
-  <ol id="leaderboard"></ol>
-</div>
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
 
-<script src="script.js"></script>
-</body>
+    h2 {
+      margin-top: 0;
+      color: #f87171;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #334155;
+      color: white;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #dc2626;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #ef4444;
+    }
+
+    .stats {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #334155;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+  </style></head>
+<body><header>
+  🚀 Sistem Partai PRO - Dashboard Aktivasi
+</header><div class="container">  <!-- STATISTIK -->  <div class="card">
+    <h2>📊 Statistik</h2>
+    <div class="stats">
+      <div class="stat-box">
+        <h3 id="total">0</h3>
+        <p>Laporan</p>
+      </div>
+      <div class="stat-box">
+        <h3 id="poin">0</h3>
+        <p>Poin Kader</p>
+      </div>
+    </div>
+  </div>  <!-- FORM -->  <div class="card">
+    <h2>📩 Laporan Masyarakat</h2>
+    <input id="nama" placeholder="Nama">
+    <input id="lokasi" placeholder="Lokasi">
+    <textarea id="masalah" placeholder="Masalah"></textarea>
+    <button onclick="kirim()">Kirim Laporan</button>
+  </div>  <!-- KADER -->  <div class="card">
+    <h2>👥 Tugas Kader</h2>
+    <ul id="tugas"></ul>
+  </div>  <!-- LEADERBOARD -->  <div class="card">
+    <h2>🏆 Leaderboard</h2>
+    <ol id="leaderboard"></ol>
+  </div></div><script>
+  let laporan = [];
+  let poin = 0;
+
+  function kirim() {
+    let data = {
+      nama: document.getElementById('nama').value,
+      lokasi: document.getElementById('lokasi').value,
+      masalah: document.getElementById('masalah').value
+    };
+
+    laporan.push(data);
+    render();
+  }
+
+  function render() {
+    document.getElementById('total').innerText = laporan.length;
+    document.getElementById('poin').innerText = poin;
+
+    let list = document.getElementById('tugas');
+    list.innerHTML = '';
+
+    laporan.forEach((l, i) => {
+      let li = document.createElement('li');
+      li.innerHTML = `
+        <b>${l.nama}</b> (${l.lokasi})<br>
+        ${l.masalah}<br>
+        <button onclick="selesai(${i})">Selesaikan</button>
+      `;
+      list.appendChild(li);
+    });
+
+    renderLeaderboard();
+  }
+
+  function selesai(index) {
+    poin += 10;
+    laporan.splice(index, 1);
+    render();
+  }
+
+  function renderLeaderboard() {
+    let lb = document.getElementById('leaderboard');
+    lb.innerHTML = `
+      <li>Kader Terbaik - 120 poin</li>
+      <li>Kader Aktif - 95 poin</li>
+      <li>Kader Pemula - 70 poin</li>
+    `;
+  }
+</script></body>
 </html>
