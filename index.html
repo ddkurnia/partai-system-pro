@@ -5,13 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDI P Meranti - Sistem Elite</title>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
-<!-- Google Maps -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
 
 <style>
@@ -22,7 +20,7 @@ header {background:#dc2626;padding:15px;text-align:center;font-weight:bold;}
 input, textarea {width:100%;padding:10px;margin-top:8px;border:none;border-radius:8px;}
 button {margin-top:10px;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;}
 #map {height:300px;border-radius:10px;}
-img {max-width:100px;margin-top:5px;border-radius:8px;}
+img {max-width:100px;border-radius:8px;margin-top:5px;}
 </style>
 </head>
 
@@ -35,8 +33,10 @@ Sistem Monitoring Kader
 
 <div class="container">
 
-<div class="card">
-<h3>🔐 Login</h3>
+<div class="card" id="authCard">
+<h3>🔐 Login / Daftar</h3>
+
+<input id="namaLengkap" placeholder="Nama Lengkap (untuk daftar)">
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 
@@ -45,7 +45,7 @@ Sistem Monitoring Kader
 <button onclick="signup()">Daftar</button>
 </div>
 
-<p id="user"></p>
+<p id="user">Belum login</p>
 </div>
 
 <div class="card">
@@ -104,53 +104,78 @@ initMap();
 auth.onAuthStateChanged(user => {
   if(user){
 
-    document.getElementById('user').innerText =
-    "Selamat datang kader PDI P Kepulauan Meranti";
+    db.collection("users").doc(user.uid).get().then(doc=>{
+      let data = doc.data();
 
+      document.getElementById('user').innerText =
+      "Selamat datang kader PDI P Kepulauan Meranti\n" + data.nama;
+    });
+
+    // 🔥 UI bersih setelah login
     document.getElementById("authArea").innerHTML =
     `<button onclick="logout()">Logout</button>`;
 
-    // auto create user
-    db.collection("users").doc(user.uid).get().then(doc=>{
-      if(!doc.exists){
-        db.collection("users").doc(user.uid).set({
-          email: user.email,
-          poin: 0
-        });
-      }
-    });
+    document.getElementById("email").style.display = "none";
+    document.getElementById("password").style.display = "none";
+    document.getElementById("namaLengkap").style.display = "none";
 
     loadData();
     loadLeaderboard();
 
   } else {
     document.getElementById('user').innerText = "Belum login";
+
+    document.getElementById("authArea").innerHTML = `
+      <button onclick="login()">Login</button>
+      <button onclick="signup()">Daftar</button>
+    `;
+
+    document.getElementById("email").style.display = "block";
+    document.getElementById("password").style.display = "block";
+    document.getElementById("namaLengkap").style.display = "block";
   }
 });
 
 
-// AUTH
+// 🔥 SIGNUP
 function signup(){
-  auth.createUserWithEmailAndPassword(
-    emailInput(), passInput()
-  ).catch(e=>alert(e.message));
+  let nama = document.getElementById('namaLengkap').value;
+  let email = document.getElementById('email').value;
+  let pass = document.getElementById('password').value;
+
+  if(!nama || !email || !pass)
+    return alert("Lengkapi semua data!");
+
+  auth.createUserWithEmailAndPassword(email, pass)
+  .then(res=>{
+    db.collection("users").doc(res.user.uid).set({
+      nama: nama,
+      email: email,
+      poin: 0
+    });
+
+    alert("✅ Akun berhasil dibuat");
+  })
+  .catch(err=>alert(err.message));
 }
 
+
+// 🔥 LOGIN
 function login(){
   auth.signInWithEmailAndPassword(
-    emailInput(), passInput()
-  ).catch(e=>alert(e.message));
+    document.getElementById('email').value,
+    document.getElementById('password').value
+  ).catch(err=>alert(err.message));
 }
 
+
+// 🔥 LOGOUT
 function logout(){
   auth.signOut();
 }
 
-function emailInput(){ return document.getElementById('email').value; }
-function passInput(){ return document.getElementById('password').value; }
 
-
-// 🔥 KIRIM LAPORAN + FOTO + GPS
+// 🔥 KIRIM LAPORAN
 function kirim(){
   let user = auth.currentUser;
   if(!user) return alert("Login dulu!");
@@ -159,8 +184,9 @@ function kirim(){
   let masalah = document.getElementById('masalah').value;
   let file = document.getElementById('foto').files[0];
 
+  if(!nama || !masalah) return alert("Lengkapi data!");
+
   navigator.geolocation.getCurrentPosition(async pos=>{
-    let lokasi = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
 
     let fotoURL = "";
 
@@ -171,9 +197,9 @@ function kirim(){
     }
 
     db.collection("laporan").add({
-      nama, masalah, lokasi,
+      nama,
+      masalah,
       foto: fotoURL,
-      email: user.email,
       lat: pos.coords.latitude,
       lng: pos.coords.longitude,
       waktu: new Date()
@@ -184,18 +210,20 @@ function kirim(){
     });
 
     alert("✅ Laporan berhasil dikirim");
+
+    document.getElementById('nama').value = "";
+    document.getElementById('masalah').value = "";
   });
 }
 
 
-// 🔥 LOAD DATA + MAP MARKER
+// 🔥 DATA + MAP
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
 
     document.getElementById('data').innerHTML = "";
 
-    // hapus marker lama
     markers.forEach(m=>m.setMap(null));
     markers = [];
 
@@ -210,7 +238,6 @@ function loadData(){
       `;
       document.getElementById('data').appendChild(li);
 
-      // marker
       let marker = new google.maps.Marker({
         position: {lat:d.lat, lng:d.lng},
         map: map
@@ -222,7 +249,7 @@ function loadData(){
 }
 
 
-// 🔥 LEADERBOARD REALTIME
+// 🔥 LEADERBOARD FINAL
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc")
   .onSnapshot(snapshot=>{
@@ -231,8 +258,10 @@ function loadLeaderboard(){
 
     snapshot.forEach(doc=>{
       let d = doc.data();
+
       let li = document.createElement('li');
-      li.innerText = d.email + " - " + d.poin + " poin";
+      li.innerText = d.nama + " - " + d.poin + " poin";
+
       lb.appendChild(li);
     });
   });
