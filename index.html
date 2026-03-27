@@ -3,11 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDI P Meranti - Dashboard Elite</title>
+<title>PDI P Meranti - Sistem Elite</title>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+<!-- Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
 
 <style>
 body {margin:0;font-family:Segoe UI;background:#0f172a;color:white;}
@@ -16,7 +21,8 @@ header {background:#dc2626;padding:15px;text-align:center;font-weight:bold;}
 .card {background:#1e293b;padding:15px;border-radius:12px;}
 input, textarea {width:100%;padding:10px;margin-top:8px;border:none;border-radius:8px;}
 button {margin-top:10px;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;}
-ul {padding-left:20px;}
+#map {height:300px;border-radius:10px;}
+img {max-width:100px;margin-top:5px;border-radius:8px;}
 </style>
 </head>
 
@@ -24,13 +30,13 @@ ul {padding-left:20px;}
 
 <header>
 🔴 PDI P KABUPATEN KEPULAUAN MERANTI<br>
-Dashboard Elite Kader
+Sistem Monitoring Kader
 </header>
 
 <div class="container">
 
 <div class="card">
-<h3>🔐 Login / Signup</h3>
+<h3>🔐 Login</h3>
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 
@@ -39,14 +45,20 @@ Dashboard Elite Kader
 <button onclick="signup()">Daftar</button>
 </div>
 
-<p id="user">Belum login</p>
+<p id="user"></p>
 </div>
 
 <div class="card">
-<h3>📩 Input Laporan</h3>
+<h3>📩 Laporan Kader</h3>
 <input id="nama" placeholder="Nama">
 <textarea id="masalah" placeholder="Masalah"></textarea>
+<input type="file" id="foto">
 <button onclick="kirim()">Kirim Laporan</button>
+</div>
+
+<div class="card">
+<h3>🗺️ Map Realtime</h3>
+<div id="map"></div>
 </div>
 
 <div class="card">
@@ -59,11 +71,6 @@ Dashboard Elite Kader
 <ul id="leaderboard"></ul>
 </div>
 
-<div class="card">
-<h3>🗺️ Map Lokasi</h3>
-<iframe id="map" width="100%" height="300"></iframe>
-</div>
-
 </div>
 
 <script>
@@ -71,90 +78,104 @@ Dashboard Elite Kader
 const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
-  projectId: "partai-meranti"
+  projectId: "partai-meranti",
+  storageBucket: "partai-meranti.appspot.com"
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
+
+let map;
+let markers = [];
+
+function initMap(){
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 12,
+    center: { lat: 0.99, lng: 102.7 }
+  });
+}
+initMap();
 
 
-// 🔥 AUTO LOGIN + UI DINAMIS
+// 🔥 LOGIN STATE
 auth.onAuthStateChanged(user => {
   if(user){
-    document.getElementById('user').innerText = "Login: " + user.email;
 
-    document.getElementById("authArea").innerHTML = `
-      <button onclick="logout()">Logout</button>
-    `;
+    document.getElementById('user').innerText =
+    "Selamat datang kader PDI P Kepulauan Meranti";
+
+    document.getElementById("authArea").innerHTML =
+    `<button onclick="logout()">Logout</button>`;
+
+    // auto create user
+    db.collection("users").doc(user.uid).get().then(doc=>{
+      if(!doc.exists){
+        db.collection("users").doc(user.uid).set({
+          email: user.email,
+          poin: 0
+        });
+      }
+    });
 
     loadData();
     loadLeaderboard();
 
   } else {
     document.getElementById('user').innerText = "Belum login";
-
-    document.getElementById("authArea").innerHTML = `
-      <button onclick="login()">Login</button>
-      <button onclick="signup()">Daftar</button>
-    `;
   }
 });
 
 
-// SIGNUP
+// AUTH
 function signup(){
-  let email = emailInput();
-  let pass = passInput();
-
-  if(!email || !pass) return alert("Isi email & password");
-
-  auth.createUserWithEmailAndPassword(email, pass)
-  .then(res=>{
-    db.collection("users").doc(res.user.uid).set({
-      email: email,
-      poin: 0
-    });
-    alert("✅ Akun berhasil dibuat");
-  })
-  .catch(err=>alert(err.message));
+  auth.createUserWithEmailAndPassword(
+    emailInput(), passInput()
+  ).catch(e=>alert(e.message));
 }
 
-
-// LOGIN
 function login(){
-  auth.signInWithEmailAndPassword(emailInput(), passInput())
-  .catch(err=>alert(err.message));
+  auth.signInWithEmailAndPassword(
+    emailInput(), passInput()
+  ).catch(e=>alert(e.message));
 }
 
-
-// LOGOUT
 function logout(){
   auth.signOut();
 }
 
-
-// 🔥 INPUT AUTO
 function emailInput(){ return document.getElementById('email').value; }
 function passInput(){ return document.getElementById('password').value; }
 
 
-// 🔥 KIRIM LAPORAN (LOKASI OTOMATIS)
+// 🔥 KIRIM LAPORAN + FOTO + GPS
 function kirim(){
   let user = auth.currentUser;
   if(!user) return alert("Login dulu!");
 
   let nama = document.getElementById('nama').value;
   let masalah = document.getElementById('masalah').value;
+  let file = document.getElementById('foto').files[0];
 
-  if(!nama || !masalah) return alert("Lengkapi data!");
-
-  navigator.geolocation.getCurrentPosition(pos=>{
+  navigator.geolocation.getCurrentPosition(async pos=>{
     let lokasi = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
 
+    let fotoURL = "";
+
+    if(file){
+      let ref = storage.ref("foto/"+Date.now());
+      await ref.put(file);
+      fotoURL = await ref.getDownloadURL();
+    }
+
     db.collection("laporan").add({
-      nama, lokasi, masalah,
+      nama, masalah, lokasi,
+      foto: fotoURL,
       email: user.email,
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
       waktu: new Date()
     });
 
@@ -162,20 +183,21 @@ function kirim(){
       poin: firebase.firestore.FieldValue.increment(10)
     });
 
-    alert("✅ Laporan berhasil dikirim!");
-
-    document.getElementById('nama').value = "";
-    document.getElementById('masalah').value = "";
+    alert("✅ Laporan berhasil dikirim");
   });
 }
 
 
-// LOAD DATA REALTIME
+// 🔥 LOAD DATA + MAP MARKER
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
-    let list = document.getElementById('data');
-    list.innerHTML = "";
+
+    document.getElementById('data').innerHTML = "";
+
+    // hapus marker lama
+    markers.forEach(m=>m.setMap(null));
+    markers = [];
 
     snapshot.forEach(doc=>{
       let d = doc.data();
@@ -183,21 +205,26 @@ function loadData(){
       let li = document.createElement('li');
       li.innerHTML = `
         <b>${d.nama}</b><br>
-        <a href="${d.lokasi}" target="_blank">📍 Lokasi</a><br>
-        ${d.masalah}
+        ${d.masalah}<br>
+        ${d.foto ? `<img src="${d.foto}">` : ""}
       `;
-      list.appendChild(li);
+      document.getElementById('data').appendChild(li);
 
-      document.getElementById("map").src =
-        d.lokasi.replace("maps.google.com","www.google.com/maps/embed");
+      // marker
+      let marker = new google.maps.Marker({
+        position: {lat:d.lat, lng:d.lng},
+        map: map
+      });
+
+      markers.push(marker);
     });
   });
 }
 
 
-// LEADERBOARD REALTIME
+// 🔥 LEADERBOARD REALTIME
 function loadLeaderboard(){
-  db.collection("users").orderBy("poin","desc").limit(10)
+  db.collection("users").orderBy("poin","desc")
   .onSnapshot(snapshot=>{
     let lb = document.getElementById('leaderboard');
     lb.innerHTML = "";
