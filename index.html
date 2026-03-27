@@ -81,18 +81,21 @@ header {
   margin: 0 auto;
 }
 
-/* LOGO */
+/* LOGO - PERBAIKAN: Hilangkan background putih agar logo transparan kelihatan */
 .logo {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  background: white;
+  /* background: white;  <-- DIHILANGKAN */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
   border: 2px solid rgba(227, 30, 37, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 .header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
 .header-text p { font-size: 0.75rem; color: #64748b; font-weight: 500; }
@@ -325,8 +328,8 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <header>
   <div class="header-content">
     <div class="logo">
-      <!-- PERBAIKAN LOGO: Pakai proxy https dan fallback yang benar -->
-      <img src="https://corsproxy.io/?url=http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff';">
+      <!-- PERBAIKAN: Langsung pakai link dari domain sendiri (http), jika error akan fallback ke teks -->
+      <img src="https://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff';">
     </div>
     <div class="header-text">
       <h1>PDI PERJUANGAN</h1>
@@ -638,6 +641,7 @@ function previewFile(input) {
     }
 }
 
+// PERBAIKAN: Fungsi Save Profile lebih tangguh
 async function saveProfile() {
     const nama = document.getElementById('editNama').value;
     const hp = document.getElementById('editHp').value;
@@ -645,41 +649,57 @@ async function saveProfile() {
 
     if(!nama) return alert("Nama tidak boleh kosong!");
 
+    // Referensi document user
+    const userRef = db.collection('users').doc(user.uid);
     let photoURL = currentUserData.photoURL || "";
 
+    // Proses Upload Foto jika ada file baru
     if(editFile){
         try {
-            const ref = storage.ref("profile/"+user.uid+"_"+Date.now());
+            // Nama file simple tanpa karakter aneh
+            const fileName = "profile_" + user.uid + ".jpg";
+            const ref = storage.ref("profile/" + fileName);
+            
+            // Upload
             await ref.put(editFile);
+            
+            // Dapatkan URL
             photoURL = await ref.getDownloadURL();
+            
         } catch(e) {
-            console.error("Upload gagal", e);
-            alert("Gagal upload foto. Coba lagi.");
-            return;
+            console.error("Upload gagal:", e);
+            // Jika gagal (misal rules), tetap simpan data lainnya tapi alert
+            alert("Gagal upload foto (Cek Firebase Storage Rules). Data lain akan disimpan.");
         }
     }
 
-    await db.collection('users').doc(user.uid).update({
-        nama: nama,
-        hp: hp,
-        photoURL: photoURL
-    });
-
-    // Update Presence agar foto di peta keupdate
-    if(navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-             db.collection('presence').doc(user.uid).set({
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-                nama: nama,
-                photoURL: photoURL,
-                lastSeen: new Date()
-            }, { merge: true });
+    // Update Firestore (Selalu jalan meski foto gagal)
+    try {
+        await userRef.update({
+            nama: nama,
+            hp: hp,
+            photoURL: photoURL
         });
-    }
 
-    alert("Profil berhasil disimpan!");
-    closeModal();
+        // Update Presence
+        if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                 db.collection('presence').doc(user.uid).set({
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude,
+                    nama: nama,
+                    photoURL: photoURL,
+                    lastSeen: new Date()
+                }, { merge: true });
+            });
+        }
+
+        alert("Profil berhasil disimpan!");
+        closeModal();
+    } catch(e) {
+        console.error("Firestore update error:", e);
+        alert("Gagal menyimpan data.");
+    }
 }
 
 function signup(){
@@ -690,7 +710,6 @@ function signup(){
   .catch(e => alert(e.message));
 }
 
-// PERBAIKAN LOGIN: Tangkap error dengan benar
 function login(){ 
     auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value)
     .catch(e => alert(e.message)); 
@@ -881,7 +900,7 @@ function loadLeaderboard(){
     snapshot.forEach(doc => { 
       let d=doc.data(); 
       let li=document.createElement('li'); 
-      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':''; 
+      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3:''; 
       
       const photoURL = d.photoURL;
       const initials = getInitials(d.nama);
