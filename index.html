@@ -24,6 +24,7 @@ input, textarea {width:100%;padding:10px;margin-top:8px;border:none;border-radiu
 button {margin-top:10px;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;}
 #map {height:300px;border-radius:10px;}
 img {max-width:100px;border-radius:8px;margin-top:5px;}
+.toggle {cursor:pointer;color:#ccc;margin-top:10px;}
 </style>
 </head>
 
@@ -37,18 +38,29 @@ Sistem Monitoring Kader
 <div class="container">
 
 <div class="card">
-<h3>🔐 Login / Daftar</h3>
 
-<input id="namaLengkap" placeholder="Nama Lengkap (untuk daftar)">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<h3>🔐 Login</h3>
+<div id="loginForm">
+  <input id="loginEmail" placeholder="Email">
+  <input id="loginPassword" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <div class="toggle" onclick="showRegister()">Belum punya akun? Daftar</div>
+</div>
 
-<div id="authArea">
-<button onclick="login()">Login</button>
-<button onclick="signup()">Daftar</button>
+<h3 style="margin-top:20px;">📝 Daftar Kader</h3>
+<div id="registerForm" style="display:none;">
+  <input id="regNama" placeholder="Nama Lengkap">
+  <input id="regId" placeholder="ID Kader">
+  <input id="regEmail" placeholder="Email">
+  <input id="regHp" placeholder="Nomor HP">
+  <input id="regAlamat" placeholder="Alamat">
+  <input id="regPassword" type="password" placeholder="Password">
+  <button onclick="signup()">Daftar</button>
+  <div class="toggle" onclick="showLogin()">Sudah punya akun? Login</div>
 </div>
 
 <p id="user">Belum login</p>
+
 </div>
 
 <div class="card">
@@ -77,7 +89,7 @@ Sistem Monitoring Kader
 
 <script>
 
-// 🔥 FIREBASE CONFIG
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
@@ -91,81 +103,76 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// 🔥 MAP INIT
+// MAP
 let map = L.map('map').setView([0.99, 102.7], 12);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
 let markers = [];
 
-// 🔥 LOGIN STATE
-auth.onAuthStateChanged(async user => {
-  if(user){
+// TOGGLE
+function showRegister(){
+  document.getElementById('loginForm').style.display="none";
+  document.getElementById('registerForm').style.display="block";
+}
+function showLogin(){
+  document.getElementById('loginForm').style.display="block";
+  document.getElementById('registerForm').style.display="none";
+}
 
+// LOGIN STATE
+auth.onAuthStateChanged(async user=>{
+  if(user){
     let doc = await db.collection("users").doc(user.uid).get();
     let data = doc.data();
 
     document.getElementById('user').innerText =
-    "Selamat datang kader PDI P Kepulauan Meranti\n" + (data?.nama || "");
+    "Selamat datang kader\n" + (data?.nama || "");
 
-    document.getElementById("authArea").innerHTML =
-    `<button onclick="logout()">Logout</button>`;
+    document.getElementById('loginForm').style.display="none";
+    document.getElementById('registerForm').style.display="none";
 
-    document.getElementById("email").style.display = "none";
-    document.getElementById("password").style.display = "none";
-    document.getElementById("namaLengkap").style.display = "none";
+    document.getElementById('user').innerHTML +=
+    `<br><button onclick="logout()">Logout</button>`;
 
     loadData();
     loadLeaderboard();
-
-  } else {
-    document.getElementById('user').innerText = "Belum login";
-
-    document.getElementById("authArea").innerHTML = `
-      <button onclick="login()">Login</button>
-      <button onclick="signup()">Daftar</button>
-    `;
-
-    document.getElementById("email").style.display = "block";
-    document.getElementById("password").style.display = "block";
-    document.getElementById("namaLengkap").style.display = "block";
   }
 });
 
-// 🔥 SIGNUP
+// SIGNUP
 function signup(){
-  let nama = document.getElementById('namaLengkap').value;
-  let email = document.getElementById('email').value;
-  let pass = document.getElementById('password').value;
+  let nama = regNama.value;
+  let id = regId.value;
+  let email = regEmail.value;
+  let hp = regHp.value;
+  let alamat = regAlamat.value;
+  let pass = regPassword.value;
 
-  if(!nama || !email || !pass) return alert("Lengkapi semua!");
+  if(!nama || !id || !email || !hp || !alamat || !pass)
+    return alert("Lengkapi semua data!");
 
   auth.createUserWithEmailAndPassword(email, pass)
   .then(res=>{
     db.collection("users").doc(res.user.uid).set({
-      nama,
-      email,
-      poin: 0
+      nama, id, email, hp, alamat, poin:0
     });
     alert("Akun berhasil dibuat");
-  })
+    showLogin();
+  });
+}
+
+// LOGIN
+function login(){
+  auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value)
   .catch(e=>alert(e.message));
 }
 
-// 🔥 LOGIN
-function login(){
-  auth.signInWithEmailAndPassword(
-    document.getElementById('email').value,
-    document.getElementById('password').value
-  ).catch(e=>alert(e.message));
-}
-
-// 🔥 LOGOUT
+// LOGOUT
 function logout(){
   auth.signOut();
+  location.reload();
 }
 
-// 🔥 KIRIM LAPORAN (AUTO NAMA)
+// KIRIM LAPORAN
 function kirim(){
   let user = auth.currentUser;
   if(!user) return alert("Login dulu!");
@@ -173,81 +180,66 @@ function kirim(){
   let masalah = document.getElementById('masalah').value;
   let file = document.getElementById('foto').files[0];
 
-  if(!masalah) return alert("Isi laporan!");
-
   navigator.geolocation.getCurrentPosition(async pos=>{
 
     let userDoc = await db.collection("users").doc(user.uid).get();
     let nama = userDoc.data().nama;
 
-    let fotoURL = "";
-
+    let fotoURL="";
     if(file){
-      let ref = storage.ref("foto/"+Date.now());
+      let ref=storage.ref("foto/"+Date.now());
       await ref.put(file);
-      fotoURL = await ref.getDownloadURL();
+      fotoURL=await ref.getDownloadURL();
     }
 
     db.collection("laporan").add({
-      nama,
-      masalah,
-      foto: fotoURL,
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude,
-      waktu: new Date()
+      nama, masalah, foto:fotoURL,
+      lat:pos.coords.latitude,
+      lng:pos.coords.longitude,
+      waktu:new Date()
     });
 
     db.collection("users").doc(user.uid).update({
-      poin: firebase.firestore.FieldValue.increment(10)
+      poin:firebase.firestore.FieldValue.increment(10)
     });
 
-    document.getElementById('masalah').value = "";
-    alert("Laporan berhasil dikirim");
+    alert("Laporan terkirim");
+    masalah.value="";
   });
 }
 
-// 🔥 LOAD DATA
+// LOAD DATA
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
-
-    document.getElementById('data').innerHTML = "";
-
+    data.innerHTML="";
     markers.forEach(m=>map.removeLayer(m));
-    markers = [];
+    markers=[];
 
     snapshot.forEach(doc=>{
-      let d = doc.data();
+      let d=doc.data();
 
-      let li = document.createElement('li');
-      li.innerHTML = `
-        <b>${d.nama}</b><br>
-        ${d.masalah}<br>
-        ${d.foto ? `<img src="${d.foto}">` : ""}
-      `;
-      document.getElementById('data').appendChild(li);
+      let li=document.createElement('li');
+      li.innerHTML=`<b>${d.nama}</b><br>${d.masalah}`;
+      data.appendChild(li);
 
-      let marker = L.marker([d.lat, d.lng])
-        .addTo(map)
-        .bindPopup(`<b>${d.nama}</b><br>${d.masalah}`);
-
+      let marker=L.marker([d.lat,d.lng]).addTo(map)
+      .bindPopup(`<b>${d.nama}</b><br>${d.masalah}`);
       markers.push(marker);
     });
   });
 }
 
-// 🔥 LEADERBOARD
+// LEADERBOARD
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc")
   .onSnapshot(snapshot=>{
-    let lb = document.getElementById('leaderboard');
-    lb.innerHTML = "";
-
+    leaderboard.innerHTML="";
     snapshot.forEach(doc=>{
-      let d = doc.data();
-      let li = document.createElement('li');
-      li.innerText = d.nama + " - " + d.poin + " poin";
-      lb.appendChild(li);
+      let d=doc.data();
+      let li=document.createElement('li');
+      li.innerText=d.nama+" - "+d.poin+" poin";
+      leaderboard.appendChild(li);
     });
   });
 }
