@@ -214,7 +214,6 @@ textarea {
 
 /* BUTTONS */
 button {
-  margin-top: 18px;
   width: 100%;
   padding: 14px;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -226,8 +225,6 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(227, 30, 37, 0.3);
-  position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -241,15 +238,21 @@ button:hover {
 
 button:active { transform: scale(0.98); }
 
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--primary);
-  color: var(--primary);
-  box-shadow: none;
+.btn-main {
+  margin-top: 18px;
 }
-.btn-outline:hover {
+
+.btn-logout {
+  background: white;
+  color: var(--primary);
+  border: 2px solid rgba(227, 30, 37, 0.2);
+  box-shadow: none;
+  margin-top: 15px; /* Jarak atas yang jelas */
+}
+.btn-logout:hover {
   background: var(--primary);
   color: white;
+  border-color: var(--primary);
 }
 
 /* FILE INPUT */
@@ -293,18 +296,19 @@ input[type="file"]::file-selector-button:hover {
 }
 .toggle:hover { opacity: 0.8; }
 
-/* USER INFO */
+/* USER INFO - PERBAIKAN DI SINI */
 #user {
   background: linear-gradient(135deg, var(--primary), #d62246);
   color: white;
-  padding: 18px;
+  padding: 20px;
   border-radius: 16px;
-  margin-top: 15px;
+  margin-top: 20px;
   font-weight: 500;
   box-shadow: 0 10px 25px rgba(227, 30, 37, 0.25);
   position: relative;
   overflow: hidden;
 }
+
 #user::after {
   content: '';
   position: absolute;
@@ -313,6 +317,22 @@ input[type="file"]::file-selector-button:hover {
   background: rgba(255,255,255,0.1);
   border-radius: 50%;
   pointer-events: none;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.user-id {
+  font-size: 0.85rem;
+  opacity: 0.9;
 }
 
 /* LISTS */
@@ -402,7 +422,6 @@ footer {
 <header>
   <div class="header-content">
     <div class="logo">
-      <!-- Logo PDI Perjuangan Modern -->
       <svg viewBox="0 0 100 100">
         <defs>
           <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -433,7 +452,7 @@ footer {
   <div id="loginForm" class="form-section active">
     <input id="loginEmail" placeholder="Email Kader" type="email">
     <input id="loginPassword" type="password" placeholder="Password Rahasia">
-    <button onclick="login()"><i class="fas fa-arrow-right-to-bracket"></i> Masuk Sistem</button>
+    <button class="btn-main" onclick="login()"><i class="fas fa-arrow-right-to-bracket"></i> Masuk Sistem</button>
     <div class="toggle" onclick="showRegister()">Belum terdaftar? Daftar di sini</div>
   </div>
   
@@ -445,10 +464,11 @@ footer {
     <input id="regHp" placeholder="No. WhatsApp">
     <input id="regAlamat" placeholder="Alamat">
     <input id="regPassword" type="password" placeholder="Buat Password">
-    <button onclick="signup()"><i class="fas fa-user-plus"></i> Daftar Sekarang</button>
+    <button class="btn-main" onclick="signup()"><i class="fas fa-user-plus"></i> Daftar Sekarang</button>
     <div class="toggle" onclick="showLogin()">Sudah punya akun? Masuk</div>
   </div>
   
+  <!-- Div untuk User Info (Tombol sudah dirender di dalam sini) -->
   <div id="user"></div>
 </div>
 
@@ -457,7 +477,7 @@ footer {
   <h3><i class="fas fa-bullhorn"></i> Laporan Lapangan</h3>
   <textarea id="masalah" placeholder="Tulis laporan kondisi di lapangan..."></textarea>
   <input type="file" id="foto" accept="image/*">
-  <button onclick="kirim()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+  <button class="btn-main" onclick="kirim()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
 </div>
 
 <!-- MAP CARD -->
@@ -538,12 +558,17 @@ auth.onAuthStateChanged(async user=>{
   if(user){
     let doc = await db.collection("users").doc(user.uid).get();
     let data = doc.data();
-
-    document.getElementById('user').innerHTML =
-    `<i class="fas fa-user-circle" style="font-size: 1.2em; margin-right:8px;"></i> ${data?.nama || "Kader"}
-     <br><small style="opacity:0.9">ID: ${data?.id || "-"}</small>
-     <br><button class="btn-outline" onclick="logout()" style="margin-top:12px; padding:10px 20px; box-shadow:none;">
-     <i class="fas fa-right-from-bracket"></i> Keluar</button>`;
+    
+    // PERBAIKAN: Pisahkan User Info dan Tombol Logout secara jelas
+    document.getElementById('user').innerHTML = `
+      <div class="user-info">
+        <span class="user-name"><i class="fas fa-user-circle"></i> ${data?.nama || "Kader"}</span>
+        <span class="user-id">ID: ${data?.id || "-"}</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">
+        <i class="fas fa-right-from-bracket"></i> Keluar
+      </button>
+    `;
 
     document.getElementById('loginForm').classList.remove('active');
     document.getElementById('registerForm').classList.remove('active');
