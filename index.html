@@ -317,20 +317,17 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   <div id="user"></div>
 </div>
 
-<!-- CHECKIN CARD -->
+<!-- CHECKIN CARD (TANPA GPS) -->
 <div class="card" id="checkinCard" style="display:none;">
-  <h3><i class="fas fa-location-dot"></i> Absensi Harian</h3>
+  <h3><i class="fas fa-calendar-check"></i> Absensi Harian</h3>
   <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">
-    Dapatkan +10 poin dengan check-in lokasi real-time.
+    Tunjukkan aktivitasmu hari ini dan dapatkan +10 poin.
   </p>
   
-  <button id="btnCheckin" class="btn-checkin">
-    <i class="fas fa-location-crosshairs"></i> Check-In Sekarang
+  <button id="btnCheckin" class="btn-checkin" onclick="handleCheckin()">
+    <i class="fas fa-hand-pointer"></i> Check-In Sekarang
   </button>
-  
-  <p id="checkinStatus" style="text-align:center; margin-top:12px; font-size:0.85rem; color:#64748b;">
-    Tekan tombol untuk mulai
-  </p>
+  <p id="checkinStatus" style="text-align:center; margin-top:10px; font-size:0.85rem; color:#64748b;"></p>
 </div>
 
 <!-- TASK CARD -->
@@ -407,9 +404,14 @@ const storage = firebase.storage();
 // 2. GLOBAL STATE & HELPER
 // ==========================================
 let currentUserData = null;
-const getTodayString = () => new Date().toISOString().split('T')[0];
+
+const getTodayString = () => {
+  const d = new Date();
+  return d.toISOString().split('T')[0]; // "YYYY-MM-DD"
+};
+
 const getBulanString = () => {
-  let d = new Date();
+  const d = new Date();
   return `${d.getFullYear()}-${d.getMonth() + 1}`;
 };
 
@@ -490,10 +492,9 @@ function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPasswor
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
-// 5. CHECK-IN SYSTEM (UPGRADED & FIXED)
+// 5. CHECK-IN SYSTEM (TANPA GPS - INSTANT)
 // ==========================================
 
-// Helper untuk set state tombol
 function setButtonState(state, message) {
   const btn = document.getElementById('btnCheckin');
   const status = document.getElementById('checkinStatus');
@@ -504,13 +505,13 @@ function setButtonState(state, message) {
 
   if (state === 'loading') {
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + (message || "Memproses...");
-    status.innerText = "Mengambil lokasi GPS...";
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+    status.innerText = message || "Menyimpan data...";
     status.style.color = "#64748b";
   } else if (state === 'success') {
     btn.disabled = true;
     btn.classList.add('done');
-    btn.innerHTML = '<i class="fas fa-check-circle"></i> Check-In Berhasil';
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Sukses';
     status.innerText = message || "+10 Poin ditambahkan!";
     status.style.color = "#10B981";
   } else if (state === 'done') {
@@ -521,11 +522,11 @@ function setButtonState(state, message) {
     status.style.color = "#10B981";
   } else if (state === 'error') {
     btn.innerHTML = '<i class="fas fa-sync-alt"></i> Coba Lagi';
-    status.innerText = message || "Gagal. Coba lagi.";
+    status.innerText = message || "Gagal.";
     status.style.color = "#E31E25";
   } else {
-    btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Check-In Sekarang';
-    status.innerText = "Tekan tombol untuk mulai";
+    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Check-In Sekarang';
+    status.innerText = "Tekan tombol untuk absen.";
     status.style.color = "#64748b";
   }
 }
@@ -554,84 +555,51 @@ async function handleCheckin() {
   const user = auth.currentUser;
   if (!user) return alert("Sesi habis, silakan login ulang.");
 
-  // 1. Set Loading
+  // 1. Set UI Loading
   setButtonState('loading');
 
-  // 2. Double Check Database
+  // 2. Cek Double Data
   const today = getTodayString();
   try {
     const check = await db.collection('checkin')
       .where('uid', '==', user.uid)
       .where('tanggal', '==', today)
       .get();
+      
     if (!check.empty) {
-      return setButtonState('done');
+      setButtonState('done');
+      return;
     }
-  } catch (e) {
-    console.error("DB Check Error:", e);
-  }
 
-  // 3. Get GPS Location
-  if (!navigator.geolocation) {
-    return setButtonState('error', "Browser tidak mendukung GPS.");
-  }
+    // 3. Simpan Data (Tanpa GPS)
+    await db.collection('checkin').add({
+      uid: user.uid,
+      nama: currentUserData?.nama || "Kader",
+      tanggal: today,
+      waktu: new Date(),
+      // lat/lng dihapus karena tidak diperlukan
+    });
 
-  const geoOptions = {
-    enableHighAccuracy: true,
-    timeout: 10000, // 10 detik timeout
-    maximumAge: 0
-  };
+    // 4. Tambah Poin
+    await db.collection('users').doc(user.uid).update({
+      poin: firebase.firestore.FieldValue.increment(10)
+    });
 
-  navigator.geolocation.getCurrentPosition(
+    // 5. Update UI
+    setButtonState('success', "+10 Poin Ditambahkan!");
     
-    // Success
-    async (pos) => {
-      try {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-
-        // Save to Firestore
-        await db.collection('checkin').add({
-          uid: user.uid,
-          nama: currentUserData?.nama || "Kader",
-          tanggal: today,
-          waktu: new Date(),
-          lat: lat,
-          lng: lng
-        });
-
-        // Update Poin
-        await db.collection('users').doc(user.uid).update({
-          poin: firebase.firestore.FieldValue.increment(10)
-        });
-
-        // UI Success
-        setButtonState('success', "+10 Poin Ditambahkan!");
-        
-        // Refresh other data
-        if (typeof loadTugasElite === 'function') loadTugasElite(user.uid);
-        if (typeof loadLeaderboard === 'function') loadLeaderboard();
-
-      } catch (err) {
-        console.error("Save Error:", err);
-        setButtonState('error', "Gagal menyimpan data server.");
-      }
-    },
-
-    // Error
-    (error) => {
-      let msg = "Gagal mengambil lokasi.";
-      switch (error.code) {
-        case error.PERMISSION_DENIED: msg = "Izin lokasi ditolak."; break;
-        case error.POSITION_UNAVAILABLE: msg = "Lokasi tidak tersedia."; break;
-        case error.TIMEOUT: msg = "Timeout. Sinyal GPS lemah."; break;
-      }
-      setButtonState('error', msg);
-    },
+    // Refresh data lain
+    if (typeof loadTugasElite === 'function') loadTugasElite(user.uid);
+    if (typeof loadLeaderboard === 'function') loadLeaderboard();
     
-    // Options
-    geoOptions
-  );
+    // Update Poin di Header secara manual
+    currentUserData.poin += 10;
+    document.querySelector('.user-id').innerText = `ID: ${currentUserData?.id || "-"} | Poin: ${currentUserData?.poin || 0}`;
+
+  } catch (err) {
+    console.error("Check-in Error:", err);
+    setButtonState('error', "Gagal menyimpan data.");
+  }
 }
 
 // ==========================================
@@ -644,7 +612,6 @@ async function kirim(){
 
   if(masalah.length < 50) return alert("Laporan minimal 50 karakter!");
   
-  // Check limit 5 per day
   const today = getTodayString();
   try {
     const countSnap = await db.collection('laporan')
@@ -653,14 +620,10 @@ async function kirim(){
       .get();
       
     if(countSnap.size >= 5) return alert("Batas kirim laporan hari ini (5x) tercapai.");
-  } catch(e) {
-    console.log("Skip limit check (index missing)");
-  }
+  } catch(e) { console.log("Skip limit check"); }
 
+  // GPS Opsional untuk Laporan (Jika ingin wajib, biarkan kode ini. Jika tidak, hapus blok navigator)
   if(!navigator.geolocation) return alert("GPS tidak didukung.");
-
-  // Use improved geolocation logic
-  const geoOptions = { enableHighAccuracy: true, timeout: 10000 };
   
   navigator.geolocation.getCurrentPosition(async pos => {
     let fotoURL = "";
@@ -692,16 +655,14 @@ async function kirim(){
     
     loadTugasElite(user.uid);
 
-  }, (err) => {
-    alert("Gagal ambil lokasi. Error: " + err.message);
-  }, geoOptions);
+  }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
 }
 
 // ==========================================
 // 7. AUTO GENERATE TUGAS BULANAN
 // ==========================================
 const masterTugas = [
-  { nama: "Absensi Harian", tipe: "checkin", poin: 50, target: 1, deskripsi: "Check-in lokasi hari ini." },
+  { nama: "Absensi Harian", tipe: "checkin", poin: 50, target: 1, deskripsi: "Check-in kehadiran hari ini." },
   { nama: "Laporan Lapangan", tipe: "lapangan", poin: 100, target: 5, deskripsi: "Kirim laporan kegiatan 5 kali." },
   { nama: "Dokumentasi Digital", tipe: "digital", poin: 30, target: 1, deskripsi: "Upload foto kegiatan unggahan." }
 ];
@@ -731,7 +692,6 @@ function loadTugasElite(userId) {
   const bulan = getBulanString();
   const today = getTodayString();
 
-  // Listener Realtime
   db.collection('tugas')
     .where('userId', '==', userId)
     .where('bulan', '==', bulan)
@@ -744,10 +704,8 @@ function loadTugasElite(userId) {
         return;
       }
 
-      // Pre-fetch data for validation (Optimization: could be better, but fine for this scale)
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0,0,0,0);
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
       const checkinSnap = await db.collection('checkin')
         .where('uid', '==', userId)
@@ -761,11 +719,7 @@ function loadTugasElite(userId) {
 
       const totalCheckin = checkinSnap.size;
       const totalLaporan = laporanSnap.size;
-      
-      // Check if today has checkin (for daily task)
       const checkinToday = checkinSnap.docs.some(d => d.data().tanggal === today);
-      
-      // Check if there is a photo in reports
       const hasPhoto = laporanSnap.docs.some(d => d.data().foto);
 
       snap.forEach(doc => {
@@ -773,15 +727,9 @@ function loadTugasElite(userId) {
         let progress = 0;
         let isDone = false;
         
-        // Validation Logic
         if(t.tipe === 'checkin'){
-           if(t.target === 1) {
-             // Daily Checkin Task
-             progress = checkinToday ? 1 : 0;
-           } else {
-             // Monthly Checkin Count
-             progress = totalCheckin;
-           }
+           if(t.target === 1) progress = checkinToday ? 1 : 0;
+           else progress = totalCheckin;
            if(progress >= t.target) isDone = true;
         } 
         else if(t.tipe === 'lapangan'){
@@ -793,7 +741,6 @@ function loadTugasElite(userId) {
           if(progress >= t.target) isDone = true;
         }
 
-        // Render UI
         const div = document.createElement('div');
         div.className = `task-item ${isDone ? 'done' : ''}`;
         div.innerHTML = `
