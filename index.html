@@ -26,7 +26,6 @@
   --accent: #FF4D4D;
   --dark: #0F172A;
   --glass: rgba(255, 255, 255, 0.9);
-  --shadow-glow: 0 0 25px rgba(227, 30, 37, 0.25);
   --success: #10B981;
   --blue: #2563EB;
   --purple: #7C3AED;
@@ -36,7 +35,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Inter', sans-serif;
-  background: #F8FAFC; /* Light clean background */
+  background: #F8FAFC;
   color: #1e293b;
   min-height: 100vh;
   overflow-x: hidden;
@@ -60,11 +59,11 @@ header {
   max-width: 500px;
   margin: 0 auto;
 }
-.header-left { display: flex; align-items: center; gap: 12px; }
+.header-left { display: flex; align-items: center; gap: 12px; cursor: pointer; }
 .logo { width: 45px; height: 45px; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 4px 10px rgba(227,30,37,0.15); border: 1px solid rgba(0,0,0,0.05); }
 .logo img { width: 100%; height: 100%; object-fit: cover; }
 .header-text h1 { font-size: 1rem; font-weight: 800; color: var(--dark); line-height: 1.2; }
-.header-text p { font-size: 0.7rem; color: var(--primary); font-weight: 700; letter-spacing: 0.5px; }
+.header-text p { font-size: 0.7rem; color: var(--primary); font-weight: 700; }
 .header-profile { width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; overflow: hidden; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 .header-profile img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -112,13 +111,7 @@ header {
 }
 .hero-title { font-size: 1.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 .hero-desc { font-size: 0.85rem; opacity: 0.9; }
-.hero-dots {
-  position: absolute;
-  bottom: 15px;
-  right: 20px;
-  display: flex;
-  gap: 6px;
-}
+.hero-dots { position: absolute; bottom: 15px; right: 20px; display: flex; gap: 6px; }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: all 0.3s; }
 .dot.active { width: 20px; border-radius: 10px; background: white; }
 
@@ -149,36 +142,15 @@ header {
 
 /* QUICK STATS */
 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.stat-item {
-  background: white;
-  padding: 15px 10px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-}
+.stat-item { background: white; padding: 15px 10px; border-radius: 16px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
 .stat-value { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
 .stat-label { font-size: 0.7rem; color: #64748b; font-weight: 500; margin-top: 4px; }
 
 /* MENU GRID */
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--dark);
-  margin-bottom: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.section-title { font-size: 1.1rem; font-weight: 700; color: var(--dark); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
 .section-title a { font-size: 0.8rem; color: var(--primary); text-decoration: none; font-weight: 600; }
-
 .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.menu-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
+.menu-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
 .menu-icon {
   width: 55px; height: 55px;
   border-radius: 16px;
@@ -203,32 +175,11 @@ header {
 .c-pink { background: linear-gradient(135deg, #EC4899, #DB2777); }
 .c-gray { background: linear-gradient(135deg, #64748B, #475569); }
 
-/* LEADERBOARD CARD (DI BERANDA) */
-.leaderboard-card {
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-}
-.leaderboard-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
+/* LEADERBOARD CARD */
+.leaderboard-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); }
+.leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
 .leaderboard-item:last-child { border-bottom: none; }
-.lb-rank {
-  width: 24px; height: 24px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: white;
-  background: #94a3b8;
-}
+.lb-rank { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: white; background: #94a3b8; }
 .r1 { background: linear-gradient(135deg, #FFD700, #FFA500); }
 .r2 { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); }
 .r3 { background: linear-gradient(135deg, #CD7F32, #8B4513); }
@@ -239,16 +190,7 @@ header {
 
 /* NEWS LIST */
 .news-list { display: flex; flex-direction: column; gap: 12px; }
-.news-item {
-  display: flex;
-  gap: 12px;
-  background: white;
-  padding: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-  cursor: pointer;
-  transition: transform 0.2s;
-}
+.news-item { display: flex; gap: 12px; background: white; padding: 12px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); cursor: pointer; }
 .news-item:hover { transform: translateX(5px); }
 .news-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #f1f5f9; }
 .news-content h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; line-height: 1.3; }
@@ -346,31 +288,25 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
         <p>Kab. Kepulauan Meranti</p>
       </div>
     </div>
-    
-    <!-- Profile Icon if logged in -->
-    <div id="authHeader" onclick="showView('dashboard')"></div>
+    <!-- Icon Profil di Header (Muncul jika sudah login) -->
+    <div id="authHeader" onclick="showView('dashboard')" style="display:none"></div>
   </div>
 </header>
 
 <div class="container">
 
-<!-- ==========================================
-     VIEW 1: BERANDA UTAMA
-     ========================================== -->
+<!-- VIEW: BERANDA -->
 <div id="view-beranda" class="view-section active">
-  
-  <!-- 1. HERO BANNER -->
+  <!-- HERO -->
   <div class="hero-banner">
     <div class="hero-slide active" style="background-image: url('https://source.unsplash.com/600x400/?politics,meeting')"></div>
     <div class="hero-slide" style="background-image: url('https://source.unsplash.com/600x400/?crowd,flag')"></div>
     <div class="hero-slide" style="background-image: url('https://source.unsplash.com/600x400/?indonesia,nature')"></div>
-    
     <div class="hero-overlay">
       <span class="hero-tag">Portal Resmi</span>
       <h2 class="hero-title">Satukan Langkah<br>Majukan Meranti</h2>
       <p class="hero-desc">Platform digital untuk kader PDI Perjuangan.</p>
     </div>
-    
     <div class="hero-dots">
       <div class="dot active" onclick="goToSlide(0)"></div>
       <div class="dot" onclick="goToSlide(1)"></div>
@@ -378,197 +314,61 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
     </div>
   </div>
 
-  <!-- 2. WELCOME CARD -->
+  <!-- WELCOME -->
   <div class="welcome-card">
     <div class="welcome-icon"><i class="fas fa-hand-wave"></i></div>
     <div class="welcome-text">
       <h3>Selamat Datang, Kader!</h3>
-      <p>Akses seluruh informasi, program kerja, dan layanan partai dalam satu genggaman. Satu Hati, Satu Aksi.</p>
+      <p>Akses seluruh informasi dan layanan partai dalam satu genggaman.</p>
     </div>
   </div>
 
-  <!-- 3. QUICK STATS -->
+  <!-- STATS -->
   <div class="stats-grid">
-    <div class="stat-item">
-      <div class="stat-value" id="statKader">-</div>
-      <div class="stat-label">Total Kader</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="statLaporan">-</div>
-      <div class="stat-label">Laporan</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value" id="statDesa">12</div>
-      <div class="stat-label">Desa</div>
-    </div>
+    <div class="stat-item"><div class="stat-value" id="statKader">-</div><div class="stat-label">Kader</div></div>
+    <div class="stat-item"><div class="stat-value" id="statLaporan">-</div><div class="stat-label">Laporan</div></div>
+    <div class="stat-item"><div class="stat-value">12</div><div class="stat-label">Desa</div></div>
   </div>
 
-  <!-- 4. MENU UTAMA -->
+  <!-- MENU -->
   <div class="section-title">Layanan Utama</div>
   <div class="menu-grid">
-    <div class="menu-item" onclick="showView('berita')">
-      <div class="menu-icon c-blue"><i class="fas fa-newspaper"></i></div>
-      <span class="menu-text">Berita</span>
-    </div>
-    <div class="menu-item" onclick="showView('pengumuman')">
-      <div class="menu-icon c-orange"><i class="fas fa-bullhorn"></i></div>
-      <span class="menu-text">Info</span>
-    </div>
-    <div class="menu-item" onclick="showView('struktur')">
-      <div class="menu-icon c-purple"><i class="fas fa-sitemap"></i></div>
-      <span class="menu-text">Struktur</span>
-    </div>
-    <div class="menu-item" onclick="showView('usulan')">
-      <div class="menu-icon c-green"><i class="fas fa-lightbulb"></i></div>
-      <span class="menu-text">Usulan</span>
-    </div>
-    <div class="menu-item" onclick="showView('galeri')">
-      <div class="menu-icon c-pink"><i class="fas fa-images"></i></div>
-      <span class="menu-text">Galeri</span>
-    </div>
-    <div class="menu-item" onclick="showView('bantuan')">
-      <div class="menu-icon c-cyan"><i class="fas fa-hands-helping"></i></div>
-      <span class="menu-text">Bantuan</span>
-    </div>
-    <div class="menu-item" onclick="showView('kontak')">
-      <div class="menu-icon c-gray"><i class="fas fa-phone-alt"></i></div>
-      <span class="menu-text">Kontak</span>
-    </div>
-    <div class="menu-item" onclick="showView('dashboard')">
-      <div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div>
-      <span class="menu-text">Dashboard</span>
-    </div>
+    <div class="menu-item" onclick="showView('berita')"><div class="menu-icon c-blue"><i class="fas fa-newspaper"></i></div><span class="menu-text">Berita</span></div>
+    <div class="menu-item" onclick="showView('pengumuman')"><div class="menu-icon c-orange"><i class="fas fa-bullhorn"></i></div><span class="menu-text">Info</span></div>
+    <div class="menu-item" onclick="showView('struktur')"><div class="menu-icon c-purple"><i class="fas fa-sitemap"></i></div><span class="menu-text">Struktur</span></div>
+    <div class="menu-item" onclick="showView('usulan')"><div class="menu-icon c-green"><i class="fas fa-lightbulb"></i></div><span class="menu-text">Usulan</span></div>
+    <div class="menu-item" onclick="showView('galeri')"><div class="menu-icon c-pink"><i class="fas fa-images"></i></div><span class="menu-text">Galeri</span></div>
+    <div class="menu-item" onclick="showView('bantuan')"><div class="menu-icon c-cyan"><i class="fas fa-hands-helping"></i></div><span class="menu-text">Bantuan</span></div>
+    <div class="menu-item" onclick="showView('kontak')"><div class="menu-icon c-gray"><i class="fas fa-phone-alt"></i></div><span class="menu-text">Kontak</span></div>
+    <div class="menu-item" onclick="navigateToDashboard()"><div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div><span class="menu-text">Dashboard</span></div>
   </div>
 
-  <!-- 5. TOP KADER (LEADERBOARD) -->
-  <div class="section-title" style="margin-top:25px">
-    <span>Top 10 Kader</span>
-    <a href="#" onclick="showView('dashboard'); showDashboardSection('reward')">Lihat Semua</a>
-  </div>
+  <!-- TOP KADER -->
+  <div class="section-title" style="margin-top:25px"><span>Top 10 Kader</span></div>
   <div class="leaderboard-card">
     <div id="topKaderList"><p style="text-align:center; color:#64748b; font-size:0.8rem">Memuat data...</p></div>
   </div>
-
-  <!-- 6. BERITA TERKINI -->
-  <div class="section-title" style="margin-top:25px">Berita Terkini</div>
-  <div class="news-list">
-    <div class="news-item">
-      <img src="https://source.unsplash.com/100x100/?meeting" class="news-img">
-      <div class="news-content">
-        <h4>Rapat Koordinasi Tim Pemenangan</h4>
-        <p>Kegiatan rakor tim sukses di sekretariat DPC.</p>
-      </div>
-    </div>
-    <div class="news-item">
-      <img src="https://source.unsplash.com/100x100/?social" class="news-img">
-      <div class="news-content">
-        <h4>Bakti Sosial di Kecamatan Tebing Tinggi</h4>
-        <p>Pembagian sembako kepada masyarakat kurang mampu.</p>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<!-- ==========================================
-     VIEWS UMUM (BERITA, INFO, DLL)
-     ========================================== -->
-<div id="view-berita" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3>
-    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px">Informasi terkini seputar kegiatan partai.</p>
-    <div class="news-list">
-       <div class="news-item">
-          <img src="https://source.unsplash.com/200x150/?politics" class="news-img" style="width:100%; height:150px; border-radius:12px; margin-bottom:10px">
-          <div class="news-content">
-            <h4>Kunjungan Kerja ke DPRD Provinsi</h4>
-            <p>Delegasi DPC Meranti melakukan audiensi membahas pembangunan daerah.</p>
-          </div>
-       </div>
-    </div>
-  </div>
-</div>
+<!-- VIEW: LAINNYA (SINGKAT) -->
+<div id="view-berita" class="view-section"><div class="card"><h3>Berita</h3><p>Konten berita...</p></div></div>
+<div id="view-pengumuman" class="view-section"><div class="card"><h3>Pengumuman</h3><p>Konten pengumuman...</p></div></div>
+<div id="view-struktur" class="view-section"><div class="card"><h3>Struktur</h3><p>Konten struktur...</p></div></div>
+<div id="view-usulan" class="view-section"><div class="card"><h3>Usulan</h3><textarea placeholder="Usulan..."></textarea><button>Kirim</button></div></div>
+<div id="view-galeri" class="view-section"><div class="card"><h3>Galeri</h3><p>Konten galeri...</p></div></div>
+<div id="view-bantuan" class="view-section"><div class="card"><h3>Bantuan</h3><p>Form bantuan...</p></div></div>
+<div id="view-kontak" class="view-section"><div class="card"><h3>Kontak</h3><p>Info kontak...</p></div></div>
 
-<div id="view-pengumuman" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3>
-    <ul>
-      <li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC.</small></li>
-      <li><b>Pendaftaran Caleg</b><br><small>Dibuka mulai bulan depan. Siapkan berkas.</small></li>
-    </ul>
-  </div>
-</div>
-
-<div id="view-struktur" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3>
-    <p style="font-size:0.85rem; color:#64748b; text-align:center; padding:20px 0">
-      [ Bagian Struktur Organisasi DPC ]<br><br>
-      <span style="font-size:0.8rem">Ketua: [...]<br>Sekretaris: [...]<br>Bendahara: [...]</span>
-    </p>
-  </div>
-</div>
-
-<div id="view-usulan" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3>
-    <textarea id="usulanText" placeholder="Tulis usulan ide program kerja..."></textarea>
-    <input id="usulanNama" placeholder="Nama Pengusul">
-    <button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim Usulan</button>
-  </div>
-</div>
-
-<div id="view-galeri" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri Kegiatan</h3>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
-      <img src="https://source.unsplash.com/200x200/?rally" style="width:100%; border-radius:8px">
-      <img src="https://source.unsplash.com/200x200/?meeting" style="width:100%; border-radius:8px">
-    </div>
-  </div>
-</div>
-
-<div id="view-bantuan" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Permohonan Bantuan</h3>
-    <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px">Isi form berikut untuk mengajukan bantuan (Kesehatan, Sosial, dll).</p>
-    <input placeholder="Nama Lengkap">
-    <input placeholder="Jenis Bantuan">
-    <textarea placeholder="Deskripsi Kebutuhan"></textarea>
-    <button onclick="alert('Bantuan terkirim!')">Ajukan</button>
-  </div>
-</div>
-
-<div id="view-kontak" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3>
-    <div style="display:flex; flex-direction:column; gap:10px">
-      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
-        <i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Jl. Contoh No. 1, Selatpanjang
-      </div>
-      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
-        <i class="fab fa-whatsapp" style="color:#25D366"></i> +62 812-3456-7890
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ==========================================
-     VIEW DASHBOARD (KADER)
-     ========================================== -->
+<!-- VIEW: DASHBOARD -->
 <div id="view-dashboard" class="view-section">
-  
-  <!-- USER PROFILE -->
   <div id="user"></div>
 
-  <!-- EDIT MODAL -->
+  <!-- Edit Modal -->
   <div id="editModal" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeModal()">&times;</button>
-      <h3 style="margin-bottom:20px;"><i class="fas fa-user-edit"></i> Edit Profil</h3>
-      <div style="text-align:center; margin-bottom:20px;">
-        <div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden" id="previewAvatar"><span>A</span></div>
-      </div>
+      <h3 style="margin-bottom:20px;">Edit Profil</h3>
+      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden" id="previewAvatar"><span>A</span></div></div>
       <label style="font-size:0.8rem; color:#64748b">Foto Profil</label>
       <input type="file" id="editFoto" accept="image/*" onchange="previewFile(this)">
       <label style="font-size:0.8rem; color:#64748b">Nama</label>
@@ -579,96 +379,53 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
     </div>
   </div>
 
-  <!-- MENU DASHBOARD -->
   <div class="section-title">Menu Dashboard</div>
   <div class="menu-grid">
-    <div class="menu-item" onclick="showDashboardSection('peta')">
-      <div class="menu-icon c-blue"><i class="fas fa-map-marked-alt"></i></div>
-      <span class="menu-text">Peta</span>
-    </div>
-    <div class="menu-item" onclick="showDashboardSection('tugas')">
-      <div class="menu-icon c-purple"><i class="fas fa-tasks"></i></div>
-      <span class="menu-text">Tugas</span>
-    </div>
-    <div class="menu-item" onclick="showDashboardSection('laporan')">
-      <div class="menu-icon c-orange"><i class="fas fa-file-alt"></i></div>
-      <span class="menu-text">Laporan</span>
-    </div>
-    <div class="menu-item" onclick="showDashboardSection('reward')">
-      <div class="menu-icon c-green"><i class="fas fa-trophy"></i></div>
-      <span class="menu-text">Reward</span>
-    </div>
+    <div class="menu-item" onclick="showDashboardSection('peta')"><div class="menu-icon c-blue"><i class="fas fa-map-marked-alt"></i></div><span class="menu-text">Peta</span></div>
+    <div class="menu-item" onclick="showDashboardSection('tugas')"><div class="menu-icon c-purple"><i class="fas fa-tasks"></i></div><span class="menu-text">Tugas</span></div>
+    <div class="menu-item" onclick="showDashboardSection('laporan')"><div class="menu-icon c-orange"><i class="fas fa-file-alt"></i></div><span class="menu-text">Laporan</span></div>
+    <div class="menu-item" onclick="showDashboardSection('reward')"><div class="menu-icon c-green"><i class="fas fa-trophy"></i></div><span class="menu-text">Reward</span></div>
   </div>
 
-  <!-- SUB-SECTION: PETA -->
   <div id="dash-peta" class="card" style="margin-top:20px"></div>
-
-  <!-- SUB-SECTION: TUGAS -->
-  <div id="dash-tugas" class="card" style="display:none; margin-top:20px">
-    <h3><i class="fas fa-tasks"></i> Tugas Bulan Ini</h3>
-    <p id="bulanInfo" style="font-size:0.8rem; color:#64748b; margin-bottom:10px"></p>
-    <div id="taskList"></div>
-  </div>
-
-  <!-- SUB-SECTION: LAPORAN -->
-  <div id="dash-laporan" class="card" style="display:none; margin-top:20px">
-    <h3><i class="fas fa-file-alt"></i> Kirim Laporan</h3>
-    <textarea id="masalah" placeholder="Tulis laporan..."></textarea>
-    <input type="file" id="foto" accept="image/*">
-    <button onclick="kirimLaporan()"><i class="fas fa-paper-plane"></i> Kirim</button>
-    <div style="margin-top:20px;">
-      <h4 style="font-size:0.9rem; margin-bottom:10px;">Laporan Terbaru</h4>
-      <ul id="data"></ul>
-    </div>
-  </div>
-
-  <!-- SUB-SECTION: REWARD -->
-  <div id="dash-reward" class="card" style="display:none; margin-top:20px">
-    <h3><i class="fas fa-gift"></i> Reward</h3>
-    <ul id="rewardList"></ul>
-    <h3 style="margin-top:20px;"><i class="fas fa-ranking-star"></i> Top Kader</h3>
-    <ul id="leaderboard"></ul>
-  </div>
-
+  <div id="dash-tugas" class="card" style="display:none; margin-top:20px"><h3>Tugas</h3><p id="bulanInfo"></p><div id="taskList"></div></div>
+  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan</h3><textarea id="masalah"></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim</button><ul id="data"></ul></div>
+  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Reward</h3><ul id="rewardList"></ul><h3>Top Kader</h3><ul id="leaderboard"></ul></div>
 </div>
 
-<!-- AUTH MODAL (LOGIN/REGISTER) -->
+<!-- AUTH MODAL -->
 <div id="authModal" class="modal-overlay">
   <div class="modal-card">
     <button class="modal-close" onclick="closeAuthModal()">&times;</button>
-    
     <div id="loginForm" class="form-section active">
-      <h3 style="margin-bottom:5px; text-align:center">Masuk Dashboard</h3>
-      <p style="font-size:0.8rem; color:#64748b; text-align:center; margin-bottom:20px">Gunakan akun kader untuk melanjutkan.</p>
+      <h3 style="margin-bottom:20px; text-align:center">Masuk Dashboard</h3>
       <input id="loginEmail" placeholder="Email" type="email">
       <input id="loginPassword" type="password" placeholder="Password">
       <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
       <div onclick="showReg()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Daftar Akun Baru</div>
     </div>
-    
     <div id="registerForm" class="form-section">
-      <h3 style="margin-bottom:20px; text-align:center">Daftar Kader Baru</h3>
-      <input id="regNama" placeholder="Nama Lengkap">
-      <input id="regId" placeholder="ID Kader">
-      <input id="regEmail" placeholder="Email" type="email">
-      <input id="regHp" placeholder="No. HP">
+      <h3 style="margin-bottom:20px; text-align:center">Daftar Kader</h3>
+      <input id="regNama" placeholder="Nama">
+      <input id="regId" placeholder="ID">
+      <input id="regEmail" placeholder="Email">
+      <input id="regHp" placeholder="HP">
       <input id="regAlamat" placeholder="Alamat">
       <input id="regPassword" type="password" placeholder="Password">
-      <button onclick="signup()"><i class="fas fa-user-plus"></i> Daftar</button>
-      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Sudah punya akun? Masuk</div>
+      <button onclick="signup()">Daftar</button>
+      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Sudah punya akun?</div>
     </div>
   </div>
 </div>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <div class="nav-item active" onclick="showView('beranda')">
-    <i class="fas fa-home"></i>
-    <span>Beranda</span>
+    <i class="fas fa-home"></i><span>Beranda</span>
   </div>
-  <div class="nav-item" onclick="openAuthModal()">
-    <i class="fas fa-user"></i>
-    <span>Dashboard</span>
+  <!-- UBAH: Cek status login saat diklik -->
+  <div class="nav-item" id="navDashboard" onclick="navigateToDashboard()">
+    <i class="fas fa-user"></i><span>Dashboard</span>
   </div>
 </div>
 
@@ -684,14 +441,13 @@ const firebaseConfig = {
   projectId: "partai-meranti",
   storageBucket: "partai-meranti.appspot.com"
 };
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
 // ==========================================
-// 2. GLOBALS
+// 2. GLOBALS & HELPERS
 // ==========================================
 let currentUserData = null;
 let unsubUser = null; 
@@ -700,22 +456,20 @@ let map = null;
 let editFile = null;
 let slideIndex = 0;
 
+const getInitials = (n) => { if(!n) return "?"; const p=n.trim().split(' '); return p.length>=2 ? (p[0][0]+p[1][0]).toUpperCase() : n.substring(0,2).toUpperCase(); };
+
 // ==========================================
-// 3. NAVIGATION
+// 3. NAVIGATION LOGIC (PERBAIKAN)
 // ==========================================
 function showView(viewId) {
   document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
   document.getElementById('view-'+viewId).classList.add('active');
   window.scrollTo(0,0);
   
-  // Update Bottom Nav
+  // Update Bottom Nav Active State
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if(viewId === 'beranda') document.querySelectorAll('.nav-item')[0].classList.add('active');
-  
-  if(viewId === 'dashboard') {
-     if(!auth.currentUser) { openAuthModal(); return; }
-     document.querySelectorAll('.nav-item')[1].classList.add('active');
-  }
+  if(viewId === 'dashboard') document.querySelectorAll('.nav-item')[1].classList.add('active');
 }
 
 function showDashboardSection(sec) {
@@ -723,6 +477,20 @@ function showDashboardSection(sec) {
   document.getElementById('dash-'+sec).style.display = 'block';
   if(sec === 'peta' && !map) initMap();
 }
+
+// FUNGSI BARU: Navigasi Dashboard Cerdas
+function navigateToDashboard() {
+    if(auth.currentUser) {
+        showView('dashboard');
+    } else {
+        openAuthModal();
+    }
+}
+
+function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+function showReg(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); }
+function showLog(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); }
 
 // ==========================================
 // 4. HERO SLIDER
@@ -748,13 +516,8 @@ function goToSlide(n) {
 setTimeout(updateSlide, 4000);
 
 // ==========================================
-// 5. AUTH UI
+// 5. AUTH STATE & UI
 // ==========================================
-function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
-function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-function showReg(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); }
-function showLog(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); }
-
 auth.onAuthStateChanged(user => {
   if(user){
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
@@ -763,11 +526,14 @@ auth.onAuthStateChanged(user => {
         if(map) updateMyPresence(user.uid, currentUserData.nama);
     });
     
-    // Update Header
+    // Update Header & Nav
     const photo = currentUserData?.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData?.nama||'U');
     document.getElementById('authHeader').innerHTML = `<div class="header-profile"><img src="${photo}"></div>`;
+    document.getElementById('authHeader').style.display = 'block';
+
+    // Auto Close Modal & Go to Dashboard if just logged in
+    closeAuthModal(); 
     
-    closeAuthModal();
     initMap();
     updateMyLocation(user);
     listenToOtherUsers();
@@ -777,11 +543,16 @@ auth.onAuthStateChanged(user => {
     loadReward(user.uid);
     loadStats();
   } else {
-    document.getElementById('authHeader').innerHTML = '';
+    document.getElementById('authHeader').style.display = 'none';
     document.getElementById('user').innerHTML = '';
     currentUserData = null;
     if(unsubUser) unsubUser();
     if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; }
+    
+    // Jika sedang di dashboard tapi logout, kembali ke beranda
+    if(document.getElementById('view-dashboard').classList.contains('active')) {
+        showView('beranda');
+    }
   }
 });
 
@@ -791,10 +562,7 @@ function renderUserInfo() {
     document.getElementById('user').innerHTML = `
       <div style="display:flex; align-items:center; gap:15px">
         <img src="${p}" style="width:60px; height:60px; border-radius:50%; border:3px solid white">
-        <div>
-          <span style="font-size:1.2rem; font-weight:800">${currentUserData.nama}</span>
-          <div style="font-size:0.9rem; opacity:0.9">${currentUserData.poin || 0} Poin</div>
-        </div>
+        <div><span style="font-size:1.2rem; font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem; opacity:0.9">${currentUserData.poin || 0} Poin</div></div>
       </div>
       <div style="display:flex; gap:10px; margin-top:15px">
         <button class="btn-secondary" onclick="openEditModal()">Edit Profil</button>
@@ -809,8 +577,7 @@ function openEditModal() {
     const preview = document.getElementById('previewAvatar');
     const photoURL = currentUserData.photoURL;
     preview.innerHTML = photoURL ? `<img src="${photoURL}" style="width:100%; height:100%; object-fit:cover">` : `<span>${getInitials(currentUserData.nama)}</span>`;
-    editFile = null;
-    document.getElementById('editFoto').value = "";
+    editFile = null; document.getElementById('editFoto').value = "";
     document.getElementById('editModal').style.display = 'flex';
 }
 function closeModal() { document.getElementById('editModal').style.display = 'none'; }
@@ -822,28 +589,15 @@ function previewFile(input) {
         reader.readAsDataURL(editFile);
     }
 }
-
 async function saveProfile() {
     const nama = document.getElementById('editNama').value;
     const hp = document.getElementById('editHp').value;
     const user = auth.currentUser;
     if(!nama) return alert("Nama wajib!");
-
     let photoURL = currentUserData.photoURL || "";
-    if(editFile){
-        try {
-            const ref = storage.ref("profile/" + user.uid + "_" + Date.now());
-            await ref.put(editFile);
-            photoURL = await ref.getDownloadURL();
-        } catch(e) { alert("Gagal upload foto."); }
-    }
-    try {
-        await db.collection('users').doc(user.uid).update({ nama, hp, photoURL });
-        alert("Tersimpan!");
-        closeModal();
-    } catch(e) { alert("Gagal."); }
+    if(editFile){ try { const ref = storage.ref("profile/" + user.uid + "_" + Date.now()); await ref.put(editFile); photoURL = await ref.getDownloadURL(); } catch(e) { alert("Gagal upload foto."); } }
+    try { await db.collection('users').doc(user.uid).update({ nama, hp, photoURL }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); }
 }
-
 function signup(){
   let data = { nama: regNama.value, id: regId.value, email: regEmail.value, hp: regHp.value, alamat: regAlamat.value };
   if(!Object.values(data).every(v => v) || !regPassword.value) return alert("Lengkapi!");
@@ -851,160 +605,77 @@ function signup(){
   .then(res => { db.collection("users").doc(res.user.uid).set({...data, poin:0}); alert("Sukses!"); showLog(); })
   .catch(e => alert(e.message));
 }
-
+// PERBAIKAN: Pastikan modal tertutup dan pindah view
 function login(){ 
     auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value)
-    .then(() => { showView('dashboard'); })
+    .then(() => { closeAuthModal(); showView('dashboard'); })
     .catch(e => alert(e.message)); 
 }
-function logout(){ auth.signOut(); showView('beranda'); }
+function logout(){ auth.signOut(); }
 
 // ==========================================
-// 6. MAP
+// 6. MAP & LOC
 // ==========================================
-function initMap() {
-  if (map) return;
-  map = L.map('dash-peta').setView([0.99, 102.7], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-}
-function getUserIcon(isMe) {
-  const c = isMe ? '#E31E25' : '#10B981';
-  return L.divIcon({
-    className: '',
-    html: `<div style="background:${c}; width:24px; height:24px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(0,0,0,0.2);"><i class='fas fa-user' style="color:white; font-size:10px;"></i></div>`,
-    iconSize: [24, 24], iconAnchor: [12, 24]
-  });
-}
-function updateMyLocation(user) {
-    if(!navigator.geolocation) return;
-    navigator.geolocation.watchPosition(pos => {
-        updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude);
-        listenToOtherUsers();
-    }, err => console.warn(err), { enableHighAccuracy: true });
-}
-function updateMyPresence(uid, nama, lat, lng) {
-    if(!lat || !lng) return;
-    db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama, photoURL: currentUserData?.photoURL || null }, { merge: true });
-}
-function listenToOtherUsers() {
-    db.collection('presence').onSnapshot(snap => {
-        snap.docChanges().forEach(c => {
-            const data = c.doc.data();
-            const uid = c.doc.id;
-            const isMe = (uid === auth.currentUser.uid);
-            const name = isMe ? 'Anda' : data.nama;
-            if (mapMarkers[uid]) {
-                mapMarkers[uid].setLatLng([data.lat, data.lng]);
-            } else {
-                let m = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${name}</b>`);
-                mapMarkers[uid] = m;
-            }
-        });
-    });
-}
+function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
+function getUserIcon(isMe) { const c = isMe ? '#E31E25' : '#10B981'; return L.divIcon({ className: '', html: `<div style="background:${c}; width:24px; height:24px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center;"><i class='fas fa-user' style="color:white; font-size:10px;"></i></div>`, iconSize: [24, 24], iconAnchor: [12, 24] }); }
+function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => console.warn(err), { enableHighAccuracy: true }); }
+function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama, photoURL: currentUserData?.photoURL || null }, { merge: true }); }
+function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const data = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); const name = isMe ? 'Anda' : data.nama; if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([data.lat, data.lng]); } else { let m = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${name}</b>`); mapMarkers[uid] = m; } }); }); }
 
 // ==========================================
-// 7. TUGAS
+// 7. TASK
 // ==========================================
 async function loadTugasBulanan(userId) {
-  const list = document.getElementById('taskList');
-  const now = new Date();
-  const m = now.getMonth() + 1; 
-  const y = now.getFullYear();
+  const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear();
   document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
-
   const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get();
-  if (cek.empty) {
-      const batch = db.batch();
-      [
-        { nama: "Absensi", tipe: "checkin", poin: 10 },
-        { nama: "Share", tipe: "link", poin: 20 },
-        { nama: "Dokumentasi", tipe: "foto", poin: 30 }
-      ].forEach(t => {
-          const ref = db.collection('tugas').doc();
-          batch.set(ref, {...t, bulan:m, tahun:y});
-      });
-      await batch.commit();
-  }
-
-  db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y)
-    .onSnapshot(async snap => {
-      if (snap.empty) { list.innerHTML = '<p style="text-align:center; color:#64748b">Tidak ada</p>'; return; }
-      const done = await db.collection('task_done').where('userId', '==', userId).get();
-      const ids = new Set(); done.forEach(d => ids.add(d.data().taskId));
-      list.innerHTML = '';
-      snap.forEach(doc => {
-        const t = doc.data();
-        const id = doc.id;
-        const ok = ids.has(id);
-        let f = '';
-        if (!ok) {
-            if (t.tipe === 'link') f = `<div class="task-form" id="form-${id}"><input type="url" id="input-${id}" placeholder="Link..."><button onclick="submitLink('${id}',${t.poin})">Kirim</button></div>`;
-            if (t.tipe === 'foto') f = `<div class="task-form" id="form-${id}"><input type="file" id="file-${id}"><button onclick="submitFoto('${id}',${t.poin})">Upload</button></div>`;
-            if (t.tipe === 'checkin') f = `<div class="task-form" style="display:block"><button onclick="checkin('${id}',${t.poin})">Check-in</button></div>`;
-        }
-        const btn = ok ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggle('${id}')">Kerjakan</button>`;
-        list.innerHTML += `<div class="task-item ${ok?'is-done':''}"><div style="display:flex;justify-content:space-between;align-items:center"><b>${t.nama}</b><span class="badge badge-pending">+${t.poin}</span></div><div style="margin-top:8px">${btn}</div>${f}</div>`;
-      });
+  if (cek.empty) { const batch = db.batch(); [{ nama: "Absensi", tipe: "checkin", poin: 10 }, { nama: "Share", tipe: "link", poin: 20 }].forEach(t => { const ref = db.collection('tugas').doc(); batch.set(ref, {...t, bulan:m, tahun:y}); }); await batch.commit(); }
+  db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).onSnapshot(async snap => {
+    if (snap.empty) { list.innerHTML = '<p style="color:#64748b">Tidak ada</p>'; return; }
+    const done = await db.collection('task_done').where('userId', '==', userId).get();
+    const ids = new Set(); done.forEach(d => ids.add(d.data().taskId));
+    list.innerHTML = '';
+    snap.forEach(doc => {
+      const t = doc.data(); const id = doc.id; const ok = ids.has(id);
+      let f = '';
+      if (!ok) { if (t.tipe === 'link') f = `<div class="task-form" id="form-${id}"><input id="input-${id}" placeholder="Link..."><button onclick="submitLink('${id}',${t.poin})">Kirim</button></div>`; if (t.tipe === 'checkin') f = `<div class="task-form" style="display:block"><button onclick="checkin('${id}',${t.poin})">Check-in</button></div>`; }
+      const btn = ok ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggle('${id}')">Kerjakan</button>`;
+      list.innerHTML += `<div class="task-item ${ok?'is-done':''}"><div style="display:flex;justify-content:space-between;align-items:center"><b>${t.nama}</b><span class="badge badge-pending">+${t.poin}</span></div><div style="margin-top:8px">${btn}</div>${f}</div>`;
     });
+  });
 }
 function toggle(id) { const f=document.getElementById('form-'+id); if(f) f.style.display = f.style.display==='block'?'none':'block'; }
 async function submitLink(id, p) { const v=document.getElementById('input-'+id).value; if(!v) return alert("Link kosong"); await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, bukti:v, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); }
-async function submitFoto(id, p) { const file=document.getElementById('file-'+id).files[0]; if(!file) return alert("Pilih file"); const ref=storage.ref("tugas/"+Date.now()); await ref.put(file); const url=await ref.getDownloadURL(); await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, foto:url, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); }
 async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); }, ()=>alert("GPS error")); }
 
 // ==========================================
-// 8. MISC
+// 8. MISC LOADERS
 // ==========================================
-function getInitials(n) { if(!n) return "?"; const p=n.trim().split(' '); return p.length>=2 ? (p[0][0]+p[1][0]).toUpperCase() : n.substring(0,2).toUpperCase(); }
+function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
+function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; const rw=[{h:"Stiker",p:50},{h:"Pin",p:100}]; let h=""; rw.forEach(r=>{ const ok=p>=r.p; h+=`<li><div style="display:flex;justify-content:space-between"><div><b>${r.h}</b></div><span class="badge ${ok?'badge-done':'badge-pending'}">${ok?'Terbuka':(r.p-p)+' lagi'}</span></div></li>`; }); document.getElementById('rewardList').innerHTML=h; }); }
+function loadLeaderboard(){
+  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => {
+    let h=""; let i=1; 
+    s.forEach(d => { const v=d.data(); h+=`<li style="display:flex; align-items:center; gap:10px"><b>#${i}</b> ${v.nama} <span style="margin-left:auto; font-weight:700">${v.poin}</span></li>`; i++; });
+    document.getElementById('leaderboard').innerHTML=h||'Kosong';
+    // Top 3 Beranda
+    let h2=""; let i2=1;
+    s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; });
+    document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data';
+  });
+}
+
 async function kirimLaporan(){
   const txt = document.getElementById('masalah').value; const file = document.getElementById('foto').files[0];
   if(txt.length < 10) return alert("Terlalu pendek");
   navigator.geolocation.getCurrentPosition(async pos => {
-    let url = "";
-    if(file){ try { const r=storage.ref("l/"+Date.now()); await r.put(file); url=await r.getDownloadURL(); } catch(e){} }
+    let url = ""; if(file){ try { const r=storage.ref("l/"+Date.now()); await r.put(file); url=await r.getDownloadURL(); } catch(e){} }
     await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, foto:url, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() });
     await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) });
     alert("Terkirim +10");
     document.getElementById('masalah').value=""; document.getElementById('foto').value="";
   }, ()=>alert("GPS error"));
-}
-function kirimUsulan(){
-  const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value;
-  if(!t) return alert("Tulis usulan");
-  db.collection("usulan").add({ usulan:t, nama:n, waktu:new Date() });
-  alert("Usulan terkirim!");
-  document.getElementById('usulanText').value=""; document.getElementById('usulanNama').value="";
-}
-
-// ==========================================
-// 9. LOADERS
-// ==========================================
-function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); }
-function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
-function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; const rw=[{h:"Stiker",p:50},{h:"Pin",p:100},{h:"Kaos",p:250},{h:"Jaket",p:500}]; let h=""; rw.forEach(r=>{ const ok=p>=r.p; h+=`<li><div style="display:flex;justify-content:space-between"><div><b>${r.h}</b><br><small>${r.p} poin</small></div><span class="badge ${ok?'badge-done':'badge-pending'}">${ok?'Terbuka':(r.p-p)+' lagi'}</span></div></li>`; }); document.getElementById('rewardList').innerHTML=h; }); }
-
-function loadLeaderboard(){
-  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => {
-    // Load for Dashboard
-    let h=""; let i=1; 
-    s.forEach(d => { const v=d.data(); h+=`<li style="display:flex; align-items:center; gap:10px"><b style="color:${i<=3?'var(--primary)':'#64748b'}">#${i}</b> <img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" style="width:24px; height:24px; border-radius:50%"> ${v.nama} <span style="margin-left:auto; font-weight:700">${v.poin}</span></li>`; i++; });
-    document.getElementById('leaderboard').innerHTML=h||'Kosong';
-
-    // Load for Beranda (Top 3 Only)
-    let h2=""; let i2=1;
-    s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`
-      <div class="leaderboard-item">
-        <div class="lb-rank r${i2}">${i2}</div>
-        <img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm">
-        <div class="lb-info">
-          <div class="lb-name-sm">${v.nama}</div>
-          <div class="lb-poin-sm">${v.poin} poin</div>
-        </div>
-      </div>
-    `; i2++; });
-    document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data';
-  });
 }
 
 </script>
