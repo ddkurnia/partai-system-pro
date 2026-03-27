@@ -92,12 +92,7 @@ header {
   flex-shrink: 0;
   border: 2px solid rgba(227, 30, 37, 0.1);
 }
-.logo img { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-  display: block;
-}
+.logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
 .header-text p { font-size: 0.75rem; color: #64748b; font-weight: 500; }
@@ -158,54 +153,17 @@ header {
 .hero-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .hero-subtitle { font-size: 0.95rem; opacity: 0.95; line-height: 1.6; font-weight: 400; max-width: 350px; margin: 0 auto; }
 
-.step-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: rgba(255,255,255,0.6);
-  padding: 12px;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  border-left: 4px solid var(--primary);
-}
-.step-num {
-  min-width: 30px; height: 30px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
+.step-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.6); padding: 12px; border-radius: 14px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+.step-num { min-width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; }
 .step-content { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
 
-.reward-highlight {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 15px;
-  background: rgba(255,255,255,0.4);
-  padding: 15px;
-  border-radius: 12px;
-}
+.reward-highlight { display: flex; justify-content: space-around; margin-top: 15px; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 12px; }
 .reward-item { text-align: center; }
 .reward-value { font-weight: 800; color: var(--primary); font-size: 1.1rem; display: block; }
 .reward-label { font-size: 0.7rem; color: #64748b; }
 
 .check-list { display: flex; flex-direction: column; gap: 10px; }
-.check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--dark);
-  background: rgba(255,255,255,0.3);
-  padding: 8px 12px;
-  border-radius: 8px;
-}
+.check-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 500; color: var(--dark); background: rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; }
 .check-item i { color: var(--success); font-size: 1rem; }
 
 /* INPUTS */
@@ -248,39 +206,23 @@ button:active { transform: scale(0.98); }
 button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
 
 .btn-main { margin-top: 18px; }
+.btn-secondary { background: white; color: var(--dark); border: 2px solid rgba(0,0,0,0.1); box-shadow: none; margin-top: 10px; font-size: 0.9rem; }
+.btn-secondary:hover { background: #f1f5f9; }
 .btn-logout { background: white; color: var(--primary); border: 2px solid rgba(227, 30, 37, 0.2); box-shadow: none; margin-top: 15px; }
 .btn-logout:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-.btn-task {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  padding: 8px 16px;
-  width: auto;
-  font-size: 0.85rem;
-  margin: 0;
-}
+.btn-task { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 8px 16px; width: auto; font-size: 0.85rem; margin: 0; }
 .btn-task.done { background: var(--success); pointer-events: none; }
 
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 0.85rem; }
 input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
 
-/* MAP - PERBAIKAN KRITIS */
-#map { 
-  height: 300px; 
-  border-radius: 18px; 
-  border: 2px solid rgba(255,255,255,0.5); 
-  z-index: 1; 
-  position: relative;
-  background: #fff; /* Default background */
-}
-/* Paksa tile peta tampil benar */
+/* MAP */
+#map { height: 300px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); z-index: 1; position: relative; background: #fff; }
 .leaflet-container { background: #fff; font-family: inherit; }
-.leaflet-tile { 
-    visibility: visible !important; 
-    opacity: 1 !important; 
-}
-.leaflet-control-attribution { font-size: 8px; background: rgba(255,255,255,0.7); }
+.leaflet-tile { visibility: visible !important; opacity: 1 !important; }
 
-/* USER INFO */
+/* USER PROFILE CARD */
 #user {
   background: linear-gradient(135deg, var(--primary), #d62246);
   color: white;
@@ -293,26 +235,56 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
   overflow: hidden;
 }
 #user::after { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.1); border-radius: 50%; pointer-events: none; }
-.user-info { display: flex; flex-direction: column; gap: 5px; }
+
+.profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.profile-avatar {
+  width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid rgba(255,255,255,0.4);
+}
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar span { font-size: 1.5rem; font-weight: 800; color: white; text-transform: uppercase; }
+
+.user-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .user-name { font-size: 1.1rem; font-weight: 700; }
-.user-poin { font-size: 1.5rem; font-weight: 800; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-.user-id { font-size: 0.85rem; opacity: 0.9; }
+.user-poin { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
+.user-id { font-size: 0.8rem; opacity: 0.8; }
+
+.profile-actions { display: flex; gap: 10px; margin-top: 10px; }
+.profile-actions button { flex: 1; padding: 10px; font-size: 0.85rem; }
+
+/* Modal Edit */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-content {
+  background: white; border-radius: 20px; width: 100%; max-width: 400px;
+  padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+.modal-close {
+  position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none;
+  width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;
+}
+
+/* LEADERBOARD */
+#leaderboard li { display: flex; align-items: center; border-left: none; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 0; padding: 12px 15px; gap: 12px; }
+#leaderboard li:last-child { border-bottom: none; }
+.lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; color: #64748b; font-size: 0.9rem; }
+.lb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.lb-info { flex: 1; }
+.lb-name { font-weight: 600; color: var(--dark); }
+.lb-poin { font-size: 0.75rem; color: #64748b; }
+.poin-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.rank-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); }
+.rank-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), transparent); }
+.rank-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); }
 
 /* TASK ITEM */
-.task-item {
-  background: rgba(255, 255, 255, 0.6);
-  padding: 15px;
-  border-radius: 14px;
-  margin-top: 12px;
-  border-left: 4px solid var(--primary);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.task-item { background: rgba(255, 255, 255, 0.6); padding: 15px; border-radius: 14px; margin-top: 12px; border-left: 4px solid var(--primary); display: flex; flex-direction: column; gap: 8px; }
 .task-item.is-done { border-left-color: var(--success); opacity: 0.8; background: rgba(16, 185, 129, 0.05); }
 .task-header { display: flex; justify-content: space-between; align-items: center; }
 .task-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
-.task-meta { font-size: 0.8rem; color: #64748b; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 .task-action { margin-top: 5px; display: flex; justify-content: flex-end; }
 .task-form { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); display: none; }
 .task-form input { font-size: 0.85rem; padding: 10px; }
@@ -327,17 +299,8 @@ ul { list-style: none; max-height: 300px; overflow-y: auto; padding-right: 5px; 
 ul::-webkit-scrollbar { width: 5px; }
 ul::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
 ul::-webkit-scrollbar-thumb { background: rgba(227, 30, 37, 0.3); border-radius: 10px; }
-
 li { padding: 15px; background: rgba(255, 255, 255, 0.6); margin-top: 10px; border-radius: 14px; font-size: 0.9rem; border-left: 4px solid var(--primary); transition: all 0.3s; }
 li:hover { background: rgba(255, 255, 255, 0.9); transform: translateX(5px); }
-
-/* LEADERBOARD */
-#leaderboard li { display: flex; justify-content: space-between; align-items: center; border-left: none; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 0; padding: 12px 15px; }
-#leaderboard li:last-child { border-bottom: none; }
-.rank-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); }
-.rank-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), transparent); }
-.rank-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); }
-.poin-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
 
 /* ANIMATIONS */
 .form-section { display: none; animation: fadeIn 0.5s ease; }
@@ -362,8 +325,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <header>
   <div class="header-content">
     <div class="logo">
-      <!-- PERBAIKAN: Gunakan link https dan parameter nocors untuk menghindari mixed content/cors -->
-      <img src="https://corsproxy.io/?url=http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI Perjuangan" onerror="this.onerror=null; this.src='https://via.placeholder.com/50x50?text=PDI';">
+      <img src="https://corsproxy.io/?url=http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff';">
     </div>
     <div class="header-text">
       <h1>PDI PERJUANGAN</h1>
@@ -384,15 +346,14 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   <div class="card">
     <h3><i class="fas fa-route"></i> Cara Kerja Sistem</h3>
     <div class="step-item"><div class="step-num">1</div><div class="step-content">Kader login ke dalam sistem elite.</div></div>
-    <div class="step-item"><div class="step-num">2</div><div class="step-content">Mengerjakan tugas bulanan yang diberikan.</div></div>
-    <div class="step-item"><div class="step-num">3</div><div class="step-content">Kirim laporan lapangan (Foto + GPS).</div></div>
-    <div class="step-item"><div class="step-num">4</div><div class="step-content">Dapatkan poin otomatis setiap aktivitas.</div></div>
-    <div class="step-item"><div class="step-num">5</div><div class="step-content">Tukar poin dengan reward menarik.</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-content">Lengkapi profil dan foto.</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-content">Mengerjakan tugas & laporan.</div></div>
+    <div class="step-item"><div class="step-num">4</div><div class="step-content">Dapatkan poin otomatis.</div></div>
+    <div class="step-item"><div class="step-num">5</div><div class="step-content">Tukar poin dengan reward.</div></div>
   </div>
 
   <div class="card">
     <h3><i class="fas fa-coins"></i> Sistem Poin & Reward</h3>
-    <p style="font-size:0.85rem; color:#64748b;">Setiap aktivitas kader bernilai poin. Semakin aktif, semakin besar reward yang didapat.</p>
     <div class="reward-highlight">
       <div class="reward-item"><span class="reward-value">100</span><span class="reward-label">Poin = Pulsa</span></div>
       <div class="reward-item"><span class="reward-value">300</span><span class="reward-label">Poin = Kaos</span></div>
@@ -404,10 +365,8 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
     <h3><i class="fas fa-star"></i> Keunggulan Sistem</h3>
     <div class="check-list">
       <div class="check-item"><i class="fas fa-check-circle"></i> Monitoring realtime berbasis GPS</div>
-      <div class="check-item"><i class="fas fa-check-circle"></i> Laporan lapangan terintegrasi</div>
-      <div class="check-item"><i class="fas fa-check-circle"></i> Sistem tugas otomatis bulanan</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Profil kader terverifikasi</div>
       <div class="check-item"><i class="fas fa-check-circle"></i> Leaderboard kader terbaik</div>
-      <div class="check-item"><i class="fas fa-check-circle"></i> Transparensi & Akuntabilitas</div>
     </div>
   </div>
 </div>
@@ -437,6 +396,31 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   <div id="user"></div>
 </div>
 
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal-overlay">
+  <div class="modal-content card" style="margin-top:0;">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h3 style="margin-bottom:20px;"><i class="fas fa-user-edit"></i> Edit Profil</h3>
+    
+    <div style="text-align:center; margin-bottom:20px;">
+      <div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; font-size:2rem;" id="previewAvatar">
+        <span>A</span>
+      </div>
+    </div>
+
+    <label style="font-size:0.85rem; color:#64748b;">Foto Profil</label>
+    <input type="file" id="editFoto" accept="image/*" onchange="previewFile(this)">
+    
+    <label style="font-size:0.85rem; color:#64748b; margin-top:10px;">Nama Lengkap</label>
+    <input type="text" id="editNama" placeholder="Nama Lengkap">
+    
+    <label style="font-size:0.85rem; color:#64748b; margin-top:10px;">No. WhatsApp</label>
+    <input type="text" id="editHp" placeholder="No. WhatsApp">
+    
+    <button class="btn-main" onclick="saveProfile()"><i class="fas fa-save"></i> Simpan Perubahan</button>
+  </div>
+</div>
+
 <!-- MAP CARD -->
 <div class="card" id="mapCard" style="display:none;">
   <h3><i class="fas fa-map-location-dot"></i> Peta Realtime Kader</h3>
@@ -454,7 +438,6 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <!-- REWARD CARD -->
 <div class="card" id="rewardCard" style="display:none;">
   <h3><i class="fas fa-gift"></i> Reward Kader</h3>
-  <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Kumpulkan poin untuk mendapatkan hadiah.</p>
   <ul id="rewardList"><li style="text-align:center; border:none; color:#94a3b8;">Memuat reward...</li></ul>
 </div>
 
@@ -513,45 +496,30 @@ let currentUserData = null;
 let unsubUser = null; 
 let mapMarkers = {}; 
 let map = null; 
+let editFile = null;
 
-const getTodayString = () => {
-  const d = new Date();
-  return d.toISOString().split('T')[0];
-};
+const getTodayString = () => { const d = new Date(); return d.toISOString().split('T')[0]; };
 
 // ==========================================
 // 3. MAP SETUP
 // ==========================================
 function initMap() {
   if (map) return; 
-  map = L.map('map', {
-    center: [0.99, 102.7], 
-    zoom: 12,
-    scrollWheelZoom: true
-  });
-  
-  // Gunakan HTTPS
+  map = L.map('map', { center: [0.99, 102.7], zoom: 12, scrollWheelZoom: true });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
+    attribution: '&copy; OSM &copy; CARTO',
+    subdomains: 'abcd', maxZoom: 19
   }).addTo(map);
 }
 
 function getUserIcon(isMe = false) {
   const color = isMe ? '#E31E25' : '#10B981'; 
   const iconHtml = `<div style="background:${color}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);"><i class='fas fa-user' style="color:white; font-size:16px;"></i></div>`;
-  return L.divIcon({
-    className: 'custom-marker',
-    html: iconHtml,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40]
-  });
+  return L.divIcon({ className: 'custom-marker', html: iconHtml, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] });
 }
 
 // ==========================================
-// 4. AUTHENTICATION & UI TOGGLE
+// 4. AUTHENTICATION & UI
 // ==========================================
 function showRegister(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); }
 function showLogin(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); }
@@ -605,23 +573,102 @@ auth.onAuthStateChanged(async user => {
     currentUserData = null;
     if(unsubUser) unsubUser();
     
-    if(mapMarkers) {
-        Object.values(mapMarkers).forEach(m => map.removeLayer(m));
-        mapMarkers = {};
-    }
+    if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; }
   }
 });
 
+function getInitials(name) {
+  if(!name) return "?";
+  const parts = name.trim().split(' ');
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+
 function renderUserInfo() {
     if(!currentUserData) return;
+    const photoURL = currentUserData.photoURL || null;
+    const initials = getInitials(currentUserData.nama);
+
     document.getElementById('user').innerHTML = `
-      <div class="user-info">
-        <span class="user-name"><i class="fas fa-user-circle"></i> ${currentUserData?.nama || "Kader"}</span>
-        <div class="user-poin">${currentUserData?.poin || 0} Poin</div>
-        <span class="user-id">ID: ${currentUserData?.id || "-"}</span>
+      <div class="profile-header">
+        <div class="profile-avatar">
+          ${photoURL ? `<img src="${photoURL}" alt="Foto Profil">` : `<span>${initials}</span>`}
+        </div>
+        <div class="user-info">
+          <span class="user-name">${currentUserData?.nama || "Kader"}</span>
+          <div class="user-poin"><i class="fas fa-coins"></i> ${currentUserData?.poin || 0} Poin</div>
+          <span class="user-id">ID: ${currentUserData?.id || "-"}</span>
+        </div>
       </div>
-      <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Keluar</button>
+      <div class="profile-actions">
+        <button class="btn-secondary" onclick="openEditModal()"><i class="fas fa-pencil"></i> Edit Profil</button>
+        <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Keluar</button>
+      </div>
     `;
+}
+
+function openEditModal() {
+    document.getElementById('editNama').value = currentUserData.nama || "";
+    document.getElementById('editHp').value = currentUserData.hp || "";
+    
+    // Reset Preview
+    const preview = document.getElementById('previewAvatar');
+    const photoURL = currentUserData.photoURL;
+    if(photoURL) {
+      preview.innerHTML = `<img src="${photoURL}" style="width:100%; height:100%; object-fit:cover;">`;
+    } else {
+      preview.innerHTML = `<span>${getInitials(currentUserData.nama)}</span>`;
+    }
+    editFile = null;
+    document.getElementById('editFoto').value = "";
+
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+
+function previewFile(input) {
+    if (input.files && input.files[0]) {
+        editFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('previewAvatar').innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+        }
+        reader.readAsDataURL(editFile);
+    }
+}
+
+async function saveProfile() {
+    const nama = document.getElementById('editNama').value;
+    const hp = document.getElementById('editHp').value;
+    const user = auth.currentUser;
+
+    if(!nama) return alert("Nama tidak boleh kosong!");
+
+    let photoURL = currentUserData.photoURL || "";
+
+    // Upload foto jika ada file baru
+    if(editFile){
+        try {
+            const ref = storage.ref("profile/"+user.uid+"_"+Date.now());
+            await ref.put(editFile);
+            photoURL = await ref.getDownloadURL();
+        } catch(e) {
+            console.error("Upload gagal", e);
+            alert("Gagal upload foto. Coba lagi.");
+            return;
+        }
+    }
+
+    // Update Firestore
+    await db.collection('users').doc(user.uid).update({
+        nama: nama,
+        hp: hp,
+        photoURL: photoURL
+    });
+
+    alert("Profil berhasil disimpan!");
+    closeModal();
 }
 
 function signup(){
@@ -636,29 +683,22 @@ function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPasswor
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
-// 5. REALTIME LOCATION SYSTEM
+// 5. REALTIME LOCATION
 // ==========================================
-
 function updateMyLocation(user) {
     if(!navigator.geolocation) return;
-
     navigator.geolocation.watchPosition(pos => {
         const { latitude, longitude } = pos.coords;
         updateMyPresence(user.uid, currentUserData?.nama || "Kader", latitude, longitude);
         listenToOtherUsers();
-    }, err => {
-        console.warn("GPS Error:", err);
-        listenToOtherUsers();
-    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 });
+    }, err => { console.warn("GPS Error:", err); listenToOtherUsers(); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 });
 }
 
 function updateMyPresence(uid, nama, lat, lng) {
     if(!lat || !lng) return;
     db.collection('presence').doc(uid).set({
-        lat: lat,
-        lng: lng,
-        lastSeen: new Date(),
-        nama: nama
+        lat: lat, lng: lng, lastSeen: new Date(), nama: nama,
+        photoURL: currentUserData?.photoURL || null
     }, { merge: true });
 }
 
@@ -667,14 +707,11 @@ function listenToOtherUsers() {
         snapshot.docChanges().forEach(change => {
             const data = change.doc.data();
             const uid = change.doc.id;
-
             if (mapMarkers[uid]) {
                 mapMarkers[uid].setLatLng([data.lat, data.lng]);
-                mapMarkers[uid].setPopupContent(`<b style="color:${uid === auth.currentUser.uid ? 'var(--primary)' : 'var(--success)'}">${uid === auth.currentUser.uid ? 'Anda' : data.nama}</b>`);
             } else {
                 const isMe = (uid === auth.currentUser.uid);
-                const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) })
-                    .addTo(map)
+                const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map)
                     .bindPopup(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${isMe ? 'Anda' : data.nama}</b>`);
                 mapMarkers[uid] = marker;
             }
@@ -683,7 +720,7 @@ function listenToOtherUsers() {
 }
 
 // ==========================================
-// 6. SISTEM TUGAS BULANAN
+// 6. TUGAS BULANAN
 // ==========================================
 async function loadTugasBulanan(userId) {
   const list = document.getElementById('taskList');
@@ -710,7 +747,6 @@ async function loadTugasBulanan(userId) {
         const isDone = doneTaskIds.has(taskId);
         const div = document.createElement('div');
         div.className = `task-item ${isDone ? 'is-done' : ''}`;
-        const statusIcon = isDone ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : '<i class="fas fa-circle" style="color:var(--primary); font-size:8px;"></i>';
         let formHtml = '';
         if (!isDone) {
             if (t.tipe === 'digital' || t.tipe === 'link') formHtml = `<div class="task-form" id="form-${taskId}"><input type="url" id="input-${taskId}" placeholder="Masukkan Link..."><button class="btn-task" onclick="submitTugasLink('${taskId}', ${t.poin})">Kirim Link</button></div>`;
@@ -718,7 +754,7 @@ async function loadTugasBulanan(userId) {
             else if (t.tipe === 'checkin') formHtml = `<div class="task-form" id="form-${taskId}" style="display:block;"><button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button></div>`;
         }
         const actionBtn = isDone ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggleForm('${taskId}')">Kerjakan</button>`;
-        div.innerHTML = `<div class="task-header"><span class="task-title">${statusIcon} ${t.nama}</span><span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span></div><div class="task-meta"><span><i class="fas fa-tag"></i> ${t.tipe}</span></div><div class="task-action">${actionBtn}</div>${formHtml}`;
+        div.innerHTML = `<div class="task-header"><span class="task-title">${isDone ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : '<i class="fas fa-circle" style="color:var(--primary); font-size:8px;"></i>'} ${t.nama}</span><span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span></div><div class="task-action">${actionBtn}</div>${formHtml}`;
         list.appendChild(div);
       });
     });
@@ -728,15 +764,14 @@ async function generateDummyTugas(month, year) {
     const dummyData = [
         { nama: "Absensi Kehadiran", tipe: "checkin", poin: 10, butuhGPS: true, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Share Sosmed Partai", tipe: "digital", poin: 20, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
-        { nama: "Dokumentasi Kegiatan", tipe: "foto", poin: 30, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year },
-        { nama: "Input Data Pemilih", tipe: "link", poin: 50, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year }
+        { nama: "Dokumentasi Kegiatan", tipe: "foto", poin: 30, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year }
     ];
     const batch = db.batch();
     dummyData.forEach(d => { const ref = db.collection('tugas').doc(); batch.set(ref, d); });
     await batch.commit();
 }
 
-function toggleForm(taskId) { const form = document.getElementById(`form-${taskId}`); if(form) { if (form.style.display === 'block') form.style.display = 'none'; else form.style.display = 'block'; } }
+function toggleForm(taskId) { const form = document.getElementById(`form-${taskId}`); if(form) { form.style.display = (form.style.display === 'block') ? 'none' : 'block'; } }
 
 // ==========================================
 // 7. SUBMIT HANDLERS
@@ -822,7 +857,26 @@ function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(snapshot => {
     leaderboard.innerHTML=""; if(snapshot.empty) leaderboard.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada data</li>";
     let rank=1;
-    snapshot.forEach(doc => { let d=doc.data(); let li=document.createElement('li'); li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':''; li.innerHTML=`<span><strong>#${rank}</strong> &nbsp; ${d.nama}</span><span class="poin-badge">${d.poin} poin</span>`; leaderboard.appendChild(li); rank++; });
+    snapshot.forEach(doc => { 
+      let d=doc.data(); 
+      let li=document.createElement('li'); 
+      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':''; 
+      
+      const photoURL = d.photoURL;
+      const initials = getInitials(d.nama);
+      
+      li.innerHTML = `
+        <div class="lb-avatar">
+          ${photoURL ? `<img src="${photoURL}" alt="${d.nama}">` : `<span>${initials}</span>`}
+        </div>
+        <div class="lb-info">
+          <div class="lb-name">${d.nama}</div>
+          <div class="lb-poin">${d.poin} poin</div>
+        </div>
+      `;
+      leaderboard.appendChild(li); 
+      rank++; 
+    });
   });
 }
 
