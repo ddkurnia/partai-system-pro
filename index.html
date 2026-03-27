@@ -81,7 +81,7 @@ header {
   margin: 0 auto;
 }
 
-/* LOGO */
+/* LOGO - PERBAIKAN: Hanya target img di dalam .logo */
 .logo {
   width: 50px;
   height: 50px;
@@ -92,7 +92,12 @@ header {
   flex-shrink: 0;
   border: 2px solid rgba(227, 30, 37, 0.1);
 }
-.logo img { width: 100%; height: 100%; object-fit: cover; }
+.logo img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  display: block; /* Menghindari spasi di bawah gambar */
+}
 
 .header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
 .header-text p { font-size: 0.75rem; color: #64748b; font-weight: 500; }
@@ -258,8 +263,20 @@ button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 0.85rem; }
 input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
 
-/* MAP */
-#map { height: 300px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); z-index: 1; }
+/* MAP - PERBAIKAN PENTING */
+#map { 
+  height: 300px; 
+  border-radius: 18px; 
+  border: 2px solid rgba(255,255,255,0.5); 
+  z-index: 1; /* Pastikan peta di atas background */
+  position: relative;
+}
+/* Perbaikan Leaflet: Pastikan tiles gambar peta terlihat */
+.leaflet-container { background: #fff; }
+.leaflet-tile-pane { 
+    opacity: 1 !important; 
+    visibility: visible !important;
+}
 
 /* USER INFO */
 #user {
@@ -417,7 +434,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   <div id="user"></div>
 </div>
 
-<!-- MAP CARD (DIPINDAHKAN KE ATAS UNTUK PENTING) -->
+<!-- MAP CARD -->
 <div class="card" id="mapCard" style="display:none;">
   <h3><i class="fas fa-map-location-dot"></i> Peta Realtime Kader</h3>
   <p style="font-size:0.8rem; color:#64748b; margin-bottom:10px;">Lokasi Anda dan kader lainnya terlihat di sini.</p>
@@ -491,8 +508,8 @@ const storage = firebase.storage();
 // ==========================================
 let currentUserData = null;
 let unsubUser = null; 
-let mapMarkers = {}; // Object untuk menyimpan marker { uid: marker }
-let map = null; // Global map object
+let mapMarkers = {}; 
+let map = null; 
 
 const getTodayString = () => {
   const d = new Date();
@@ -503,20 +520,23 @@ const getTodayString = () => {
 // 3. MAP SETUP
 // ==========================================
 function initMap() {
-  if (map) return; // Inisialisasi hanya sekali
+  if (map) return; 
   map = L.map('map').setView([0.99, 102.7], 11);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png').addTo(map);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
+  }).addTo(map);
 }
 
-// Custom Icon for User
 function getUserIcon(isMe = false) {
-  const color = isMe ? '#E31E25' : '#10B981'; // Merah untuk saya, Hijau untuk lain
+  const color = isMe ? '#E31E25' : '#10B981'; 
   const iconHtml = `<div style="background:${color}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
     <i class='fas fa-user' style="color:white; font-size:16px;"></i>
    </div>`;
    
   return L.divIcon({
-    className: '',
+    className: 'custom-marker-icon', // Class khusus agar tidak kena CSS global
     html: iconHtml,
     iconSize: [40, 40],
     iconAnchor: [20, 40],
@@ -536,7 +556,7 @@ auth.onAuthStateChanged(async user => {
   if(user){
     landing.style.display = 'none';
     document.getElementById('authCard').style.display = 'block';
-    document.getElementById('mapCard').style.display = 'block'; // Pindahkan map card ke atas
+    document.getElementById('mapCard').style.display = 'block'; 
     document.getElementById('taskCard').style.display = 'block';
     document.getElementById('rewardCard').style.display = 'block';
     document.getElementById('historyCard').style.display = 'block';
@@ -547,18 +567,17 @@ auth.onAuthStateChanged(async user => {
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
         renderUserInfo();
+        // Update nama di presence jika data user berubah
+        if(currentUserData && map) updateMyPresence(user.uid, currentUserData.nama);
     });
 
     document.getElementById('loginForm').classList.remove('active');
     document.getElementById('registerForm').classList.remove('active');
 
-    // Init Map
     initMap();
+    updateMyLocation(user); // Update lokasi GPS
+    listenToOtherUsers();   // Listen kader lain
     
-    // Update lokasi sendiri ke DB (Realtime Presence)
-    updateMyLocation(user);
-
-    // Load All Data
     loadData(); 
     loadLeaderboard();
     loadTugasBulanan(user.uid);
@@ -581,7 +600,6 @@ auth.onAuthStateChanged(async user => {
     currentUserData = null;
     if(unsubUser) unsubUser();
     
-    // Clear markers
     if(mapMarkers) {
         Object.values(mapMarkers).forEach(m => map.removeLayer(m));
         mapMarkers = {};
@@ -616,49 +634,43 @@ function logout(){ auth.signOut(); location.reload(); }
 // 5. REALTIME LOCATION SYSTEM
 // ==========================================
 
-// Update lokasi sendiri
 function updateMyLocation(user) {
     if(!navigator.geolocation) return;
 
     navigator.geolocation.watchPosition(pos => {
         const { latitude, longitude } = pos.coords;
-        
-        // Update ke Firestore (Realtime Presence)
-        db.collection('presence').doc(user.uid).set({
-            lat: latitude,
-            lng: longitude,
-            lastSeen: new Date(),
-            nama: currentUserData?.nama || "Kader"
-        }, { merge: true });
-
-        // Listen to semua pergerakan kader lain
+        updateMyPresence(user.uid, currentUserData?.nama || "Kader", latitude, longitude);
         listenToOtherUsers();
-
     }, err => {
         console.warn("GPS Error:", err);
-        // Tetap listen walau GPS error
         listenToOtherUsers();
     }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 });
 }
 
-// Listen pergerakan kader lain (Realtime)
+function updateMyPresence(uid, nama, lat, lng) {
+    if(!lat || !lng) return;
+    db.collection('presence').doc(uid).set({
+        lat: lat,
+        lng: lng,
+        lastSeen: new Date(),
+        nama: nama
+    }, { merge: true });
+}
+
 function listenToOtherUsers() {
     db.collection('presence').onSnapshot(snapshot => {
         snapshot.docChanges().forEach(change => {
             const data = change.doc.data();
             const uid = change.doc.id;
 
-            // Jika marker sudah ada, update posisi
             if (mapMarkers[uid]) {
-                const newLatLng = [data.lat, data.lng];
-                mapMarkers[uid].setLatLng(newLatLng);
+                mapMarkers[uid].setLatLng([data.lat, data.lng]);
+                mapMarkers[uid].setPopupContent(`<b style="color:${uid === auth.currentUser.uid ? 'var(--primary)' : 'var(--success)'}">${uid === auth.currentUser.uid ? 'Anda' : data.nama}</b>`);
             } else {
-                // Jika belum, buat marker baru
                 const isMe = (uid === auth.currentUser.uid);
                 const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) })
                     .addTo(map)
                     .bindPopup(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${isMe ? 'Anda' : data.nama}</b>`);
-                
                 mapMarkers[uid] = marker;
             }
         });
