@@ -251,7 +251,7 @@ header {
 
 /* AUTH MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-card { background: white; width: 100%; max-width: 400px; border-radius: 24px; padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+.modal-card { background: white; width: 100%; max-width: 400px; border-radius: 24px; padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 .modal-close { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; }
 
 /* INPUTS */
@@ -272,12 +272,30 @@ button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--p
 #dash-peta { height: 300px; border-radius: 18px; overflow: hidden; border: 1px solid #E2E8F0; }
 .leaflet-tile { visibility: visible !important; }
 .task-item { background: white; padding: 15px; border-radius: 12px; margin-top: 10px; border-left: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+.task-item.is-done { opacity: 0.6; border-left-color: #10B981; }
 .task-form { margin-top: 12px; display: none; }
+.task-form.active { display: block; }
 .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
 .badge-done { background: #D1FAE5; color: #059669; }
 .badge-pending { background: #FEF3C7; color: #D97706; }
 ul { list-style: none; }
 li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; font-size: 0.85rem; }
+
+/* CUSTOM TASK STYLES */
+.task-info-box { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 0.8rem; color: #7F1D1D; }
+.task-info-box strong { display: block; margin-bottom: 4px; color: #991B1B; }
+.task-info-box ul { padding-left: 15px; margin-top: 5px; }
+.task-info-box li { background: none; padding: 2px 0; font-size: 0.75rem; color: #7F1D1D; }
+.contoh-caption { background: #F1F5F9; padding: 8px; border-radius: 6px; margin-top: 5px; font-style: italic; font-size: 0.75rem; color: #475569; border-left: 3px solid #CBD5E1; }
+
+/* REWARD STYLES */
+.reward-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f1f5f9; }
+.reward-item:last-child { border-bottom: none; }
+.reward-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.reward-info { flex: 1; }
+.reward-info h4 { font-weight: 700; font-size: 0.95rem; }
+.reward-info p { font-size: 0.8rem; color: #64748b; }
+.reward-action button { width: auto; padding: 8px 16px; font-size: 0.8rem; }
 
 </style>
 </head>
@@ -294,9 +312,8 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
         <p>Kab. Kepulauan Meranti</p>
       </div>
     </div>
-    <!-- DIGANTI: Icon Coin & Poin -->
     <div class="header-right" id="authHeader" onclick="navigateToDashboard()">
-       <!-- Konten akan diisi JS -->
+       <!-- Konten diisi JS -->
     </div>
   </div>
 </header>
@@ -405,7 +422,7 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
     <div class="modal-card">
       <button class="modal-close" onclick="closeModal()">&times;</button>
       <h3 style="margin-bottom:20px;">Edit Profil</h3>
-      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden" id="previewAvatar"><span>A</span></div></div>
+      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden; background:#f1f5f9; display:flex; align-items:center; justify-content:center; color:#E31E25; font-size:2rem; font-weight:bold" id="previewAvatar"><span>A</span></div></div>
       <label style="font-size:0.8rem; color:#64748b">Foto Profil</label>
       <input type="file" id="editFoto" accept="image/*" onchange="previewFile(this)">
       <label style="font-size:0.8rem; color:#64748b">Nama</label>
@@ -425,9 +442,25 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
   </div>
 
   <div id="dash-peta" class="card" style="margin-top:20px"></div>
-  <div id="dash-tugas" class="card" style="display:none; margin-top:20px"><h3>Tugas</h3><p id="bulanInfo"></p><div id="taskList"></div></div>
+  
+  <!-- SECTION TUGAS (UPDATE SESUAI PERMINTAAN) -->
+  <div id="dash-tugas" class="card" style="display:none; margin-top:20px">
+    <h3><i class="fas fa-tasks" style="color:var(--primary); margin-right:8px"></i> Tugas & Misi</h3>
+    <p id="bulanInfo" style="font-size:0.8rem; color:#64748b; margin-bottom:15px"></p>
+    <div id="taskList"></div>
+  </div>
+
   <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan</h3><textarea id="masalah"></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim</button><ul id="data"></ul></div>
-  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Reward</h3><ul id="rewardList"></ul><h3>Top Kader</h3><ul id="leaderboard"></ul></div>
+  
+  <!-- SECTION REWARD (UPDATE SESUAI PERMINTAAN) -->
+  <div id="dash-reward" class="card" style="display:none; margin-top:20px">
+    <h3><i class="fas fa-gift" style="color:var(--primary); margin-right:8px"></i> Katalog Reward</h3>
+    <p style="font-size:0.8rem; color:#64748b; margin-bottom:15px">Kumpulkan poin dan tukarkan dengan hadiah berikut:</p>
+    <div id="rewardCatalog"></div>
+    
+    <h3 style="margin-top:25px"><i class="fas fa-medal" style="color:#F59E0B; margin-right:8px"></i> Top Kader</h3>
+    <ul id="leaderboard"></ul>
+  </div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -549,7 +582,7 @@ auth.onAuthStateChanged(user => {
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
         renderUserInfo();
-        renderHeaderCoin(); // Render Coin di Header
+        renderHeaderCoin(); 
         if(map) updateMyPresence(user.uid, currentUserData.nama);
     }, err => console.error("Error fetching user data", err));
     
@@ -564,7 +597,6 @@ auth.onAuthStateChanged(user => {
     loadReward(user.uid);
     loadStats();
   } else {
-    // Clear header
     document.getElementById('authHeader').innerHTML = '';
     document.getElementById('user').innerHTML = '';
     currentUserData = null;
@@ -574,7 +606,6 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-// RENDER HEADER COIN (BARU)
 function renderHeaderCoin() {
     const poin = currentUserData?.poin || 0;
     document.getElementById('authHeader').innerHTML = `
@@ -590,8 +621,8 @@ function renderUserInfo() {
     const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama);
     document.getElementById('user').innerHTML = `
       <div style="display:flex; align-items:center; gap:15px">
-        <img src="${p}" style="width:60px; height:60px; border-radius:50%; border:3px solid white">
-        <div><span style="font-size:1.2rem; font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem; opacity:0.9">${currentUserData.poin || 0} Poin</div></div>
+        <img src="${p}" style="width:60px; height:60px; border-radius:50%; border:3px solid white; box-shadow:0 4px 10px rgba(0,0,0,0.1)">
+        <div><span style="font-size:1.2rem; font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem; opacity:0.9"><i class="fas fa-coins" style="color:#F59E0B"></i> ${currentUserData.poin || 0} Poin</div></div>
       </div>
       <div style="display:flex; gap:10px; margin-top:15px">
         <button class="btn-secondary" onclick="openEditModal()">Edit Profil</button>
@@ -651,46 +682,170 @@ function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.col
 function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const data = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); const name = isMe ? 'Anda' : data.nama; if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([data.lat, data.lng]); } else { let m = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${name}</b>`); mapMarkers[uid] = m; } }); }, err => console.error("Error listening to presence", err)); }
 
 // ==========================================
-// 7. TASK
+// 7. TASK (LOGICA BARU)
 // ==========================================
 async function loadTugasBulanan(userId) {
-  const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear();
-  document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
+  const list = document.getElementById('taskList'); 
+  const now = new Date(); 
+  const m = now.getMonth() + 1; 
+  const y = now.getFullYear();
+  document.getElementById('bulanInfo').innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
+  
+  // Definisi tugas bulan ini (dibuat otomatis jika belum ada)
+  const tasksDef = [
+    { nama: "Checkin Harian", tipe: "checkin", poin: 10, deskripsi: "Tekan tombol checkin setiap hari." },
+    { nama: "Rekrut Anggota Baru", tipe: "rekrut", poin: 50, deskripsi: "Ajak teman bergabung. Dapatkan 50 poin per orang." },
+    { nama: "Misi Media Sosial", tipe: "sosmed", poin: 25, deskripsi: "Posting/Like/Share tentang Partai PDI." }
+  ];
+
   const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get().catch(e => console.error(e));
-  if (cek && cek.empty) { const batch = db.batch(); [{ nama: "Absensi", tipe: "checkin", poin: 10 }, { nama: "Share", tipe: "link", poin: 20 }].forEach(t => { const ref = db.collection('tugas').doc(); batch.set(ref, {...t, bulan:m, tahun:y}); }); await batch.commit().catch(e => console.error(e)); }
+  if (cek && cek.empty) { 
+    const batch = db.batch(); 
+    tasksDef.forEach(t => { const ref = db.collection('tugas').doc(); batch.set(ref, {...t, bulan:m, tahun:y}); }); 
+    await batch.commit().catch(e => console.error(e)); 
+  }
+
   db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y)
     .onSnapshot(async snap => {
-      if (snap.empty) { list.innerHTML = '<p style="color:#64748b">Tidak ada</p>'; return; }
-      const done = await db.collection('task_done').where('userId', '==', userId).get().catch(e => console.error(e));;
-      const ids = new Set(); if(done) done.forEach(d => ids.add(d.data().taskId));
+      if (snap.empty) { list.innerHTML = '<p style="color:#64748b">Tidak ada tugas bulan ini.</p>'; return; }
+      
+      const done = await db.collection('task_done').where('userId', '==', userId).get().catch(e => console.error(e));
+      const ids = new Set(); 
+      if(done) done.forEach(d => ids.add(d.data().taskId));
+      
       list.innerHTML = '';
       snap.forEach(doc => {
-        const t = doc.data(); const id = doc.id; const ok = ids.has(id);
-        let f = '';
-        if (!ok) { if (t.tipe === 'link') f = `<div class="task-form" id="form-${id}"><input id="input-${id}" placeholder="Link..."><button onclick="submitLink('${id}',${t.poin})">Kirim</button></div>`; if (t.tipe === 'checkin') f = `<div class="task-form" style="display:block"><button onclick="checkin('${id}',${t.poin})">Check-in</button></div>`; }
-        const btn = ok ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggle('${id}')">Kerjakan</button>`;
-        list.innerHTML += `<div class="task-item ${ok?'is-done':''}"><div style="display:flex;justify-content:space-between;align-items:center"><b>${t.nama}</b><span class="badge badge-pending">+${t.poin}</span></div><div style="margin-top:8px">${btn}</div>${f}</div>`;
+        const t = doc.data(); 
+        const id = doc.id; 
+        // Khusus tugas checkin, tidak dianggap 'selesai' permanen, bisa berulang. 
+        // Untuk simplifikasi, kita tandai selesai jika sudah dikerjakan hari ini (atau sederhananya kita biarkan tombol ada terus tapi ada status)
+        // Logika dibawah: jika sudah pernah submit, tombol hilang/berubah.
+        // NOTE: Untuk checkin harian, seharusnya cek tanggal. Di sini kita buat sederhana dulu.
+        const ok = ids.has(id) && t.tipe !== 'checkin'; // Checkin bisa berulang, sisanya sekali selesai per bulan.
+        
+        let htmlContent = '';
+        
+        // Header Tugas
+        htmlContent += `<div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+                <b>${t.nama}</b>
+                <div style="font-size:0.8rem; color:#64748b">${t.deskripsi}</div>
+            </div>
+            <span class="badge badge-pending" style="font-size:0.9rem">+${t.poin}</span>
+        </div>`;
+
+        // Jika sudah selesai (bukan checkin)
+        if (ok) {
+            htmlContent += `<div style="margin-top:10px; text-align:right"><span class="badge badge-done"><i class="fas fa-check"></i> Selesai</span></div>`;
+        } else {
+            // Form Tugas
+            if (t.tipe === 'checkin') {
+                htmlContent += `<button onclick="checkin('${id}',${t.poin})" style="margin-top:10px; width:auto; float:right"><i class="fas fa-map-marker-alt"></i> Checkin</button><div style="clear:both"></div>`;
+            } else if (t.tipe === 'rekrut') {
+                htmlContent += `<div class="task-info-box">
+                    <strong>Syarat & Ketentuan:</strong>
+                    <ul><li>Orang yang diajak harus mendaftar akun baru.</li><li>Poin masuk otomatis setelah verifikasi.</li></ul>
+                </div>`;
+            } else if (t.tipe === 'sosmed') {
+                htmlContent += `<div class="task-info-box">
+                    <strong>Syarat & Ketentuan:</strong>
+                    <ul>
+                        <li>Konten wajib tentang <strong>Partai PDI</strong>.</li>
+                        <li><strong>Buat Postingan:</strong> Akun publik, kirim Link & Screenshot.</li>
+                        <li><strong>Like/Komen/Share:</strong> Kirim Screenshot bukti.</li>
+                    </ul>
+                    <div class="contoh-caption">
+                        <strong>Contoh Caption:</strong><br>
+                        "Bersama PDI Perjuangan, kita wujudkan Indonesia maju! 🇮🇩 Senang mengikuti kegiatan bakti sosial hari ini. #PDI #IndonesiaMaju"
+                    </div>
+                </div>
+                <button onclick="openSosmedSubmit('${id}',${t.poin})" style="margin-top:10px"><i class="fas fa-paper-plane"></i> Submit Bukti</button>`;
+            }
+        }
+        
+        list.innerHTML += `<div class="task-item">${htmlContent}</div>`;
       });
     }, err => console.error("Error loading tasks", err));
 }
-function toggle(id) { const f=document.getElementById('form-'+id); if(f) f.style.display = f.style.display==='block'?'none':'block'; }
-async function submitLink(id, p) { const v=document.getElementById('input-'+id).value; if(!v) return alert("Link kosong"); try { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, bukti:v, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); } catch(e) { alert("Error"); } }
-async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { try { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); } catch(e) { alert("Error"); } }, ()=>alert("GPS error")); }
+
+function openSosmedSubmit(id, poin) {
+    const bukti = prompt("Masukkan Link Postingan atau Keterangan Bukti (Link Screenshot/Drive):");
+    if(bukti) submitLink(id, poin, bukti);
+}
+
+async function submitLink(id, p, val) { 
+    if(!val) val = prompt("Masukkan Link/Bukti:"); 
+    if(!val) return;
+    try { 
+        await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, bukti:val, waktu:new Date()}); 
+        await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); 
+        alert("Tugas terkirim! +"+p+" Poin"); 
+    } catch(e) { alert("Error: " + e.message); } 
+}
+
+async function checkin(id, p) { 
+    navigator.geolocation.getCurrentPosition(async pos => { 
+        try { 
+            // Cek apakah sudah checkin hari ini (logika sederhana)
+            const today = new Date().toDateString();
+            const q = await db.collection('task_done').where('userId', '==', auth.currentUser.uid).where('taskId', '==', id).get();
+            let sudahHariIni = false;
+            q.forEach(d => { if(d.data().waktu?.toDate().toDateString() === today) sudahHariIni = true; });
+            
+            if(sudahHariIni) return alert("Anda sudah checkin hari ini.");
+
+            await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date()}); 
+            await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); 
+            alert("Checkin Sukses! +"+p); 
+        } catch(e) { alert("Error: " + e.message); } 
+    }, ()=>alert("Aktifkan GPS untuk checkin")); 
+}
 
 // ==========================================
-// 8. MISC LOADERS
+// 8. MISC LOADERS & REWARD UPDATE
 // ==========================================
 function loadStats(){ 
-    db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }, err => { document.getElementById('statKader').innerText = "0"; console.warn("Stats Error:", err); }); 
-    db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }, err => { document.getElementById('statLaporan').innerText = "0"; console.warn("Stats Error:", err); }); 
+    db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }, err => { document.getElementById('statKader').innerText = "0"; }); 
+    db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }, err => { document.getElementById('statLaporan').innerText = "0"; }); 
 }
-function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }, err => { document.getElementById('data').innerHTML="<li>Error</li>"; console.warn("Load Data Error:", err); }); }
-function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; const rw=[{h:"Stiker",p:50},{h:"Pin",p:100}]; let h=""; rw.forEach(r=>{ const ok=p>=r.p; h+=`<li><div style="display:flex;justify-content:space-between"><div><b>${r.h}</b></div><span class="badge ${ok?'badge-done':'badge-pending'}">${ok?'Terbuka':(r.p-p)+' lagi'}</span></div></li>`; }); document.getElementById('rewardList').innerHTML=h; }, err => console.warn("Load Reward Error:", err)); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }, err => { document.getElementById('data').innerHTML="<li>Error</li>"; }); }
+
+function loadReward(u){ 
+    db.collection('users').doc(u).onSnapshot(d => { 
+        const p=d.data()?.poin||0; 
+        // Katalog Reward Baru
+        const rw=[
+            {h:"Token Listrik", p:1000, icon:"fa-bolt", color:"#F59E0B", desc:"Token PLN 20K - 100K"}, 
+            {h:"Jaket Partai PDI", p:5000, icon:"fa-tshirt", color:"#E31E25", desc:"Merchandise Eksklusif"}, 
+            {h:"Topi Partai PDI", p:2500, icon:"fa-hat-cowboy", color:"#1E40AF", desc:"Aksesoris Resmi"}, 
+            {h:"Paket Data Internet", p:1500, icon:"fa-wifi", color:"#10B981", desc:"Kuota 10GB - 50GB"}
+        ];
+        let h=""; 
+        rw.forEach(r=>{ 
+            const ok=p>=r.p; 
+            h+=`<div class="reward-item">
+                <div class="reward-icon" style="background:${r.color}20; color:${r.color}"><i class="fas ${r.icon}"></i></div>
+                <div class="reward-info">
+                    <h4>${r.h}</h4>
+                    <p>${r.desc}</p>
+                    <small style="color:#94a3b8">Poin: ${r.p}</small>
+                </div>
+                <div class="reward-action">
+                    <button style="background:${ok ? 'var(--primary)' : '#E2E8F0'}; color:${ok ? 'white' : '#94a3b8'}; padding:8px 12px" ${ok ? '' : 'disabled'}>${ok ? 'Tukar' : 'Terkunci'}</button>
+                </div>
+            </div>`; 
+        });
+        document.getElementById('rewardCatalog').innerHTML=h; 
+    }, err => console.warn("Load Reward Error:", err)); 
+}
+
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => {
     let h=""; let i=1; 
-    s.forEach(d => { const v=d.data(); h+=`<li style="display:flex; align-items:center; gap:10px"><b>#${i}</b> ${v.nama} <span style="margin-left:auto; font-weight:700">${v.poin}</span></li>`; i++; });
+    s.forEach(d => { const v=d.data(); h+=`<li style="display:flex; align-items:center; gap:10px; background:#f8fafc"><b style="color:var(--primary)">#${i}</b> ${v.nama} <span style="margin-left:auto; font-weight:700">${v.poin}</span></li>`; i++; });
     document.getElementById('leaderboard').innerHTML=h||'Kosong';
+    
+    // Top 3 untuk Beranda
     let h2=""; let i2=1;
     s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; });
     document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data';
@@ -709,14 +864,12 @@ async function kirimLaporan(){
     try {
         await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, foto:url, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() });
         await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) });
-        alert("Terkirim +10");
+        alert("Terkirim +10 Poin");
         document.getElementById('masalah').value=""; document.getElementById('foto').value="";
-    } catch(e) {
-        alert("Gagal mengirim laporan");
-        console.error(e);
-    }
+    } catch(e) { alert("Gagal mengirim laporan"); console.error(e); }
   }, ()=>alert("GPS error"));
 }
+
 function kirimUsulan(){
   const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value;
   if(!t) return alert("Tulis usulan");
