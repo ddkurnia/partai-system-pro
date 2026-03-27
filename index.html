@@ -12,12 +12,10 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <!-- Google Fonts & Icons -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -28,21 +26,17 @@
   --accent: #FF4D4D;
   --dark: #0F172A;
   --glass: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
   --shadow-glow: 0 0 20px rgba(227, 30, 37, 0.4);
   --success: #10B981;
   --warning: #F59E0B;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 50%, #fff1f2 100%);
   color: #1e293b;
   min-height: 100vh;
-  position: relative;
   overflow-x: hidden;
 }
 
@@ -57,7 +51,6 @@ body {
 .shape-1 { width: 400px; height: 400px; background: rgba(227, 30, 37, 0.15); top: -100px; left: -100px; }
 .shape-2 { width: 300px; height: 300px; background: rgba(255, 255, 255, 0.6); bottom: 10%; right: -50px; animation-delay: -5s; }
 .shape-3 { width: 200px; height: 200px; background: rgba(227, 30, 37, 0.1); top: 40%; left: 10%; animation-delay: -10s; }
-
 @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, 50px) scale(1.1); } }
 
 /* HEADER */
@@ -71,7 +64,6 @@ header {
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
-
 .header-content {
   display: flex;
   align-items: center;
@@ -81,13 +73,12 @@ header {
   margin: 0 auto;
 }
 
-/* LOGO - PERBAIKAN: Hilangkan background putih agar logo transparan kelihatan */
+/* LOGO - PERBAIKAN: Background transparan agar logo PNG kelihatan */
 .logo {
-  width: 50px;
-  height: 50px;
+  width: 50px; height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  /* background: white;  <-- DIHILANGKAN */
+  background: transparent; /* Diubah dari white */
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
   border: 2px solid rgba(227, 30, 37, 0.1);
@@ -95,30 +86,21 @@ header {
   align-items: center;
   justify-content: center;
 }
-.logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.logo img { width: 100%; height: 100%; object-fit: contain; }
 
-.header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
+.header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
 .header-text p { font-size: 0.75rem; color: #64748b; font-weight: 500; }
 
 /* CONTAINER */
-.container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 25px 20px 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
+.container { max-width: 480px; margin: 0 auto; padding: 25px 20px 100px; display: flex; flex-direction: column; gap: 25px; }
 
 /* CARD */
 .card {
-  background: var(--glass);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
   border-radius: 24px;
   padding: 25px;
-  box-shadow: var(--shadow-soft);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -128,11 +110,10 @@ header {
   top: 0; left: 0; right: 0;
   height: 4px;
   background: linear-gradient(90deg, var(--primary), var(--accent));
-  opacity: 0.8;
   border-radius: 24px 24px 0 0;
 }
-.card h3 { color: var(--dark); font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-.card h3 i { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
+.card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.card h3 i { color: var(--primary); }
 
 /* LANDING PAGE */
 .hero-section {
@@ -141,33 +122,22 @@ header {
   padding: 40px 20px;
   border-radius: 24px;
   text-align: center;
-  position: relative;
-  overflow: hidden;
   box-shadow: 0 15px 35px rgba(227, 30, 37, 0.3);
 }
-.hero-section::after {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-  pointer-events: none;
-}
-.hero-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-.hero-subtitle { font-size: 0.95rem; opacity: 0.95; line-height: 1.6; font-weight: 400; max-width: 350px; margin: 0 auto; }
+.hero-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.2; }
+.hero-subtitle { font-size: 0.95rem; opacity: 0.9; line-height: 1.6; }
 
 .step-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.6); padding: 12px; border-radius: 14px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
-.step-num { min-width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; }
+.step-num { min-width: 30px; height: 30px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
 .step-content { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
 
 .reward-highlight { display: flex; justify-content: space-around; margin-top: 15px; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 12px; }
-.reward-item { text-align: center; }
 .reward-value { font-weight: 800; color: var(--primary); font-size: 1.1rem; display: block; }
 .reward-label { font-size: 0.7rem; color: #64748b; }
 
 .check-list { display: flex; flex-direction: column; gap: 10px; }
-.check-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 500; color: var(--dark); background: rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; }
-.check-item i { color: var(--success); font-size: 1rem; }
+.check-item { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; background: rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; }
+.check-item i { color: var(--success); }
 
 /* INPUTS */
 input, textarea {
@@ -180,10 +150,8 @@ input, textarea {
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   color: #334155;
-  transition: all 0.3s ease;
 }
 input:focus, textarea:focus { outline: none; background: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(227, 30, 37, 0.1); }
-input::placeholder, textarea::placeholder { color: #94a3b8; }
 textarea { min-height: 100px; resize: none; }
 
 /* BUTTONS */
@@ -205,40 +173,26 @@ button {
   gap: 8px;
 }
 button:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
-button:active { transform: scale(0.98); }
-button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
-
 .btn-main { margin-top: 18px; }
 .btn-secondary { background: white; color: var(--dark); border: 2px solid rgba(0,0,0,0.1); box-shadow: none; margin-top: 10px; font-size: 0.9rem; }
-.btn-secondary:hover { background: #f1f5f9; }
 .btn-logout { background: white; color: var(--primary); border: 2px solid rgba(227, 30, 37, 0.2); box-shadow: none; margin-top: 15px; }
-.btn-logout:hover { background: var(--primary); color: white; border-color: var(--primary); }
-
+.btn-logout:hover { background: var(--primary); color: white; }
 .btn-task { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 8px 16px; width: auto; font-size: 0.85rem; margin: 0; }
-.btn-task.done { background: var(--success); pointer-events: none; }
-
-input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 0.85rem; }
-input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; }
 
 /* MAP */
-#map { height: 300px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); z-index: 1; position: relative; background: #fff; }
-.leaflet-container { background: #fff; font-family: inherit; }
+#map { height: 300px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); z-index: 1; background: #fff; }
 .leaflet-tile { visibility: visible !important; opacity: 1 !important; }
 
-/* USER PROFILE CARD */
+/* USER PROFILE */
 #user {
   background: linear-gradient(135deg, var(--primary), #d62246);
   color: white;
   padding: 20px;
   border-radius: 16px;
   margin-top: 20px;
-  font-weight: 500;
   box-shadow: 0 10px 25px rgba(227, 30, 37, 0.25);
-  position: relative;
-  overflow: hidden;
 }
-#user::after { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.1); border-radius: 50%; pointer-events: none; }
-
 .profile-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
 .profile-avatar {
   width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2);
@@ -246,16 +200,14 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
 }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-avatar span { font-size: 1.5rem; font-weight: 800; color: white; text-transform: uppercase; }
-
-.user-info { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.user-info { flex: 1; }
 .user-name { font-size: 1.1rem; font-weight: 700; }
 .user-poin { font-size: 1.4rem; font-weight: 800; margin-top: 2px; }
 .user-id { font-size: 0.8rem; opacity: 0.8; }
-
 .profile-actions { display: flex; gap: 10px; margin-top: 10px; }
 .profile-actions button { flex: 1; padding: 10px; font-size: 0.85rem; }
 
-/* Modal Edit */
+/* Modal */
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 2000;
@@ -270,57 +222,39 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
   width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;
 }
 
-/* LEADERBOARD */
-#leaderboard li { display: flex; align-items: center; border-left: none; border-bottom: 1px solid rgba(0,0,0,0.05); margin-top: 0; padding: 12px 15px; gap: 12px; }
-#leaderboard li:last-child { border-bottom: none; }
+/* Leaderboard */
+#leaderboard li { display: flex; align-items: center; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 12px 15px; gap: 12px; }
 .lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; font-weight: bold; color: #64748b; font-size: 0.9rem; }
 .lb-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .lb-info { flex: 1; }
-.lb-name { font-weight: 600; color: var(--dark); }
+.lb-name { font-weight: 600; }
 .lb-poin { font-size: 0.75rem; color: #64748b; }
-.poin-badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
 .rank-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); }
 .rank-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), transparent); }
 .rank-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); }
 
-/* TASK ITEM */
-.task-item { background: rgba(255, 255, 255, 0.6); padding: 15px; border-radius: 14px; margin-top: 12px; border-left: 4px solid var(--primary); display: flex; flex-direction: column; gap: 8px; }
-.task-item.is-done { border-left-color: var(--success); opacity: 0.8; background: rgba(16, 185, 129, 0.05); }
-.task-header { display: flex; justify-content: space-between; align-items: center; }
-.task-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
-.task-action { margin-top: 5px; display: flex; justify-content: flex-end; }
+/* Task */
+.task-item { background: rgba(255, 255, 255, 0.6); padding: 15px; border-radius: 14px; margin-top: 12px; border-left: 4px solid var(--primary); }
+.task-item.is-done { border-left-color: var(--success); opacity: 0.8; }
 .task-form { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); display: none; }
 .task-form input { font-size: 0.85rem; padding: 10px; }
 .task-form button { font-size: 0.85rem; padding: 10px; }
-
-.badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-align: center; display: inline-block; }
+.badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
 .badge-done { background: rgba(16, 185, 129, 0.15); color: var(--success); }
 .badge-pending { background: rgba(227, 30, 37, 0.15); color: var(--primary); }
 
-/* LISTS */
-ul { list-style: none; max-height: 300px; overflow-y: auto; padding-right: 5px; }
-ul::-webkit-scrollbar { width: 5px; }
-ul::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
-ul::-webkit-scrollbar-thumb { background: rgba(227, 30, 37, 0.3); border-radius: 10px; }
-li { padding: 15px; background: rgba(255, 255, 255, 0.6); margin-top: 10px; border-radius: 14px; font-size: 0.9rem; border-left: 4px solid var(--primary); transition: all 0.3s; }
-li:hover { background: rgba(255, 255, 255, 0.9); transform: translateX(5px); }
+/* Lists */
+ul { list-style: none; max-height: 300px; overflow-y: auto; }
+li { padding: 15px; background: rgba(255, 255, 255, 0.6); margin-top: 10px; border-radius: 14px; font-size: 0.9rem; border-left: 4px solid var(--primary); }
 
-/* ANIMATIONS */
 .form-section { display: none; animation: fadeIn 0.5s ease; }
 .form-section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; margin-top: -50px; padding-bottom: 30px; }
-
-@media (max-width: 480px) {
-  .card { padding: 20px; }
-  .header-text h1 { font-size: 1.1rem; }
-}
+footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; padding-bottom: 30px; }
 </style>
 </head>
 <body>
 
-<!-- Background Shapes -->
 <div class="bg-shape shape-1"></div>
 <div class="bg-shape shape-2"></div>
 <div class="bg-shape shape-3"></div>
@@ -328,7 +262,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <header>
   <div class="header-content">
     <div class="logo">
-      <!-- PERBAIKAN: Langsung pakai link dari domain sendiri (http), jika error akan fallback ke teks -->
+      <!-- PERBAIKAN LOGO: Langsung pakai link asli, onerror pakai avatar huruf -->
       <img src="https://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff';">
     </div>
     <div class="header-text">
@@ -348,138 +282,117 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   </div>
 
   <div class="card">
-    <h3><i class="fas fa-route"></i> Cara Kerja Sistem</h3>
-    <div class="step-item"><div class="step-num">1</div><div class="step-content">Kader login ke dalam sistem elite.</div></div>
-    <div class="step-item"><div class="step-num">2</div><div class="step-content">Lengkapi profil dan foto.</div></div>
-    <div class="step-item"><div class="step-num">3</div><div class="step-content">Mengerjakan tugas & laporan.</div></div>
-    <div class="step-item"><div class="step-num">4</div><div class="step-content">Dapatkan poin otomatis.</div></div>
-    <div class="step-item"><div class="step-num">5</div><div class="step-content">Tukar poin dengan reward.</div></div>
+    <h3><i class="fas fa-route"></i> Cara Kerja</h3>
+    <div class="step-item"><div class="step-num">1</div><div class="step-content">Kader login ke sistem.</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-content">Lengkapi profil & foto.</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-content">Mengerjakan tugas.</div></div>
+    <div class="step-item"><div class="step-num">4</div><div class="step-content">Kumpulkan poin.</div></div>
+    <div class="step-item"><div class="step-num">5</div><div class="step-content">Tukar reward.</div></div>
   </div>
 
   <div class="card">
-    <h3><i class="fas fa-coins"></i> Sistem Poin & Reward</h3>
+    <h3><i class="fas fa-coins"></i> Reward</h3>
     <div class="reward-highlight">
-      <div class="reward-item"><span class="reward-value">100</span><span class="reward-label">Poin = Pulsa</span></div>
-      <div class="reward-item"><span class="reward-value">300</span><span class="reward-label">Poin = Kaos</span></div>
-      <div class="reward-item"><span class="reward-value">500</span><span class="reward-label">Poin = Bonus</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3><i class="fas fa-star"></i> Keunggulan Sistem</h3>
-    <div class="check-list">
-      <div class="check-item"><i class="fas fa-check-circle"></i> Monitoring realtime berbasis GPS</div>
-      <div class="check-item"><i class="fas fa-check-circle"></i> Profil kader terverifikasi</div>
-      <div class="check-item"><i class="fas fa-check-circle"></i> Leaderboard kader terbaik</div>
+      <div class="reward-item"><span class="reward-value">100</span><span class="reward-label">Pulsa</span></div>
+      <div class="reward-item"><span class="reward-value">300</span><span class="reward-label">Kaos</span></div>
+      <div class="reward-item"><span class="reward-value">500</span><span class="reward-label">Bonus</span></div>
     </div>
   </div>
 </div>
 
-<!-- AUTH CARD -->
+<!-- AUTH -->
 <div class="card" id="authCard">
   <h3><i class="fas fa-fingerprint"></i> Portal Kader</h3>
-  
   <div id="loginForm" class="form-section active">
-    <input id="loginEmail" placeholder="Email Kader" type="email">
-    <input id="loginPassword" type="password" placeholder="Password Rahasia">
-    <button class="btn-main" onclick="login()"><i class="fas fa-arrow-right-to-bracket"></i> Masuk Sistem</button>
-    <div class="toggle" onclick="showRegister()" style="cursor:pointer; color:var(--primary); margin-top:18px; text-align:center; font-weight:600;">Belum terdaftar? Daftar di sini</div>
+    <input id="loginEmail" placeholder="Email" type="email">
+    <input id="loginPassword" type="password" placeholder="Password">
+    <button class="btn-main" onclick="login()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+    <div onclick="showRegister()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-weight:600; font-size:0.9rem;">Belum punya akun? Daftar</div>
   </div>
   
   <div id="registerForm" class="form-section">
     <input id="regNama" placeholder="Nama Lengkap">
     <input id="regId" placeholder="ID Kader">
-    <input id="regEmail" placeholder="Email Aktif" type="email">
-    <input id="regHp" placeholder="No. WhatsApp">
+    <input id="regEmail" placeholder="Email" type="email">
+    <input id="regHp" placeholder="No. HP">
     <input id="regAlamat" placeholder="Alamat">
-    <input id="regPassword" type="password" placeholder="Buat Password">
-    <button class="btn-main" onclick="signup()"><i class="fas fa-user-plus"></i> Daftar Sekarang</button>
-    <div class="toggle" onclick="showLogin()" style="cursor:pointer; color:var(--primary); margin-top:18px; text-align:center; font-weight:600;">Sudah punya akun? Masuk</div>
+    <input id="regPassword" type="password" placeholder="Password">
+    <button class="btn-main" onclick="signup()"><i class="fas fa-user-plus"></i> Daftar</button>
+    <div onclick="showLogin()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-weight:600; font-size:0.9rem;">Sudah punya akun? Masuk</div>
   </div>
-  
   <div id="user"></div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- MODAL EDIT -->
 <div id="editModal" class="modal-overlay">
   <div class="modal-content card" style="margin-top:0;">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <h3 style="margin-bottom:20px;"><i class="fas fa-user-edit"></i> Edit Profil</h3>
-    
     <div style="text-align:center; margin-bottom:20px;">
-      <div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; font-size:2rem;" id="previewAvatar">
-        <span>A</span>
-      </div>
+      <div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; font-size:2rem;" id="previewAvatar"><span>A</span></div>
     </div>
-
     <label style="font-size:0.85rem; color:#64748b;">Foto Profil</label>
     <input type="file" id="editFoto" accept="image/*" onchange="previewFile(this)">
-    
     <label style="font-size:0.85rem; color:#64748b; margin-top:10px;">Nama Lengkap</label>
-    <input type="text" id="editNama" placeholder="Nama Lengkap">
-    
-    <label style="font-size:0.85rem; color:#64748b; margin-top:10px;">No. WhatsApp</label>
-    <input type="text" id="editHp" placeholder="No. WhatsApp">
-    
-    <button class="btn-main" onclick="saveProfile()"><i class="fas fa-save"></i> Simpan Perubahan</button>
+    <input type="text" id="editNama" placeholder="Nama">
+    <label style="font-size:0.85rem; color:#64748b; margin-top:10px;">No. HP</label>
+    <input type="text" id="editHp" placeholder="HP">
+    <button class="btn-main" onclick="saveProfile()"><i class="fas fa-save"></i> Simpan</button>
   </div>
 </div>
 
-<!-- MAP CARD -->
+<!-- MAP -->
 <div class="card" id="mapCard" style="display:none;">
-  <h3><i class="fas fa-map-location-dot"></i> Peta Realtime Kader</h3>
-  <p style="font-size:0.8rem; color:#64748b; margin-bottom:10px;">Lokasi Anda dan kader lainnya terlihat di sini.</p>
+  <h3><i class="fas fa-map"></i> Peta Kader</h3>
   <div id="map"></div>
 </div>
 
-<!-- TASK CARD -->
+<!-- TASKS -->
 <div class="card" id="taskCard" style="display:none;">
-  <h3><i class="fas fa-list-check"></i> Tugas Bulan Ini</h3>
-  <p id="bulanInfo" style="font-size:0.85rem; color:#64748b; margin-bottom:15px;"></p>
-  <div id="taskList"><p style="text-align:center; color:#64748b; font-size:0.9rem;">Memuat tugas...</p></div>
+  <h3><i class="fas fa-tasks"></i> Tugas</h3>
+  <p id="bulanInfo" style="font-size:0.85rem; color:#64748b; margin-bottom:10px;"></p>
+  <div id="taskList"></div>
 </div>
 
-<!-- REWARD CARD -->
+<!-- REWARD -->
 <div class="card" id="rewardCard" style="display:none;">
-  <h3><i class="fas fa-gift"></i> Reward Kader</h3>
-  <ul id="rewardList"><li style="text-align:center; border:none; color:#94a3b8;">Memuat reward...</li></ul>
+  <h3><i class="fas fa-gift"></i> Reward</h3>
+  <ul id="rewardList"></ul>
 </div>
 
-<!-- HISTORY CARD -->
+<!-- HISTORY -->
 <div class="card" id="historyCard" style="display:none;">
-  <h3><i class="fas fa-history"></i> Riwayat Aktivitas</h3>
-  <ul id="historyList"><li style="text-align:center; border:none; color:#94a3b8;">Memuat riwayat...</li></ul>
+  <h3><i class="fas fa-history"></i> Riwayat</h3>
+  <ul id="historyList"></ul>
 </div>
 
-<!-- REPORT CARD -->
+<!-- REPORT -->
 <div class="card" id="reportCard" style="display:none;">
-  <h3><i class="fas fa-bullhorn"></i> Laporan Lapangan</h3>
-  <textarea id="masalah" placeholder="Tulis laporan kondisi di lapangan (min 50 karakter)..."></textarea>
+  <h3><i class="fas fa-bullhorn"></i> Laporan</h3>
+  <textarea id="masalah" placeholder="Tulis laporan..."></textarea>
   <input type="file" id="foto" accept="image/*">
-  <button class="btn-main" onclick="kirim()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+  <button class="btn-main" onclick="kirim()"><i class="fas fa-paper-plane"></i> Kirim</button>
 </div>
 
-<!-- DATA CARD -->
+<!-- DATA -->
 <div class="card" id="dataCard" style="display:none;">
   <h3><i class="fas fa-newspaper"></i> Laporan Terbaru</h3>
-  <ul id="data"><li style="text-align:center; border:none; color:#94a3b8;">Belum ada laporan</li></ul>
+  <ul id="data"></ul>
 </div>
 
-<!-- LEADERBOARD CARD -->
+<!-- LEADERBOARD -->
 <div class="card" id="leaderboardCard" style="display:none;">
-  <h3><i class="fas fa-ranking-star"></i> Top Kader</h3>
-  <ul id="leaderboard"><li style="text-align:center; border:none; color:#94a3b8;">Belum ada data</li></ul>
+  <h3><i class="fas fa-trophy"></i> Top Kader</h3>
+  <ul id="leaderboard"></ul>
 </div>
 
 </div>
 
-<footer>
-  <strong>PDI Perjuangan</strong> Kab. Kepulauan Meranti
-</footer>
+<footer>PDI Perjuangan Meranti</footer>
 
 <script>
 // ==========================================
-// 1. FIREBASE & CONFIG
+// 1. FIREBASE INIT
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
@@ -494,7 +407,7 @@ const db = firebase.firestore();
 const storage = firebase.storage();
 
 // ==========================================
-// 2. GLOBAL STATE & HELPER
+// 2. GLOBALS
 // ==========================================
 let currentUserData = null;
 let unsubUser = null; 
@@ -502,52 +415,54 @@ let mapMarkers = {};
 let map = null; 
 let editFile = null;
 
-const getTodayString = () => { const d = new Date(); return d.toISOString().split('T')[0]; };
-
-function getInitials(name) {
+// ==========================================
+// 3. HELPERS
+// ==========================================
+const getTodayString = () => new Date().toISOString().split('T')[0];
+const getInitials = (name) => {
   if(!name) return "?";
   const parts = name.trim().split(' ');
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return name.substring(0, 2).toUpperCase();
-}
+  return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
+};
 
 // ==========================================
-// 3. MAP SETUP
+// 4. MAP
 // ==========================================
 function initMap() {
-  if (map) return; 
-  map = L.map('map', { center: [0.99, 102.7], zoom: 12, scrollWheelZoom: true });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png', {
-    attribution: '&copy; OSM &copy; CARTO',
-    subdomains: 'abcd', maxZoom: 19
-  }).addTo(map);
+  if (map) return;
+  map = L.map('map').setView([0.99, 102.7], 12);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png').addTo(map);
 }
 
-function getUserIcon(isMe = false) {
-  const color = isMe ? '#E31E25' : '#10B981'; 
-  const iconHtml = `<div style="background:${color}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);"><i class='fas fa-user' style="color:white; font-size:16px;"></i></div>`;
-  return L.divIcon({ className: 'custom-marker', html: iconHtml, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] });
+function getUserIcon(isMe) {
+  const color = isMe ? '#E31E25' : '#10B981';
+  return L.divIcon({
+    className: '',
+    html: `<div style="background:${color}; width:30px; height:30px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center;"><i class='fas fa-user' style="color:white; font-size:12px;"></i></div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30]
+  });
 }
 
 // ==========================================
-// 4. AUTHENTICATION & UI
+// 5. AUTH & UI
 // ==========================================
 function showRegister(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); }
 function showLogin(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); }
 
-auth.onAuthStateChanged(async user => {
-  const landing = document.getElementById('landingPage');
-  
+auth.onAuthStateChanged(user => {
   if(user){
-    landing.style.display = 'none';
+    document.getElementById('landingPage').style.display = 'none';
     document.getElementById('authCard').style.display = 'block';
-    document.getElementById('mapCard').style.display = 'block'; 
+    document.getElementById('mapCard').style.display = 'block';
     document.getElementById('taskCard').style.display = 'block';
     document.getElementById('rewardCard').style.display = 'block';
     document.getElementById('historyCard').style.display = 'block';
     document.getElementById('reportCard').style.display = 'block';
     document.getElementById('dataCard').style.display = 'block';
     document.getElementById('leaderboardCard').style.display = 'block';
+    document.getElementById('loginForm').classList.remove('active');
+    document.getElementById('registerForm').classList.remove('active');
 
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
@@ -555,21 +470,17 @@ auth.onAuthStateChanged(async user => {
         if(currentUserData && map) updateMyPresence(user.uid, currentUserData.nama);
     });
 
-    document.getElementById('loginForm').classList.remove('active');
-    document.getElementById('registerForm').classList.remove('active');
-
     initMap();
-    updateMyLocation(user); 
-    listenToOtherUsers();   
-    
-    loadData(); 
+    updateMyLocation(user);
+    listenToOtherUsers();
+    loadData();
     loadLeaderboard();
     loadTugasBulanan(user.uid);
     loadReward(user.uid);
     loadHistory(user.uid);
 
   } else {
-    landing.style.display = 'block';
+    document.getElementById('landingPage').style.display = 'block';
     document.getElementById('mapCard').style.display = 'none';
     document.getElementById('taskCard').style.display = 'none';
     document.getElementById('rewardCard').style.display = 'none';
@@ -577,13 +488,11 @@ auth.onAuthStateChanged(async user => {
     document.getElementById('reportCard').style.display = 'none';
     document.getElementById('dataCard').style.display = 'none';
     document.getElementById('leaderboardCard').style.display = 'none';
-    
     document.getElementById('loginForm').classList.add('active');
     document.getElementById('registerForm').classList.remove('active');
     document.getElementById('user').innerHTML = '';
     currentUserData = null;
     if(unsubUser) unsubUser();
-    
     if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; }
   }
 });
@@ -596,7 +505,7 @@ function renderUserInfo() {
     document.getElementById('user').innerHTML = `
       <div class="profile-header">
         <div class="profile-avatar">
-          ${photoURL ? `<img src="${photoURL}" alt="Foto Profil">` : `<span>${initials}</span>`}
+          ${photoURL ? `<img src="${photoURL}">` : `<span>${initials}</span>`}
         </div>
         <div class="user-info">
           <span class="user-name">${currentUserData?.nama || "Kader"}</span>
@@ -605,8 +514,8 @@ function renderUserInfo() {
         </div>
       </div>
       <div class="profile-actions">
-        <button class="btn-secondary" onclick="openEditModal()"><i class="fas fa-pencil"></i> Edit Profil</button>
-        <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Keluar</button>
+        <button class="btn-secondary" onclick="openEditModal()"><i class="fas fa-pencil"></i> Edit</button>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
       </div>
     `;
 }
@@ -614,320 +523,197 @@ function renderUserInfo() {
 function openEditModal() {
     document.getElementById('editNama').value = currentUserData.nama || "";
     document.getElementById('editHp').value = currentUserData.hp || "";
-    
     const preview = document.getElementById('previewAvatar');
     const photoURL = currentUserData.photoURL;
-    if(photoURL) {
-      preview.innerHTML = `<img src="${photoURL}" style="width:100%; height:100%; object-fit:cover;">`;
-    } else {
-      preview.innerHTML = `<span>${getInitials(currentUserData.nama)}</span>`;
-    }
+    preview.innerHTML = photoURL ? `<img src="${photoURL}" style="width:100%;height:100%;object-fit:cover;">` : `<span>${getInitials(currentUserData.nama)}</span>`;
     editFile = null;
     document.getElementById('editFoto').value = "";
-
     document.getElementById('editModal').style.display = 'flex';
 }
-
 function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 
 function previewFile(input) {
     if (input.files && input.files[0]) {
         editFile = input.files[0];
         const reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('previewAvatar').innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-        }
+        reader.onload = (e) => document.getElementById('previewAvatar').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
         reader.readAsDataURL(editFile);
     }
 }
 
-// PERBAIKAN: Fungsi Save Profile lebih tangguh
+// PERBAIKAN: Save Profile Tangguh
 async function saveProfile() {
     const nama = document.getElementById('editNama').value;
     const hp = document.getElementById('editHp').value;
     const user = auth.currentUser;
+    if(!nama) return alert("Nama wajib diisi!");
 
-    if(!nama) return alert("Nama tidak boleh kosong!");
-
-    // Referensi document user
-    const userRef = db.collection('users').doc(user.uid);
     let photoURL = currentUserData.photoURL || "";
 
-    // Proses Upload Foto jika ada file baru
+    // 1. Proses Foto jika ada
     if(editFile){
         try {
-            // Nama file simple tanpa karakter aneh
-            const fileName = "profile_" + user.uid + ".jpg";
-            const ref = storage.ref("profile/" + fileName);
-            
-            // Upload
+            const ref = storage.ref("profile/" + user.uid + "_" + Date.now());
             await ref.put(editFile);
-            
-            // Dapatkan URL
             photoURL = await ref.getDownloadURL();
-            
         } catch(e) {
-            console.error("Upload gagal:", e);
-            // Jika gagal (misal rules), tetap simpan data lainnya tapi alert
-            alert("Gagal upload foto (Cek Firebase Storage Rules). Data lain akan disimpan.");
+            console.error("Upload Error:", e);
+            // Jangan return, lanjut simpan data lainnya
+            alert("Gagal upload foto (Cek Console/Permission), data lain disimpan.");
         }
     }
 
-    // Update Firestore (Selalu jalan meski foto gagal)
+    // 2. Simpan ke Firestore
     try {
-        await userRef.update({
-            nama: nama,
-            hp: hp,
-            photoURL: photoURL
-        });
+        await db.collection('users').doc(user.uid).update({ nama, hp, photoURL });
 
-        // Update Presence
+        // 3. Update Presence
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                  db.collection('presence').doc(user.uid).set({
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude,
-                    nama: nama,
-                    photoURL: photoURL,
-                    lastSeen: new Date()
+                    lat: pos.coords.latitude, lng: pos.coords.longitude,
+                    nama, photoURL, lastSeen: new Date()
                 }, { merge: true });
             });
         }
 
-        alert("Profil berhasil disimpan!");
+        alert("Profil disimpan!");
         closeModal();
     } catch(e) {
-        console.error("Firestore update error:", e);
-        alert("Gagal menyimpan data.");
+        console.error(e);
+        alert("Gagal menyimpan profil.");
     }
 }
 
 function signup(){
   let data = { nama: regNama.value, id: regId.value, email: regEmail.value, hp: regHp.value, alamat: regAlamat.value };
-  if(!Object.values(data).every(v => v) || !regPassword.value) return alert("Lengkapi semua data!");
+  if(!Object.values(data).every(v => v) || !regPassword.value) return alert("Lengkapi data!");
   auth.createUserWithEmailAndPassword(data.email, regPassword.value)
-  .then(res => { db.collection("users").doc(res.user.uid).set({...data, poin:0}); alert("Berhasil!"); showLogin(); })
+  .then(res => { db.collection("users").doc(res.user.uid).set({...data, poin:0}); alert("Sukses!"); showLogin(); })
   .catch(e => alert(e.message));
 }
 
 function login(){ 
-    auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value)
-    .catch(e => alert(e.message)); 
+    auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).catch(e => alert(e.message)); 
 }
-
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
-// 5. REALTIME LOCATION
+// 6. LOCATION SYSTEM
 // ==========================================
 function updateMyLocation(user) {
     if(!navigator.geolocation) return;
     navigator.geolocation.watchPosition(pos => {
-        const { latitude, longitude } = pos.coords;
-        updateMyPresence(user.uid, currentUserData?.nama || "Kader", latitude, longitude);
+        updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude);
         listenToOtherUsers();
-    }, err => { console.warn("GPS Error:", err); listenToOtherUsers(); }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 });
+    }, err => { console.warn(err); listenToOtherUsers(); }, { enableHighAccuracy: true });
 }
 
 function updateMyPresence(uid, nama, lat, lng) {
     if(!lat || !lng) return;
     db.collection('presence').doc(uid).set({
-        lat: lat, lng: lng, lastSeen: new Date(), nama: nama,
-        photoURL: currentUserData?.photoURL || null
+        lat, lng, lastSeen: new Date(), nama, photoURL: currentUserData?.photoURL || null
     }, { merge: true });
 }
 
 function listenToOtherUsers() {
-    db.collection('presence').onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-            const data = change.doc.data();
-            const uid = change.doc.id;
+    db.collection('presence').onSnapshot(snap => {
+        snap.docChanges().forEach(c => {
+            const data = c.doc.data();
+            const uid = c.doc.id;
             const isMe = (uid === auth.currentUser.uid);
-            const displayName = isMe ? 'Anda' : data.nama;
-            const displayPhoto = isMe ? (currentUserData?.photoURL || null) : (data.photoURL || null);
+            const name = isMe ? 'Anda' : data.nama;
 
             if (mapMarkers[uid]) {
                 mapMarkers[uid].setLatLng([data.lat, data.lng]);
-                mapMarkers[uid].setPopupContent(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${displayName}</b>`);
+                mapMarkers[uid].setPopupContent(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${name}</b>`);
             } else {
-                const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) })
-                    .addTo(map)
-                    .bindPopup(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${displayName}</b>`);
-                mapMarkers[uid] = marker;
+                let m = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${name}</b>`);
+                mapMarkers[uid] = m;
             }
         });
     });
 }
 
 // ==========================================
-// 6. TUGAS BULANAN
+// 7. TUGAS
 // ==========================================
 async function loadTugasBulanan(userId) {
   const list = document.getElementById('taskList');
-  const info = document.getElementById('bulanInfo');
   const now = new Date();
-  const currentMonth = now.getMonth() + 1; 
-  const currentYear = now.getFullYear();
-  info.innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
+  const m = now.getMonth() + 1; 
+  const y = now.getFullYear();
+  document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
 
-  const checkSnap = await db.collection('tugas').where('bulan', '==', currentMonth).where('tahun', '==', currentYear).limit(1).get();
-  if (checkSnap.empty) { await generateDummyTugas(currentMonth, currentYear); }
+  const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get();
+  if (cek.empty) {
+      const batch = db.batch();
+      [
+        { nama: "Absensi", tipe: "checkin", poin: 10 },
+        { nama: "Share", tipe: "link", poin: 20 },
+        { nama: "Dokumentasi", tipe: "foto", poin: 30 }
+      ].forEach(t => {
+          const ref = db.collection('tugas').doc();
+          batch.set(ref, {...t, bulan:m, tahun:y});
+      });
+      await batch.commit();
+  }
 
-  db.collection('tugas').where('bulan', '==', currentMonth).where('tahun', '==', currentYear)
-    .onSnapshot(async taskSnap => {
-      if (taskSnap.empty) { list.innerHTML = '<p style="text-align:center; color:#64748b;">Tidak ada tugas.</p>'; return; }
-      const doneSnap = await db.collection('task_done').where('userId', '==', userId).get();
-      const doneTaskIds = new Set();
-      doneSnap.forEach(d => doneTaskIds.add(d.data().taskId));
+  db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y)
+    .onSnapshot(async snap => {
+      if (snap.empty) { list.innerHTML = '<p style="text-align:center;color:#64748b">Tidak ada</p>'; return; }
+      const done = await db.collection('task_done').where('userId', '==', userId).get();
+      const ids = new Set(); done.forEach(d => ids.add(d.data().taskId));
       list.innerHTML = '';
-      
-      taskSnap.forEach(doc => {
+      snap.forEach(doc => {
         const t = doc.data();
-        const taskId = doc.id;
-        const isDone = doneTaskIds.has(taskId);
-        const div = document.createElement('div');
-        div.className = `task-item ${isDone ? 'is-done' : ''}`;
-        let formHtml = '';
-        if (!isDone) {
-            if (t.tipe === 'digital' || t.tipe === 'link') formHtml = `<div class="task-form" id="form-${taskId}"><input type="url" id="input-${taskId}" placeholder="Masukkan Link..."><button class="btn-task" onclick="submitTugasLink('${taskId}', ${t.poin})">Kirim Link</button></div>`;
-            else if (t.tipe === 'lapangan' || t.tipe === 'foto') formHtml = `<div class="task-form" id="form-${taskId}"><input type="file" id="file-${taskId}" accept="image/*"><button class="btn-task" onclick="submitTugasFoto('${taskId}', ${t.poin})">Upload Bukti</button></div>`;
-            else if (t.tipe === 'checkin') formHtml = `<div class="task-form" id="form-${taskId}" style="display:block;"><button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button></div>`;
+        const id = doc.id;
+        const ok = ids.has(id);
+        let f = '';
+        if (!ok) {
+            if (t.tipe === 'link') f = `<div class="task-form" id="form-${id}"><input type="url" id="input-${id}" placeholder="Link..."><button class="btn-task" onclick="submitLink('${id}',${t.poin})">Kirim</button></div>`;
+            if (t.tipe === 'foto') f = `<div class="task-form" id="form-${id}"><input type="file" id="file-${id}"><button class="btn-task" onclick="submitFoto('${id}',${t.poin})">Upload</button></div>`;
+            if (t.tipe === 'checkin') f = `<div class="task-form" style="display:block"><button class="btn-task" onclick="checkin('${id}',${t.poin})">Check-in</button></div>`;
         }
-        const actionBtn = isDone ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggleForm('${taskId}')">Kerjakan</button>`;
-        div.innerHTML = `<div class="task-header"><span class="task-title">${isDone ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : '<i class="fas fa-circle" style="color:var(--primary); font-size:8px;"></i>'} ${t.nama}</span><span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span></div><div class="task-action">${actionBtn}</div>${formHtml}`;
-        list.appendChild(div);
+        const btn = ok ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggle('${id}')">Kerjakan</button>`;
+        list.innerHTML += `<div class="task-item ${ok?'is-done':''}"><div style="display:flex;justify-content:space-between"><b>${t.nama}</b><span class="badge badge-pending">+${t.poin}</span></div><div style="margin-top:5px">${btn}</div>${f}</div>`;
       });
     });
 }
 
-async function generateDummyTugas(month, year) {
-    const dummyData = [
-        { nama: "Absensi Kehadiran", tipe: "checkin", poin: 10, butuhGPS: true, butuhFoto: false, bulan: month, tahun: year },
-        { nama: "Share Sosmed Partai", tipe: "digital", poin: 20, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
-        { nama: "Dokumentasi Kegiatan", tipe: "foto", poin: 30, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year }
-    ];
-    const batch = db.batch();
-    dummyData.forEach(d => { const ref = db.collection('tugas').doc(); batch.set(ref, d); });
-    await batch.commit();
-}
-
-function toggleForm(taskId) { const form = document.getElementById(`form-${taskId}`); if(form) { form.style.display = (form.style.display === 'block') ? 'none' : 'block'; } }
+function toggle(id) { const f=document.getElementById('form-'+id); if(f) f.style.display = f.style.display==='block'?'none':'block'; }
+async function submitLink(id, p) { const v=document.getElementById('input-'+id).value; if(!v) return alert("Link kosong"); await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, bukti:v, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); }
+async function submitFoto(id, p) { const file=document.getElementById('file-'+id).files[0]; if(!file) return alert("Pilih file"); const ref=storage.ref("tugas/"+Date.now()); await ref.put(file); const url=await ref.getDownloadURL(); await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, foto:url, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); }
+async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); }, ()=>alert("GPS error")); }
 
 // ==========================================
-// 7. SUBMIT HANDLERS
-// ==========================================
-async function submitTugasLink(taskId, poin) {
-    const input = document.getElementById(`input-${taskId}`); const link = input.value;
-    if(!link) return alert("Link tidak boleh kosong!");
-    if(!link.startsWith("http")) return alert("Format link tidak valid");
-    const user = auth.currentUser; if(!user) return;
-    await db.collection('task_done').add({ userId: user.uid, taskId: taskId, bukti: link, tipe: 'link', waktu: new Date() });
-    await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
-    alert("Tugas berhasil dikirim! +" + poin + " Poin");
-}
-
-async function submitTugasFoto(taskId, poin) {
-    const fileInput = document.getElementById(`file-${taskId}`); const file = fileInput.files[0];
-    if(!file) return alert("Pilih foto terlebih dahulu!");
-    const user = auth.currentUser; if(!user) return;
-    const ref = storage.ref("tugas_foto/"+Date.now()); await ref.put(file); const url = await ref.getDownloadURL();
-    navigator.geolocation.getCurrentPosition(async pos => {
-        await db.collection('task_done').add({ userId: user.uid, taskId: taskId, foto: url, lat: pos.coords.latitude, lng: pos.coords.longitude, tipe: 'foto', waktu: new Date() });
-        await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
-        alert("Tugas berhasil dikirim! +" + poin + " Poin");
-    }, async () => {
-        await db.collection('task_done').add({ userId: user.uid, taskId: taskId, foto: url, tipe: 'foto', waktu: new Date() });
-        await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
-        alert("Tugas berhasil dikirim! +" + poin + " Poin");
-    }, { timeout: 5000 });
-}
-
-async function taskCheckin(taskId, poin) {
-    const user = auth.currentUser; if(!user) return; if(!navigator.geolocation) return alert("GPS tidak didukung.");
-    navigator.geolocation.getCurrentPosition(async pos => {
-      const check = await db.collection('task_done').where('userId', '==', user.uid).where('taskId', '==', taskId).get();
-      if(!check.empty) return alert("Tugas sudah dikerjakan!");
-      await db.collection('task_done').add({ userId: user.uid, taskId: taskId, lat: pos.coords.latitude, lng: pos.coords.longitude, tipe: 'checkin', waktu: new Date() });
-      await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
-      alert("Check-in Berhasil! +" + poin + " Poin."); loadHistory(user.uid);
-    }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
-}
-
-// ==========================================
-// 8. LAPORAN UMUM
+// 8. LAPORAN
 // ==========================================
 async function kirim(){
-  const user = auth.currentUser; const masalah = document.getElementById('masalah').value; const file = document.getElementById('foto').files[0];
-  if(masalah.length < 50) return alert("Laporan minimal 50 karakter!");
-  if(!navigator.geolocation) return alert("GPS tidak didukung.");
+  const user = auth.currentUser; 
+  const txt = document.getElementById('masalah').value; 
+  const file = document.getElementById('foto').files[0];
+  if(txt.length < 10) return alert("Terlalu pendek");
+  
   navigator.geolocation.getCurrentPosition(async pos => {
-    let fotoURL = "";
-    if(file){ try { let ref = storage.ref("foto/"+Date.now()); await ref.put(file); fotoURL = await ref.getDownloadURL(); } catch(e) { console.error(e); } }
-    await db.collection("laporan").add({ userId: user.uid, nama: currentUserData.nama, masalah, foto: fotoURL, lat: pos.coords.latitude, lng: pos.coords.longitude, tanggal: getTodayString(), waktu: new Date() });
-    await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(10) });
-    alert("Laporan Terkirim! +10 Poin.");
-    document.getElementById('masalah').value=""; document.getElementById('foto').value=""; loadHistory(user.uid);
-  }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
+    let url = "";
+    if(file){ try { const r=storage.ref("l/"+Date.now()); await r.put(file); url=await r.getDownloadURL(); } catch(e){} }
+    await db.collection("laporan").add({ userId:user.uid, nama:currentUserData.nama, masalah:txt, foto:url, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() });
+    await db.collection('users').doc(user.uid).update({ poin:firebase.firestore.FieldValue.increment(10) });
+    alert("Terkirim +10");
+    document.getElementById('masalah').value="";
+    document.getElementById('foto').value="";
+  }, ()=>alert("GPS error"));
 }
 
 // ==========================================
-// 9. UTILITIES
+// 9. LOADERS
 // ==========================================
-function loadHistory(userId) {
-    const list = document.getElementById('historyList');
-    db.collection('task_done').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).onSnapshot(async snap => {
-        let html = ''; if(snap.empty) html += '<li style="border:none; text-align:center; color:#64748b;">Belum ada aktivitas</li>';
-        snap.forEach(doc => { const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID'); html += `<li style="border-left-color: var(--success);"><div style="display:flex; justify-content:space-between;"><b><i class="fas fa-check" style="color:var(--success)"></i> ${d.tipe}</b><small style="color:#64748b">${time}</small></div></li>`; });
-        db.collection('laporan').where('userId', '==', userId).orderBy('waktu', 'desc').limit(3).onSnapshot(lapSnap => {
-            lapSnap.forEach(doc => { const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID'); html += `<li style="border-left-color: var(--warning);"><div style="display:flex; justify-content:space-between;"><b><i class="fas fa-file-alt" style="color:var(--warning)"></i> Laporan</b><small style="color:#64748b">${time}</small></div></li>`; });
-            list.innerHTML = html;
-        });
-    });
-}
+function loadHistory(u) { db.collection('task_done').where('userId','==',u).orderBy('waktu','desc').limit(5).onSnapshot(s => { let h=''; s.forEach(d => { h+=`<li style="border-left-color:var(--success)"><b>${d.data().tipe}</b></li>`; }); document.getElementById('historyList').innerHTML=h||'Kosong'; }); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
+function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; const rw=[{h:"Stiker",p:50},{h:"Pin",p:100},{h:"Kaos",p:250},{h:"Jaket",p:500}]; let h=""; rw.forEach(r=>{ const ok=p>=r.p; h+=`<li><div style="display:flex;justify-content:space-between"><div><b>${r.h}</b><br><small>${r.p} poin</small></div><span class="badge ${ok?'badge-done':'badge-pending'}">${ok?'Terbuka':(r.p-p)+' lagi'}</span></div></li>`; }); document.getElementById('rewardList').innerHTML=h; }); }
+function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li class="${i==1?'rank-1':i==2?'rank-2':i==3?'rank-3':''}"><div class="lb-avatar">${v.photoURL?`<img src="${v.photoURL}">`:`<span>${getInitials(v.nama)}</span>`}</div><div class="lb-info"><div class="lb-name">${v.nama}</div><div class="lb-poin">${v.poin} poin</div></div></li>`; i++; }); document.getElementById('leaderboard').innerHTML=h||'Kosong'; }); }
 
-function loadData(){
-  db.collection("laporan").orderBy("waktu","desc").onSnapshot(snapshot => {
-    data.innerHTML="";
-    if(snapshot.empty) data.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada laporan</li>";
-    snapshot.forEach(doc => { let d=doc.data(); let li=document.createElement('li'); li.innerHTML=`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}<br><small style="color:#64748b">${d.waktu?.toDate?.().toLocaleString('id-ID') || ''}</small>${d.foto ? `<br><img src="${d.foto}" style="max-width:80px; border-radius:8px; margin-top:8px; border:2px solid #fff;">` : ''}`; data.appendChild(li); });
-  });
-}
-
-function loadLeaderboard(){
-  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(snapshot => {
-    leaderboard.innerHTML=""; if(snapshot.empty) leaderboard.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada data</li>";
-    let rank=1;
-    snapshot.forEach(doc => { 
-      let d=doc.data(); 
-      let li=document.createElement('li'); 
-      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3:''; 
-      
-      const photoURL = d.photoURL;
-      const initials = getInitials(d.nama);
-      
-      li.innerHTML = `
-        <div class="lb-avatar">
-          ${photoURL ? `<img src="${photoURL}" alt="${d.nama}">` : `<span>${initials}</span>`}
-        </div>
-        <div class="lb-info">
-          <div class="lb-name">${d.nama}</div>
-          <div class="lb-poin">${d.poin} poin</div>
-        </div>
-      `;
-      leaderboard.appendChild(li); 
-      rank++; 
-    });
-  });
-}
-
-function loadReward(userId) {
-  db.collection('users').doc(userId).onSnapshot(userDoc => {
-    const userPoin = userDoc.data()?.poin || 0;
-    const rewards = [ { hadiah: "Stiker PDI", poin: 50 }, { hadiah: "Pin PDI", poin: 100 }, { hadiah: "Kaos PDI", poin: 250 }, { hadiah: "Jaket Exclusive", poin: 500 } ];
-    rewardList.innerHTML = '';
-    rewards.forEach(r => { const achieved = userPoin >= r.poin; const li = document.createElement('li'); li.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><div><b style="${achieved ? 'color:var(--success)' : ''}">${r.hadiah}</b><br><small>Syarat: ${r.poin} Poin</small></div><span class="badge ${achieved ? 'badge-done' : 'badge-pending'}">${achieved ? 'Terbuka' : `${r.poin - userPoin} lagi`}</span></div>`; rewardList.appendChild(li); });
-  });
-}
 </script>
 </body>
 </html>
