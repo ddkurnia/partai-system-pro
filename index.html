@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Partai PRO</title>  <style>
+  <title>PDI P Kabupaten Kepulauan Meranti - Sistem PRO</title>  <style>
     body { margin:0; font-family: 'Segoe UI'; background:#0f172a; color:white; }
     header { background:linear-gradient(135deg,#dc2626,#7f1d1d); padding:15px; text-align:center; font-weight:bold; }
     .container { padding:15px; display:grid; gap:15px; }
@@ -10,8 +10,12 @@
     input, textarea { width:100%; padding:10px; margin-top:8px; border:none; border-radius:8px; background:#334155; color:white; }
     button { margin-top:10px; padding:10px; border:none; border-radius:8px; background:#dc2626; color:white; cursor:pointer; }
     .stat { display:flex; justify-content:space-between; }
+    ul { padding-left:20px; }
   </style></head>
-<body><header>🚀 Sistem Partai PRO</header><div class="container"><div class="card">
+<body><header>
+  🔴 PDI P KABUPATEN KEPULAUAN MERANTI<br>
+  Sistem Aktivasi Kader & Layanan Masyarakat
+</header><div class="container"><div class="card">
 <h3>📊 Statistik</h3>
 <div class="stat"><span>Laporan</span><span id="total">0</span></div>
 <div class="stat"><span>Poin</span><span id="poin">0</span></div>
@@ -23,7 +27,16 @@
 <button onclick="getLocation()">📍 Ambil Lokasi</button>
 <button onclick="kirim()">Kirim</button>
 </div><div class="card">
-<h3>👥 Tugas Kader</h3>
+<h3>📋 Daftar Tugas Kader (Standar)</h3>
+<ul>
+  <li>Kunjungi 1 rumah warga per hari</li>
+  <li>Input minimal 2 data warga baru</li>
+  <li>Laporkan masalah lingkungan</li>
+  <li>Bantu 1 warga (bansos / keluhan)</li>
+  <li>Koordinasi dengan pengurus desa</li>
+</ul>
+</div><div class="card">
+<h3>👥 Tugas Lapangan (Realtime)</h3>
 <ul id="tugas"></ul>
 </div><div class="card">
 <h3>🏆 Leaderboard</h3>
@@ -69,7 +82,7 @@ function render() {
       <b>${l.nama}</b><br>
       <a href="${l.lokasi}" target="_blank">📍 Lihat Lokasi</a><br>
       ${l.masalah}<br>
-      <button onclick="selesai(${i})">Selesai</button>
+      <button onclick="selesai(${i})">Selesaikan</button>
     `;
     list.appendChild(li);
   });
@@ -86,9 +99,9 @@ function selesai(i){
 function renderLeaderboard(){
   let lb = document.getElementById('leaderboard');
   lb.innerHTML = `
-    <li>Kader Kecamatan A - 120 poin</li>
-    <li>Kader Desa B - 95 poin</li>
-    <li>Kader Lapangan - 80 poin</li>
+    <li>Kader Kecamatan Tebing Tinggi - 120 poin</li>
+    <li>Kader Rangsang - 95 poin</li>
+    <li>Kader Merbau - 80 poin</li>
   `;
 }
 </script></body>
