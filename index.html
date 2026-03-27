@@ -5,11 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDI P Meranti - Sistem Elite</title>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
+<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -75,9 +77,9 @@ Sistem Monitoring Kader
 
 <script>
 
-// FIREBASE
+// 🔥 FIREBASE CONFIG
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
   projectId: "partai-meranti",
   storageBucket: "partai-meranti.appspot.com"
@@ -89,15 +91,14 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// MAP
+// 🔥 MAP INIT
 let map = L.map('map').setView([0.99, 102.7], 12);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-.addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
 let markers = [];
 
-// LOGIN STATE
+// 🔥 LOGIN STATE
 auth.onAuthStateChanged(async user => {
   if(user){
 
@@ -105,7 +106,7 @@ auth.onAuthStateChanged(async user => {
     let data = doc.data();
 
     document.getElementById('user').innerText =
-    "Selamat datang kader\n" + (data?.nama || "");
+    "Selamat datang kader PDI P Kepulauan Meranti\n" + (data?.nama || "");
 
     document.getElementById("authArea").innerHTML =
     `<button onclick="logout()">Logout</button>`;
@@ -124,14 +125,20 @@ auth.onAuthStateChanged(async user => {
       <button onclick="login()">Login</button>
       <button onclick="signup()">Daftar</button>
     `;
+
+    document.getElementById("email").style.display = "block";
+    document.getElementById("password").style.display = "block";
+    document.getElementById("namaLengkap").style.display = "block";
   }
 });
 
-// SIGNUP
+// 🔥 SIGNUP
 function signup(){
   let nama = document.getElementById('namaLengkap').value;
   let email = document.getElementById('email').value;
   let pass = document.getElementById('password').value;
+
+  if(!nama || !email || !pass) return alert("Lengkapi semua!");
 
   auth.createUserWithEmailAndPassword(email, pass)
   .then(res=>{
@@ -140,31 +147,33 @@ function signup(){
       email,
       poin: 0
     });
-    alert("Akun dibuat");
+    alert("Akun berhasil dibuat");
   })
   .catch(e=>alert(e.message));
 }
 
-// LOGIN
+// 🔥 LOGIN
 function login(){
   auth.signInWithEmailAndPassword(
     document.getElementById('email').value,
     document.getElementById('password').value
-  );
+  ).catch(e=>alert(e.message));
 }
 
-// LOGOUT
+// 🔥 LOGOUT
 function logout(){
   auth.signOut();
 }
 
-// KIRIM
+// 🔥 KIRIM LAPORAN (AUTO NAMA)
 function kirim(){
   let user = auth.currentUser;
-  if(!user) return alert("Login dulu");
+  if(!user) return alert("Login dulu!");
 
   let masalah = document.getElementById('masalah').value;
   let file = document.getElementById('foto').files[0];
+
+  if(!masalah) return alert("Isi laporan!");
 
   navigator.geolocation.getCurrentPosition(async pos=>{
 
@@ -193,11 +202,11 @@ function kirim(){
     });
 
     document.getElementById('masalah').value = "";
-    alert("Laporan terkirim");
+    alert("Laporan berhasil dikirim");
   });
 }
 
-// LOAD DATA
+// 🔥 LOAD DATA
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
@@ -206,8 +215,6 @@ function loadData(){
 
     markers.forEach(m=>map.removeLayer(m));
     markers = [];
-
-    let first = true;
 
     snapshot.forEach(doc=>{
       let d = doc.data();
@@ -220,24 +227,16 @@ function loadData(){
       `;
       document.getElementById('data').appendChild(li);
 
-      let marker = L.marker([d.lat, d.lng]).addTo(map)
-      .bindPopup(`
-        <b>${d.nama}</b><br>
-        ${d.masalah}<br>
-        ${d.foto ? `<img src="${d.foto}" width="100">` : ""}
-      `);
-
-      if(first){
-        map.setView([d.lat, d.lng], 15);
-        first = false;
-      }
+      let marker = L.marker([d.lat, d.lng])
+        .addTo(map)
+        .bindPopup(`<b>${d.nama}</b><br>${d.masalah}`);
 
       markers.push(marker);
     });
   });
 }
 
-// LEADERBOARD
+// 🔥 LEADERBOARD
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc")
   .onSnapshot(snapshot=>{
