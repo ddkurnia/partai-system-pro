@@ -124,10 +124,9 @@ header {
 .card h3 i { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
 
 /* ==========================================
-   LANDING PAGE STYLES (NEW)
+   LANDING PAGE STYLES (VISIBLE BEFORE LOGIN)
    ========================================== */
 
-/* Hero Section */
 .hero-section {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
@@ -137,7 +136,6 @@ header {
   position: relative;
   overflow: hidden;
   box-shadow: 0 15px 35px rgba(227, 30, 37, 0.3);
-  margin-bottom: 10px;
 }
 .hero-section::after {
   content: '';
@@ -150,10 +148,10 @@ header {
 .hero-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .hero-subtitle { font-size: 0.95rem; opacity: 0.95; line-height: 1.6; font-weight: 400; max-width: 350px; margin: 0 auto; }
 
-/* Info Grid for Cara Kerja & Keunggulan */
+/* Grid Layout for Steps & Features */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
 }
 .info-item {
@@ -176,12 +174,7 @@ header {
 .info-text { font-size: 0.8rem; font-weight: 600; color: var(--dark); line-height: 1.3; }
 .info-desc { font-size: 0.7rem; color: #64748b; margin-top: 4px; }
 
-/* Steps List for Cara Kerja */
-.step-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+/* Steps List */
 .step-item {
   display: flex;
   align-items: center;
@@ -189,6 +182,7 @@ header {
   background: rgba(255,255,255,0.6);
   padding: 12px;
   border-radius: 14px;
+  margin-bottom: 10px;
   border-left: 4px solid var(--primary);
 }
 .step-num {
@@ -201,29 +195,25 @@ header {
   justify-content: center;
   font-weight: 800;
   font-size: 0.9rem;
+  flex-shrink: 0;
 }
 .step-content { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
 
-/* Reward Highlight */
+/* Reward Highlight Box */
 .reward-highlight {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-top: 15px;
   background: rgba(255,255,255,0.4);
-  padding: 12px;
+  padding: 15px;
   border-radius: 12px;
 }
-.reward-item { text-align: center; flex: 1; border-right: 1px solid rgba(0,0,0,0.05); }
-.reward-item:last-child { border-right: none; }
+.reward-item { text-align: center; }
 .reward-value { font-weight: 800; color: var(--primary); font-size: 1.1rem; display: block; }
 .reward-label { font-size: 0.7rem; color: #64748b; }
 
 /* Check Feature List */
-.check-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
+.check-list { display: flex; flex-direction: column; gap: 10px; }
 .check-item {
   display: flex;
   align-items: center;
@@ -231,10 +221,13 @@ header {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--dark);
+  background: rgba(255,255,255,0.3);
+  padding: 8px 12px;
+  border-radius: 8px;
 }
-.check-item i { color: var(--success); }
+.check-item i { color: var(--success); font-size: 1rem; }
 
-/* FORMS & INPUTS */
+/* INPUTS & FORMS */
 input, textarea {
   width: 100%;
   padding: 14px 18px;
@@ -288,7 +281,6 @@ button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow
 }
 .btn-task.done { background: var(--success); pointer-events: none; }
 
-/* FILE INPUT */
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 0.85rem; }
 input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
 
@@ -323,7 +315,6 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: all 0.3s;
 }
 .task-item.is-done { border-left-color: var(--success); opacity: 0.8; background: rgba(16, 185, 129, 0.05); }
 .task-header { display: flex; justify-content: space-between; align-items: center; }
@@ -334,10 +325,9 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
 .task-form input { font-size: 0.85rem; padding: 10px; }
 .task-form button { font-size: 0.85rem; padding: 10px; }
 
-/* Badge */
-.badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-align: center; display: inline-block; }
+.badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; text-align: center; display: inline-block; }
 .badge-done { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-.badge-pending { background: rgba(100, 116, 139, 0.15); color: #64748b; }
+.badge-pending { background: rgba(227, 30, 37, 0.15); color: var(--primary); }
 
 /* LISTS */
 ul { list-style: none; max-height: 300px; overflow-y: auto; padding-right: 5px; }
@@ -366,7 +356,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 @media (max-width: 480px) {
   .card { padding: 20px; }
   .header-text h1 { font-size: 1.1rem; }
-  .hero-title { font-size: 1.5rem; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -403,84 +393,79 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <div class="container">
 
 <!-- ==========================================
-     LANDING PAGE SECTION (START)
+     LANDING PAGE (HIDDEN AFTER LOGIN)
      ========================================== -->
+<div id="landingPage">
 
-<!-- 1. HERO SECTION -->
-<div class="hero-section">
-  <div class="hero-title">Sistem Elite<br>Monitoring Kader</div>
-  <div class="hero-subtitle">
-    Platform digital untuk mengontrol, mengelola, dan meningkatkan kinerja kader secara realtime melalui sistem tugas, laporan lapangan, dan reward berbasis poin.
+  <!-- 1. HERO SECTION -->
+  <div class="hero-section">
+    <h2 class="hero-title">Sistem Elite<br>Monitoring Kader</h2>
+    <p class="hero-subtitle">Platform digital terintegrasi untuk mengontrol, mengelola, dan meningkatkan kinerja kader secara realtime.</p>
   </div>
-</div>
 
-<!-- 2. CARA KERJA -->
-<div class="card">
-  <h3><i class="fas fa-sitemap"></i> Cara Kerja Sistem</h3>
-  <div class="step-list">
+  <!-- 2. CARA KERJA -->
+  <div class="card">
+    <h3><i class="fas fa-route"></i> Cara Kerja Sistem</h3>
     <div class="step-item">
       <div class="step-num">1</div>
-      <div class="step-content">Kader login ke dalam sistem</div>
+      <div class="step-content">Kader login ke dalam sistem elite.</div>
     </div>
     <div class="step-item">
       <div class="step-num">2</div>
-      <div class="step-content">Mengerjakan tugas yang tersedia</div>
+      <div class="step-content">Mengerjakan tugas bulanan yang diberikan.</div>
     </div>
     <div class="step-item">
       <div class="step-num">3</div>
-      <div class="step-content">Kirim laporan lapangan (foto + GPS)</div>
+      <div class="step-content">Kirim laporan lapangan (Foto + GPS).</div>
     </div>
     <div class="step-item">
       <div class="step-num">4</div>
-      <div class="step-content">Dapatkan poin otomatis</div>
+      <div class="step-content">Dapatkan poin otomatis setiap aktivitas.</div>
     </div>
     <div class="step-item">
       <div class="step-num">5</div>
-      <div class="step-content">Tukar poin dengan reward</div>
+      <div class="step-content">Tukar poin dengan reward menarik.</div>
     </div>
   </div>
-</div>
 
-<!-- 3. SISTEM POIN & REWARD -->
-<div class="card">
-  <h3><i class="fas fa-coins"></i> Sistem Poin & Reward</h3>
-  <p style="font-size:0.85rem; color:#64748b; line-height:1.5;">
-    Setiap aktivitas kader bernilai. Semakin aktif, semakin besar poin yang dikumpulkan. Poin dapat ditukar dengan berbagai reward sesuai pencapaian.
-  </p>
-  <div class="reward-highlight">
-    <div class="reward-item">
-      <span class="reward-value">100</span>
-      <span class="reward-label">Poin = Pulsa</span>
-    </div>
-    <div class="reward-item">
-      <span class="reward-value">300</span>
-      <span class="reward-label">Poin = Kaos</span>
-    </div>
-    <div class="reward-item">
-      <span class="reward-value">500</span>
-      <span class="reward-label">Poin = Bonus</span>
+  <!-- 3. SISTEM POIN & REWARD -->
+  <div class="card">
+    <h3><i class="fas fa-coins"></i> Sistem Poin & Reward</h3>
+    <p style="font-size:0.85rem; color:#64748b;">Setiap aktivitas kader bernilai poin. Semakin aktif, semakin besar reward yang didapat.</p>
+    <div class="reward-highlight">
+      <div class="reward-item">
+        <span class="reward-value">100</span>
+        <span class="reward-label">Poin = Pulsa</span>
+      </div>
+      <div class="reward-item">
+        <span class="reward-value">300</span>
+        <span class="reward-label">Poin = Kaos</span>
+      </div>
+      <div class="reward-item">
+        <span class="reward-value">500</span>
+        <span class="reward-label">Poin = Bonus</span>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- 4. KEUNGGULAN -->
-<div class="card">
-  <h3><i class="fas fa-star"></i> Keunggulan Sistem</h3>
-  <div class="check-list">
-    <div class="check-item"><i class="fas fa-check-circle"></i> Monitoring realtime berbasis GPS</div>
-    <div class="check-item"><i class="fas fa-check-circle"></i> Laporan lapangan terintegrasi</div>
-    <div class="check-item"><i class="fas fa-check-circle"></i> Sistem tugas otomatis bulanan</div>
-    <div class="check-item"><i class="fas fa-check-circle"></i> Leaderboard kader terbaik</div>
-    <div class="check-item"><i class="fas fa-check-circle"></i> Transparansi dan akuntabilitas</div>
+  <!-- 4. KEUNGGULAN SISTEM -->
+  <div class="card">
+    <h3><i class="fas fa-star"></i> Keunggulan Sistem</h3>
+    <div class="check-list">
+      <div class="check-item"><i class="fas fa-check-circle"></i> Monitoring realtime berbasis GPS</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Laporan lapangan terintegrasi</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Sistem tugas otomatis bulanan</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Leaderboard kader terbaik</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Transparansi & Akuntabilitas</div>
+    </div>
   </div>
+
 </div>
+<!-- END LANDING PAGE -->
 
-<!-- ==========================================
-     LANDING PAGE SECTION (END)
-     ========================================== -->
 
-<!-- AUTH CARD (MASUK KE SISTEM) -->
-<div class="card">
+<!-- AUTH CARD -->
+<div class="card" id="authCard">
   <h3><i class="fas fa-fingerprint"></i> Portal Kader</h3>
   
   <div id="loginForm" class="form-section active">
@@ -531,7 +516,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 </div>
 
 <!-- REPORT CARD -->
-<div class="card">
+<div class="card" id="reportCard">
   <h3><i class="fas fa-bullhorn"></i> Laporan Lapangan</h3>
   <textarea id="masalah" placeholder="Tulis laporan kondisi di lapangan (min 50 karakter)..."></textarea>
   <input type="file" id="foto" accept="image/*">
@@ -539,13 +524,13 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 </div>
 
 <!-- MAP CARD -->
-<div class="card">
+<div class="card" id="mapCard">
   <h3><i class="fas fa-map-location-dot"></i> Peta Realtime</h3>
   <div id="map"></div>
 </div>
 
 <!-- DATA CARD -->
-<div class="card">
+<div class="card" id="dataCard">
   <h3><i class="fas fa-newspaper"></i> Laporan Terbaru</h3>
   <ul id="data">
     <li style="text-align:center; border:none; color:#94a3b8;">Belum ada laporan</li>
@@ -553,7 +538,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 </div>
 
 <!-- LEADERBOARD CARD -->
-<div class="card">
+<div class="card" id="leaderboardCard">
   <h3><i class="fas fa-ranking-star"></i> Top Kader</h3>
   <ul id="leaderboard">
     <li style="text-align:center; border:none; color:#94a3b8;">Belum ada data</li>
@@ -610,13 +595,26 @@ const pdipIcon = L.divIcon({
 let markers = [];
 
 // ==========================================
-// 4. AUTHENTICATION
+// 4. AUTHENTICATION & UI TOGGLE
 // ==========================================
 function showRegister(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); }
 function showLogin(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); }
 
 auth.onAuthStateChanged(async user => {
+  const landing = document.getElementById('landingPage');
+  
   if(user){
+    // Sembunyikan Landing Page
+    landing.style.display = 'none';
+
+    // Tampilkan Dashboard
+    document.getElementById('authCard').style.display = 'block'; // Tetap tampil untuk info user
+    document.getElementById('taskCard').style.display = 'block';
+    document.getElementById('rewardCard').style.display = 'block';
+    document.getElementById('historyCard').style.display = 'block';
+    // Form laporan & map tetap tampil
+
+    // Load User Data
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
         renderUserInfo();
@@ -624,10 +622,6 @@ auth.onAuthStateChanged(async user => {
 
     document.getElementById('loginForm').classList.remove('active');
     document.getElementById('registerForm').classList.remove('active');
-
-    document.getElementById('taskCard').style.display = 'block';
-    document.getElementById('rewardCard').style.display = 'block';
-    document.getElementById('historyCard').style.display = 'block';
 
     loadData(); 
     loadLeaderboard();
@@ -637,12 +631,21 @@ auth.onAuthStateChanged(async user => {
     loadHistory(user.uid);
 
   } else {
-    currentUserData = null;
-    if(unsubUser) unsubUser();
-    
+    // Tampilkan Landing Page
+    landing.style.display = 'block';
+
+    // Sembunyikan Dashboard kader
     document.getElementById('taskCard').style.display = 'none';
     document.getElementById('rewardCard').style.display = 'none';
     document.getElementById('historyCard').style.display = 'none';
+    
+    // Reset Auth Forms
+    document.getElementById('loginForm').classList.add('active');
+    document.getElementById('registerForm').classList.remove('active');
+    document.getElementById('user').innerHTML = '';
+    
+    currentUserData = null;
+    if(unsubUser) unsubUser();
   }
 });
 
@@ -681,7 +684,7 @@ async function loadTugasBulanan(userId) {
   const info = document.getElementById('bulanInfo');
   
   const now = new Date();
-  const currentMonth = now.getMonth() + 1; // 1-12
+  const currentMonth = now.getMonth() + 1; 
   const currentYear = now.getFullYear();
   
   info.innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
@@ -719,7 +722,6 @@ async function loadTugasBulanan(userId) {
 
         const div = document.createElement('div');
         div.className = `task-item ${isDone ? 'is-done' : ''}`;
-        div.id = `task-${taskId}`;
         
         const statusIcon = isDone 
           ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' 
@@ -728,34 +730,25 @@ async function loadTugasBulanan(userId) {
         let formHtml = '';
         if (!isDone) {
             if (t.tipe === 'digital' || t.tipe === 'link') {
-                formHtml = `
-                    <div class="task-form" id="form-${taskId}">
-                        <input type="url" id="input-${taskId}" placeholder="Masukkan Link Kegiatan...">
-                        <button class="btn-task" onclick="submitTugasLink('${taskId}', ${t.poin})"><i class="fas fa-paper-plane"></i> Kirim Link</button>
+                formHtml = `<div class="task-form" id="form-${taskId}">
+                        <input type="url" id="input-${taskId}" placeholder="Masukkan Link...">
+                        <button class="btn-task" onclick="submitTugasLink('${taskId}', ${t.poin})">Kirim Link</button>
                     </div>`;
             } else if (t.tipe === 'lapangan' || t.tipe === 'foto') {
-                 formHtml = `
-                    <div class="task-form" id="form-${taskId}">
+                 formHtml = `<div class="task-form" id="form-${taskId}">
                         <input type="file" id="file-${taskId}" accept="image/*">
-                        <button class="btn-task" onclick="submitTugasFoto('${taskId}', ${t.poin})"><i class="fas fa-upload"></i> Upload Bukti</button>
+                        <button class="btn-task" onclick="submitTugasFoto('${taskId}', ${t.poin})">Upload Bukti</button>
                     </div>`;
             } else if (t.tipe === 'checkin') {
-                 formHtml = `
-                    <div class="task-form" id="form-${taskId}" style="display:block;">
-                        <button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in Lokasi</button>
-                    </div>`;
-            } else {
-                formHtml = `
-                    <div class="task-form" id="form-${taskId}">
-                        <input type="text" id="input-${taskId}" placeholder="Keterangan penyelesaian...">
-                        <button class="btn-task" onclick="submitTugasGeneric('${taskId}', ${t.poin})"><i class="fas fa-check"></i> Selesaikan</button>
+                 formHtml = `<div class="task-form" id="form-${taskId}" style="display:block;">
+                        <button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button>
                     </div>`;
             }
         }
 
         const actionBtn = isDone 
-          ? `<span class="badge badge-done"><i class="fas fa-check"></i> Selesai</span>`
-          : `<button class="btn-task" onclick="toggleForm('${taskId}')"><i class="fas fa-pencil"></i> Kerjakan</button>`;
+          ? `<span class="badge badge-done">Selesai</span>`
+          : `<button class="btn-task" onclick="toggleForm('${taskId}')">Kerjakan</button>`;
 
         div.innerHTML = `
           <div class="task-header">
@@ -767,9 +760,7 @@ async function loadTugasBulanan(userId) {
             ${t.butuhFoto ? '<span><i class="fas fa-camera"></i> Foto</span>' : ''}
             ${t.butuhGPS ? '<span><i class="fas fa-map"></i> GPS</span>' : ''}
           </div>
-          <div class="task-action">
-            ${actionBtn}
-          </div>
+          <div class="task-action">${actionBtn}</div>
           ${formHtml}
         `;
         list.appendChild(div);
@@ -785,14 +776,12 @@ async function generateDummyTugas(month, year) {
         { nama: "Input Data Pemilih", tipe: "link", poin: 50, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Laporan Kader", tipe: "lapangan", poin: 15, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year }
     ];
-
     const batch = db.batch();
     dummyData.forEach(d => {
         const ref = db.collection('tugas').doc();
         batch.set(ref, d);
     });
     await batch.commit();
-    console.log("Tugas bulan ini berhasil digenerate");
 }
 
 function toggleForm(taskId) {
@@ -811,24 +800,20 @@ async function submitTugasLink(taskId, poin) {
     const input = document.getElementById(`input-${taskId}`);
     const link = input.value;
     if(!link) return alert("Link tidak boleh kosong!");
-    if(!link.startsWith("http")) return alert("Format link tidak valid (http/https)");
+    if(!link.startsWith("http")) return alert("Format link tidak valid");
 
     const user = auth.currentUser;
     if(!user) return;
 
     await db.collection('task_done').add({
-        userId: user.uid,
-        taskId: taskId,
-        bukti: link,
-        tipe: 'link',
-        waktu: new Date()
+        userId: user.uid, taskId: taskId, bukti: link, tipe: 'link', waktu: new Date()
     });
 
     await db.collection('users').doc(user.uid).update({
         poin: firebase.firestore.FieldValue.increment(poin)
     });
 
-    alert("Tugas Link berhasil dikirim! +" + poin + " Poin");
+    alert("Tugas berhasil dikirim! +" + poin + " Poin");
 }
 
 async function submitTugasFoto(taskId, poin) {
@@ -845,58 +830,37 @@ async function submitTugasFoto(taskId, poin) {
 
     navigator.geolocation.getCurrentPosition(async pos => {
         await db.collection('task_done').add({
-            userId: user.uid,
-            taskId: taskId,
-            foto: url,
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-            tipe: 'foto',
-            waktu: new Date()
+            userId: user.uid, taskId: taskId, foto: url,
+            lat: pos.coords.latitude, lng: pos.coords.longitude, tipe: 'foto', waktu: new Date()
         });
-
         await db.collection('users').doc(user.uid).update({
             poin: firebase.firestore.FieldValue.increment(poin)
         });
-
-        alert("Tugas Foto berhasil dikirim! +" + poin + " Poin");
+        alert("Tugas berhasil dikirim! +" + poin + " Poin");
     }, async () => {
         await db.collection('task_done').add({
-            userId: user.uid,
-            taskId: taskId,
-            foto: url,
-            tipe: 'foto',
-            waktu: new Date()
+            userId: user.uid, taskId: taskId, foto: url, tipe: 'foto', waktu: new Date()
         });
         await db.collection('users').doc(user.uid).update({
             poin: firebase.firestore.FieldValue.increment(poin)
         });
-        alert("Tugas Foto berhasil dikirim! +" + poin + " Poin");
+        alert("Tugas berhasil dikirim! +" + poin + " Poin");
     }, { timeout: 5000 });
 }
 
 async function taskCheckin(taskId, poin) {
     const user = auth.currentUser;
     if(!user) return;
-
     if(!navigator.geolocation) return alert("GPS tidak didukung.");
 
     navigator.geolocation.getCurrentPosition(async pos => {
-      const today = getTodayString();
-      
       const check = await db.collection('task_done')
-        .where('userId', '==', user.uid)
-        .where('taskId', '==', taskId)
-        .get();
-        
+        .where('userId', '==', user.uid).where('taskId', '==', taskId).get();
       if(!check.empty) return alert("Tugas sudah dikerjakan!");
 
       await db.collection('task_done').add({
-        userId: user.uid,
-        taskId: taskId,
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        tipe: 'checkin',
-        waktu: new Date()
+        userId: user.uid, taskId: taskId,
+        lat: pos.coords.latitude, lng: pos.coords.longitude, tipe: 'checkin', waktu: new Date()
       });
 
       await db.collection('users').doc(user.uid).update({
@@ -928,17 +892,13 @@ async function kirim(){
         let ref = storage.ref("foto/"+Date.now());
         await ref.put(file);
         fotoURL = await ref.getDownloadURL();
-      } catch(e) { console.error("Upload error", e); }
+      } catch(e) { console.error(e); }
     }
 
     await db.collection("laporan").add({
-      userId: user.uid,
-      nama: currentUserData.nama,
-      masalah, foto: fotoURL,
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude,
-      tanggal: getTodayString(),
-      waktu: new Date()
+      userId: user.uid, nama: currentUserData.nama, masalah, foto: fotoURL,
+      lat: pos.coords.latitude, lng: pos.coords.longitude,
+      tanggal: getTodayString(), waktu: new Date()
     });
 
     await db.collection('users').doc(user.uid).update({
@@ -948,7 +908,6 @@ async function kirim(){
     alert("Laporan Terkirim! +10 Poin.");
     document.getElementById('masalah').value="";
     document.getElementById('foto').value="";
-    
     loadHistory(user.uid);
 
   }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
@@ -959,19 +918,15 @@ async function kirim(){
 // ==========================================
 function loadHistory(userId) {
     const list = document.getElementById('historyList');
-    
     db.collection('task_done').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).onSnapshot(async snap => {
         let html = '';
         if(snap.empty) html += '<li style="border:none; text-align:center; color:#64748b;">Belum ada aktivitas</li>';
-        
         snap.forEach(doc => {
             const d = doc.data();
             const time = d.waktu.toDate().toLocaleString('id-ID');
-            let icon = 'fa-check';
-            let color = 'var(--success)';
+            let icon = 'fa-check'; let color = 'var(--success)';
             if(d.tipe === 'link') { icon = 'fa-link'; color = 'var(--primary)'; }
             if(d.tipe === 'foto') { icon = 'fa-image'; color = 'var(--warning)'; }
-            
             html += `<li style="border-left-color: ${color};">
                 <div style="display:flex; justify-content:space-between;">
                     <b><i class="fas ${icon}" style="color:${color}"></i> Tugas Selesai</b>
@@ -979,7 +934,6 @@ function loadHistory(userId) {
                 </div>
             </li>`;
         });
-        
         db.collection('laporan').where('userId', '==', userId).orderBy('waktu', 'desc').limit(3).onSnapshot(lapSnap => {
             lapSnap.forEach(doc => {
                 const d = doc.data();
@@ -1002,9 +956,7 @@ function loadData(){
     data.innerHTML="";
     markers.forEach(m=>map.removeLayer(m));
     markers=[];
-    
     if(snapshot.empty) data.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada laporan</li>";
-    
     snapshot.forEach(doc => {
       let d=doc.data();
       let li=document.createElement('li');
@@ -1012,7 +964,6 @@ function loadData(){
       <small style="color:#64748b">${d.waktu?.toDate?.().toLocaleString('id-ID') || ''}</small>
       ${d.foto ? `<br><img src="${d.foto}" style="max-width:80px; border-radius:8px; margin-top:8px; border:2px solid #fff;">` : ''}`;
       data.appendChild(li);
-
       if(d.lat && d.lng){
         let marker=L.marker([d.lat, d.lng], {icon: pdipIcon}).addTo(map)
         .bindPopup(`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}`);
@@ -1028,7 +979,6 @@ function loadLeaderboard(){
   .onSnapshot(snapshot => {
     leaderboard.innerHTML="";
     if(snapshot.empty) leaderboard.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada data</li>";
-    
     let rank=1;
     snapshot.forEach(doc => {
       let d=doc.data();
@@ -1044,16 +994,13 @@ function loadLeaderboard(){
 function loadReward(userId) {
   db.collection('users').doc(userId).onSnapshot(userDoc => {
     const userPoin = userDoc.data()?.poin || 0;
-    
     const rewards = [
       { hadiah: "Stiker PDI", poin: 50 },
       { hadiah: "Pin PDI", poin: 100 },
       { hadiah: "Kaos PDI", poin: 250 },
       { hadiah: "Jaket Exclusive", poin: 500 }
     ];
-
     rewardList.innerHTML = '';
-    
     rewards.forEach(r => {
       const achieved = userPoin >= r.poin;
       const li = document.createElement('li');
