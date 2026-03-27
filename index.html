@@ -2,107 +2,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDI P Kabupaten Kepulauan Meranti - Sistem PRO</title>  <style>
-    body { margin:0; font-family: 'Segoe UI'; background:#0f172a; color:white; }
-    header { background:linear-gradient(135deg,#dc2626,#7f1d1d); padding:15px; text-align:center; font-weight:bold; }
+  <title>PDI P Meranti - Sistem PRO</title>  <!-- FIREBASE -->  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>  <style>
+    body { margin:0; font-family:Segoe UI; background:#0f172a; color:white; }
+    header { background:#dc2626; padding:15px; text-align:center; }
     .container { padding:15px; display:grid; gap:15px; }
     .card { background:#1e293b; padding:15px; border-radius:12px; }
-    input, textarea { width:100%; padding:10px; margin-top:8px; border:none; border-radius:8px; background:#334155; color:white; }
-    button { margin-top:10px; padding:10px; border:none; border-radius:8px; background:#dc2626; color:white; cursor:pointer; }
-    .stat { display:flex; justify-content:space-between; }
-    ul { padding-left:20px; }
+    input, textarea { width:100%; padding:10px; margin-top:8px; border:none; border-radius:8px; }
+    button { margin-top:10px; padding:10px; background:#dc2626; color:white; border:none; border-radius:8px; }
   </style></head>
 <body><header>
-  🔴 PDI P KABUPATEN KEPULAUAN MERANTI<br>
-  Sistem Aktivasi Kader & Layanan Masyarakat
+🔴 PDI P KABUPATEN KEPULAUAN MERANTI<br>
+Login & Sistem Kader
 </header><div class="container"><div class="card">
-<h3>📊 Statistik</h3>
-<div class="stat"><span>Laporan</span><span id="total">0</span></div>
-<div class="stat"><span>Poin</span><span id="poin">0</span></div>
+<h3>🔐 Login Kader</h3>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="user"></p>
 </div><div class="card">
-<h3>📩 Laporan Masyarakat</h3>
+<h3>📩 Input Laporan</h3>
 <input id="nama" placeholder="Nama">
-<input id="lokasi" placeholder="Lokasi (auto GPS)">
-<textarea id="masalah" placeholder="Masalah"></textarea>
+<input id="lokasi" placeholder="Lokasi">
+<textarea id="masalah"></textarea>
 <button onclick="getLocation()">📍 Ambil Lokasi</button>
 <button onclick="kirim()">Kirim</button>
 </div><div class="card">
-<h3>📋 Daftar Tugas Kader (Standar)</h3>
-<ul>
-  <li>Kunjungi 1 rumah warga per hari</li>
-  <li>Input minimal 2 data warga baru</li>
-  <li>Laporkan masalah lingkungan</li>
-  <li>Bantu 1 warga (bansos / keluhan)</li>
-  <li>Koordinasi dengan pengurus desa</li>
-</ul>
-</div><div class="card">
-<h3>👥 Tugas Lapangan (Realtime)</h3>
-<ul id="tugas"></ul>
-</div><div class="card">
-<h3>🏆 Leaderboard</h3>
-<ol id="leaderboard"></ol>
+<h3>📋 Data Laporan</h3>
+<ul id="data"></ul>
 </div></div><script>
-let laporan = [];
-let poin = 0;
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      let lat = pos.coords.latitude;
-      let lng = pos.coords.longitude;
-      let maps = `https://www.google.com/maps?q=${lat},${lng}`;
-      document.getElementById('lokasi').value = maps;
-    });
-  } else {
-    alert('GPS tidak didukung');
-  }
+// 🔥 GANTI DENGAN FIREBASE CONFIG KAMU
+const firebaseConfig = {
+  apiKey: "ISI_API_KEY",
+  authDomain: "ISI_DOMAIN",
+  projectId: "ISI_PROJECT_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// LOGIN
+function login(){
+  let email = document.getElementById('email').value;
+  let pass = document.getElementById('password').value;
+
+  auth.signInWithEmailAndPassword(email, pass)
+  .then(user=>{
+    document.getElementById('user').innerText = "Login: " + user.user.email;
+    loadData();
+  })
+  .catch(err=>alert(err.message));
 }
 
-function kirim() {
+// GPS
+function getLocation(){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    let link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+    document.getElementById('lokasi').value = link;
+  });
+}
+
+// SIMPAN DATA
+function kirim(){
   let data = {
     nama: document.getElementById('nama').value,
     lokasi: document.getElementById('lokasi').value,
-    masalah: document.getElementById('masalah').value
+    masalah: document.getElementById('masalah').value,
+    waktu: new Date()
   };
 
-  laporan.push(data);
-  render();
-}
-
-function render() {
-  document.getElementById('total').innerText = laporan.length;
-  document.getElementById('poin').innerText = poin;
-
-  let list = document.getElementById('tugas');
-  list.innerHTML = '';
-
-  laporan.forEach((l,i)=>{
-    let li = document.createElement('li');
-    li.innerHTML = `
-      <b>${l.nama}</b><br>
-      <a href="${l.lokasi}" target="_blank">📍 Lihat Lokasi</a><br>
-      ${l.masalah}<br>
-      <button onclick="selesai(${i})">Selesaikan</button>
-    `;
-    list.appendChild(li);
+  db.collection("laporan").add(data).then(()=>{
+    alert("Tersimpan");
+    loadData();
   });
-
-  renderLeaderboard();
 }
 
-function selesai(i){
-  poin += 10;
-  laporan.splice(i,1);
-  render();
+// LOAD DATA
+function loadData(){
+  db.collection("laporan").orderBy("waktu","desc")
+  .onSnapshot(snapshot=>{
+    let list = document.getElementById('data');
+    list.innerHTML = "";
+
+    snapshot.forEach(doc=>{
+      let d = doc.data();
+      let li = document.createElement('li');
+      li.innerHTML = `
+        <b>${d.nama}</b><br>
+        <a href="${d.lokasi}" target="_blank">Lokasi</a><br>
+        ${d.masalah}
+      `;
+      list.appendChild(li);
+    });
+  });
 }
 
-function renderLeaderboard(){
-  let lb = document.getElementById('leaderboard');
-  lb.innerHTML = `
-    <li>Kader Kecamatan Tebing Tinggi - 120 poin</li>
-    <li>Kader Rangsang - 95 poin</li>
-    <li>Kader Merbau - 80 poin</li>
-  `;
-}
 </script></body>
 </html>
