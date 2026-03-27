@@ -500,6 +500,13 @@ let editFile = null;
 
 const getTodayString = () => { const d = new Date(); return d.toISOString().split('T')[0]; };
 
+function getInitials(name) {
+  if(!name) return "?";
+  const parts = name.trim().split(' ');
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+
 // ==========================================
 // 3. MAP SETUP
 // ==========================================
@@ -577,13 +584,6 @@ auth.onAuthStateChanged(async user => {
   }
 });
 
-function getInitials(name) {
-  if(!name) return "?";
-  const parts = name.trim().split(' ');
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return name.substring(0, 2).toUpperCase();
-}
-
 function renderUserInfo() {
     if(!currentUserData) return;
     const photoURL = currentUserData.photoURL || null;
@@ -611,7 +611,6 @@ function openEditModal() {
     document.getElementById('editNama').value = currentUserData.nama || "";
     document.getElementById('editHp').value = currentUserData.hp || "";
     
-    // Reset Preview
     const preview = document.getElementById('previewAvatar');
     const photoURL = currentUserData.photoURL;
     if(photoURL) {
@@ -647,7 +646,6 @@ async function saveProfile() {
 
     let photoURL = currentUserData.photoURL || "";
 
-    // Upload foto jika ada file baru
     if(editFile){
         try {
             const ref = storage.ref("profile/"+user.uid+"_"+Date.now());
@@ -660,12 +658,24 @@ async function saveProfile() {
         }
     }
 
-    // Update Firestore
     await db.collection('users').doc(user.uid).update({
         nama: nama,
         hp: hp,
         photoURL: photoURL
     });
+
+    // Update Presence agar foto di peta keupdate
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+             db.collection('presence').doc(user.uid).set({
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                nama: nama,
+                photoURL: photoURL,
+                lastSeen: new Date()
+            }, { merge: true });
+        });
+    }
 
     alert("Profil berhasil disimpan!");
     closeModal();
@@ -707,12 +717,17 @@ function listenToOtherUsers() {
         snapshot.docChanges().forEach(change => {
             const data = change.doc.data();
             const uid = change.doc.id;
+            const isMe = (uid === auth.currentUser.uid);
+            const displayName = isMe ? 'Anda' : data.nama;
+            const displayPhoto = isMe ? (currentUserData?.photoURL || null) : (data.photoURL || null);
+
             if (mapMarkers[uid]) {
                 mapMarkers[uid].setLatLng([data.lat, data.lng]);
+                mapMarkers[uid].setPopupContent(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${displayName}</b>`);
             } else {
-                const isMe = (uid === auth.currentUser.uid);
-                const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map)
-                    .bindPopup(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${isMe ? 'Anda' : data.nama}</b>`);
+                const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) })
+                    .addTo(map)
+                    .bindPopup(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${displayName}</b>`);
                 mapMarkers[uid] = marker;
             }
         });
@@ -860,7 +875,7 @@ function loadLeaderboard(){
     snapshot.forEach(doc => { 
       let d=doc.data(); 
       let li=document.createElement('li'); 
-      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':''; 
+      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3:''; 
       
       const photoURL = d.photoURL;
       const initials = getInitials(d.nama);
