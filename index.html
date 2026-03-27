@@ -168,14 +168,14 @@ button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow
 .btn-logout { background: white; color: var(--primary); border: 2px solid rgba(227, 30, 37, 0.2); box-shadow: none; margin-top: 15px; }
 .btn-logout:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-.btn-checkin {
-  background: linear-gradient(135deg, var(--success), #059669);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-  font-size: 1.1rem;
-  padding: 18px;
+.btn-task {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  padding: 8px 16px;
+  width: auto;
+  font-size: 0.85rem;
+  margin: 0;
 }
-.btn-checkin:hover { box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-.btn-checkin.done { background: #e5e7eb; color: #64748b; box-shadow: none; }
+.btn-task.done { background: var(--success); pointer-events: none; }
 
 /* FILE INPUT */
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; }
@@ -207,22 +207,32 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
 }
 .user-id { font-size: 0.85rem; opacity: 0.9; }
 
-/* TASK LIST ITEM */
+/* TASK LIST ITEM (NEW STYLE) */
 .task-item {
   background: rgba(255, 255, 255, 0.6);
   padding: 15px;
   border-radius: 14px;
   margin-top: 12px;
-  border-left: 4px solid var(--primary);
+  border-left: 4px solid var(--primary); /* Default: Merah (Belum) */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.3s;
+}
+.task-item.is-done {
+  border-left-color: var(--success); /* Hijau (Selesai) */
+  opacity: 0.8;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.task-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
 }
-.task-item.done { opacity: 0.7; background: rgba(16, 185, 129, 0.1); border-left-color: var(--success); }
-.task-info h4 { font-size: 0.95rem; color: var(--dark); margin-bottom: 4px; }
-.task-info p { font-size: 0.8rem; color: #64748b; }
-.task-meta { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 4px; display: inline-block; background: rgba(227, 30, 37, 0.1); padding: 2px 8px; border-radius: 4px; }
+.task-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+.task-meta { font-size: 0.8rem; color: #64748b; display: flex; gap: 10px; }
+.task-action { margin-top: 5px; }
 
 /* Badge */
 .badge {
@@ -234,7 +244,7 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
   display: inline-block;
 }
 .badge-done { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-.badge-pending { background: rgba(100, 116, 139, 0.15); color: #64748b; }
+.badge-pending { background: rgba(227, 30, 37, 0.15); color: var(--primary); }
 
 /* LISTS */
 ul { list-style: none; max-height: 300px; overflow-y: auto; padding-right: 5px; }
@@ -320,24 +330,11 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
     <div class="toggle" onclick="showLogin()" style="cursor:pointer; color:var(--primary); margin-top:18px; text-align:center; font-weight:600;">Sudah punya akun? Masuk</div>
   </div>
   
-  <!-- USER INFO DENGAN POIN REALTIME -->
+  <!-- USER INFO -->
   <div id="user"></div>
 </div>
 
-<!-- CHECKIN CARD -->
-<div class="card" id="checkinCard" style="display:none;">
-  <h3><i class="fas fa-calendar-check"></i> Absensi Harian</h3>
-  <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">
-    Tunjukkan aktivitasmu hari ini dan dapatkan +10 poin.
-  </p>
-  
-  <button id="btnCheckin" class="btn-checkin" onclick="handleCheckin()">
-    <i class="fas fa-hand-pointer"></i> Check-In Sekarang
-  </button>
-  <p id="checkinStatus" style="text-align:center; margin-top:10px; font-size:0.85rem; color:#64748b;"></p>
-</div>
-
-<!-- TASK CARD -->
+<!-- TASK CARD (NEW SYSTEM) -->
 <div class="card" id="taskCard" style="display:none;">
   <h3><i class="fas fa-list-check"></i> Tugas Bulan Ini</h3>
   <p id="bulanInfo" style="font-size:0.85rem; color:#64748b; margin-bottom:15px;"></p>
@@ -349,13 +346,13 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <!-- REWARD CARD -->
 <div class="card" id="rewardCard" style="display:none;">
   <h3><i class="fas fa-gift"></i> Reward Kader</h3>
-  <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Tukar poinmu dengan hadiah menarik.</p>
+  <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Kumpulkan poin untuk mendapatkan hadiah.</p>
   <ul id="rewardList">
     <li style="text-align:center; border:none; color:#94a3b8;">Memuat reward...</li>
   </ul>
 </div>
 
-<!-- RIWAYAT ACTIVITY (NEW) -->
+<!-- HISTORY CARD -->
 <div class="card" id="historyCard" style="display:none;">
   <h3><i class="fas fa-history"></i> Riwayat Aktivitas</h3>
   <ul id="historyList">
@@ -420,16 +417,11 @@ const storage = firebase.storage();
 // 2. GLOBAL STATE & HELPER
 // ==========================================
 let currentUserData = null;
-let unsubUser = null; // Listener untuk data user
+let unsubUser = null; 
 
 const getTodayString = () => {
   const d = new Date();
-  return d.toISOString().split('T')[0]; // "YYYY-MM-DD"
-};
-
-const getBulanString = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth() + 1}`;
+  return d.toISOString().split('T')[0];
 };
 
 // ==========================================
@@ -455,7 +447,7 @@ function showLogin(){ document.getElementById('loginForm').classList.add('active
 
 auth.onAuthStateChanged(async user => {
   if(user){
-    // Listener Realtime untuk Data User (Poin Update Otomatis)
+    // Listener Realtime untuk User Data (Poin update otomatis)
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
         renderUserInfo();
@@ -465,7 +457,6 @@ auth.onAuthStateChanged(async user => {
     document.getElementById('registerForm').classList.remove('active');
 
     // Show Cards
-    document.getElementById('checkinCard').style.display = 'block';
     document.getElementById('taskCard').style.display = 'block';
     document.getElementById('rewardCard').style.display = 'block';
     document.getElementById('historyCard').style.display = 'block';
@@ -474,17 +465,14 @@ auth.onAuthStateChanged(async user => {
     loadLeaderboard();
     
     // Init Features
-    initCheckinButton(user.uid);
-    autoGenerateTugas(user.uid);
-    loadTugasElite(user.uid);
+    loadTugasBulanan(user.uid); // NEW SYSTEM
     loadReward(user.uid);
     loadHistory(user.uid);
 
   } else {
     currentUserData = null;
-    if(unsubUser) unsubUser(); // Stop listener
+    if(unsubUser) unsubUser();
     
-    document.getElementById('checkinCard').style.display = 'none';
     document.getElementById('taskCard').style.display = 'none';
     document.getElementById('rewardCard').style.display = 'none';
     document.getElementById('historyCard').style.display = 'none';
@@ -496,7 +484,7 @@ function renderUserInfo() {
     document.getElementById('user').innerHTML = `
       <div class="user-info">
         <span class="user-name"><i class="fas fa-user-circle"></i> ${currentUserData?.nama || "Kader"}</span>
-        <div class="user-poin">${currentUserData?.poin || 0} Poin</div>
+        <div class="user-poin"><i class="fas fa-coins"></i> ${currentUserData?.poin || 0} Poin</div>
         <span class="user-id">ID: ${currentUserData?.id || "-"}</span>
       </div>
       <button class="btn-logout" onclick="logout()"><i class="fas fa-right-from-bracket"></i> Keluar</button>
@@ -521,104 +509,125 @@ function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPasswor
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
-// 5. CHECK-IN SYSTEM (INSTANT)
+// 5. SISTEM TUGAS BULANAN (NEW LOGIC)
 // ==========================================
 
-function setButtonState(state, message) {
-  const btn = document.getElementById('btnCheckin');
-  const status = document.getElementById('checkinStatus');
-  if (!btn || !status) return;
+async function loadTugasBulanan(userId) {
+  const list = document.getElementById('taskList');
+  const info = document.getElementById('bulanInfo');
+  
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1; // 1-12
+  const currentYear = now.getFullYear();
+  
+  info.innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
 
-  btn.classList.remove('done');
-  btn.disabled = false;
+  // 1. Ambil Tugas Bulan Ini
+  db.collection('tugas')
+    .where('bulan', '==', currentMonth)
+    .where('tahun', '==', currentYear)
+    .onSnapshot(async taskSnap => {
+      
+      if (taskSnap.empty) {
+        list.innerHTML = '<p style="text-align:center; color:#64748b;">Tidak ada tugas bulan ini.</p>';
+        return;
+      }
 
-  if (state === 'loading') {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-    status.innerText = message || "Menyimpan data...";
-    status.style.color = "#64748b";
-  } else if (state === 'success') {
-    btn.disabled = true;
-    btn.classList.add('done');
-    btn.innerHTML = '<i class="fas fa-check-circle"></i> Sukses';
-    status.innerText = message || "+10 Poin ditambahkan!";
-    status.style.color = "#10B981";
-  } else if (state === 'done') {
-    btn.disabled = true;
-    btn.classList.add('done');
-    btn.innerHTML = '<i class="fas fa-check"></i> Sudah Check-In';
-    status.innerText = "Anda sudah check-in hari ini.";
-    status.style.color = "#10B981";
-  } else if (state === 'error') {
-    btn.innerHTML = '<i class="fas fa-sync-alt"></i> Coba Lagi';
-    status.innerText = message || "Gagal.";
-    status.style.color = "#E31E25";
-  } else {
-    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Check-In Sekarang';
-    status.innerText = "Tekan tombol untuk absen.";
-    status.style.color = "#64748b";
-  }
+      // 2. Ambil semua task_done user untuk bulan ini (Optimasi: bisa pakai query bulan jika perlu)
+      const doneSnap = await db.collection('task_done')
+        .where('userId', '==', userId)
+        .get();
+
+      // Buat Set ID tugas yang sudah selesai
+      const doneTaskIds = new Set();
+      doneSnap.forEach(doc => {
+        doneTaskIds.add(doc.data().taskId);
+      });
+
+      list.innerHTML = '';
+      
+      taskSnap.forEach(doc => {
+        const t = doc.data();
+        const taskId = doc.id;
+        const isDone = doneTaskIds.has(taskId);
+
+        const div = document.createElement('div');
+        div.className = `task-item ${isDone ? 'is-done' : ''}`;
+        
+        // Icon Status
+        const statusIcon = isDone 
+          ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' 
+          : '<i class="fas fa-circle" style="color:var(--primary)"></i>';
+
+        // Aksi Button
+        let actionHtml = '';
+        if (isDone) {
+          actionHtml = `<span class="badge badge-done"><i class="fas fa-check"></i> Selesai</span>`;
+        } else {
+          if (t.tipe === 'checkin') {
+            actionHtml = `<button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button>`;
+          } else if (t.tipe === 'lapangan') {
+            actionHtml = `<button class="btn-task" onclick="alert('Gunakan form Laporan Lapangan di bawah untuk menyelesaikan tugas ini.')"><i class="fas fa-paper-plane"></i> Kerjakan</button>`;
+          } else {
+             actionHtml = `<button class="btn-task" onclick="alert('Selesaikan via form laporan dengan menyertakan foto.')"><i class="fas fa-camera"></i> Kerjakan</button>`;
+          }
+        }
+
+        div.innerHTML = `
+          <div class="task-header">
+            <span class="task-title">${statusIcon} ${t.nama}</span>
+            <span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span>
+          </div>
+          <div class="task-meta">
+            <span><i class="fas fa-tag"></i> ${t.tipe}</span>
+            ${t.butuhFoto ? '<span><i class="fas fa-camera"></i> Foto</span>' : ''}
+            ${t.butuhGPS ? '<span><i class="fas fa-map"></i> GPS</span>' : ''}
+          </div>
+          <div class="task-action">
+            ${actionHtml}
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    });
 }
 
-async function initCheckinButton(userId) {
-  const today = getTodayString();
-  try {
-    const snapshot = await db.collection('checkin')
-      .where('uid', '==', userId)
-      .where('tanggal', '==', today)
-      .limit(1)
-      .get();
-
-    if (!snapshot.empty) {
-      setButtonState('done');
-    } else {
-      setButtonState('idle');
-    }
-  } catch (e) {
-    console.error("Error cek status checkin:", e);
-    setButtonState('idle');
-  }
-}
-
-async function handleCheckin() {
+// Logic Check-in untuk Tugas
+async function taskCheckin(taskId, poin) {
   const user = auth.currentUser;
-  if (!user) return alert("Sesi habis, silakan login ulang.");
+  if(!user) return alert("Login dulu.");
+  
+  if(!navigator.geolocation) return alert("GPS tidak didukung.");
 
-  setButtonState('loading');
-
-  const today = getTodayString();
-  try {
-    const check = await db.collection('checkin')
-      .where('uid', '==', user.uid)
-      .where('tanggal', '==', today)
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const today = getTodayString();
+    
+    // Validasi Double (Cek task_done)
+    const check = await db.collection('task_done')
+      .where('userId', '==', user.uid)
+      .where('taskId', '==', taskId)
       .get();
       
-    if (!check.empty) {
-      setButtonState('done');
-      return;
-    }
+    if(!check.empty) return alert("Tugas sudah dikerjakan!");
 
-    await db.collection('checkin').add({
-      uid: user.uid,
-      nama: currentUserData?.nama || "Kader",
-      tanggal: today,
-      tipe: 'checkin',
-      waktu: new Date()
+    // Simpan ke task_done
+    await db.collection('task_done').add({
+      userId: user.uid,
+      taskId: taskId,
+      waktu: new Date(),
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude
     });
 
-    // Poin diupdate via cloud function atau trigger di client (disini di client)
+    // Tambah Poin
     await db.collection('users').doc(user.uid).update({
-      poin: firebase.firestore.FieldValue.increment(10)
+      poin: firebase.firestore.FieldValue.increment(poin)
     });
 
-    setButtonState('success', "+10 Poin Ditambahkan!");
-    loadTugasElite(user.uid);
+    alert("Check-in Berhasil! +" + poin + " Poin.");
     loadHistory(user.uid); // Refresh history
 
-  } catch (err) {
-    console.error("Check-in Error:", err);
-    setButtonState('error', "Gagal menyimpan data.");
-  }
+  }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
 }
 
 // ==========================================
@@ -630,9 +639,6 @@ async function kirim(){
   const file = document.getElementById('foto').files[0];
 
   if(masalah.length < 50) return alert("Laporan minimal 50 karakter!");
-  
-  const today = getTodayString();
-  // Skip limit check for simplicity in this snippet
   
   if(!navigator.geolocation) return alert("GPS tidak didukung.");
   
@@ -652,12 +658,13 @@ async function kirim(){
       masalah, foto: fotoURL,
       lat: pos.coords.latitude,
       lng: pos.coords.longitude,
-      tanggal: today,
-      tipe: 'laporan',
+      tanggal: getTodayString(),
       waktu: new Date()
     });
 
-    await db.collection("users").doc(user.uid).update({
+    // Cek apakah ada tugas laporan yang belum selesai, lakukan logic similar jika perlu
+    // Disini kita langsung tambah poin saja untuk simplicitas
+    await db.collection('users').doc(user.uid).update({
       poin: firebase.firestore.FieldValue.increment(10)
     });
 
@@ -665,136 +672,21 @@ async function kirim(){
     document.getElementById('masalah').value="";
     document.getElementById('foto').value="";
     
-    loadTugasElite(user.uid);
     loadHistory(user.uid);
 
   }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
 }
 
 // ==========================================
-// 7. AUTO GENERATE TUGAS BULANAN
-// ==========================================
-const masterTugas = [
-  { nama: "Absensi Harian", tipe: "checkin", poin: 10, target: 1, deskripsi: "Check-in kehadiran hari ini." },
-  { nama: "Laporan Lapangan", tipe: "lapangan", poin: 10, target: 5, deskripsi: "Kirim laporan kegiatan 5 kali." },
-  { nama: "Dokumentasi Digital", tipe: "digital", poin: 10, target: 1, deskripsi: "Upload foto kegiatan unggahan." }
-];
-
-async function autoGenerateTugas(userId) {
-  const bulan = getBulanString();
-  const cardTitle = document.getElementById('bulanInfo');
-  
-  // Set Nama Bulan
-  const d = new Date();
-  cardTitle.innerText = `Periode: ${d.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
-
-  const check = await db.collection('tugas')
-    .where('userId', '==', userId)
-    .where('bulan', '==', bulan)
-    .get();
-
-  if(check.empty){
-    const batch = db.batch();
-    masterTugas.forEach(t => {
-      const ref = db.collection('tugas').doc();
-      batch.set(ref, { ...t, userId, bulan, createdAt: new Date() });
-    });
-    await batch.commit();
-  }
-}
-
-// ==========================================
-// 8. LOAD TUGAS ELITE (AUTO VALIDASI)
-// ==========================================
-function loadTugasElite(userId) {
-  const list = document.getElementById('taskList');
-  const bulan = getBulanString();
-  const today = getTodayString();
-
-  db.collection('tugas')
-    .where('userId', '==', userId)
-    .where('bulan', '==', bulan)
-    .onSnapshot(async snap => {
-      
-      list.innerHTML = '';
-      
-      if(snap.empty){
-        list.innerHTML = '<p style="text-align:center; color:#64748b;">Tidak ada tugas bulan ini.</p>';
-        return;
-      }
-
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-      const checkinSnap = await db.collection('checkin')
-        .where('uid', '==', userId)
-        .where('waktu', '>=', startOfMonth)
-        .get();
-      
-      const laporanSnap = await db.collection('laporan')
-        .where('userId', '==', userId)
-        .where('waktu', '>=', startOfMonth)
-        .get();
-
-      const totalCheckin = checkinSnap.size;
-      const totalLaporan = laporanSnap.size;
-      const checkinToday = checkinSnap.docs.some(d => d.data().tanggal === today);
-      const hasPhoto = laporanSnap.docs.some(d => d.data().foto);
-
-      snap.forEach(doc => {
-        const t = doc.data();
-        let progress = 0;
-        let isDone = false;
-        
-        if(t.tipe === 'checkin'){
-           if(t.target === 1) progress = checkinToday ? 1 : 0;
-           else progress = totalCheckin;
-           if(progress >= t.target) isDone = true;
-        } 
-        else if(t.tipe === 'lapangan'){
-          progress = totalLaporan;
-          if(progress >= t.target) isDone = true;
-        }
-        else if(t.tipe === 'digital'){
-          progress = hasPhoto ? 1 : 0;
-          if(progress >= t.target) isDone = true;
-        }
-
-        const div = document.createElement('div');
-        div.className = `task-item ${isDone ? 'done' : ''}`;
-        div.innerHTML = `
-          <div class="task-info">
-            <h4>${t.nama} ${isDone ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : ''}</h4>
-            <p>${t.deskripsi}</p>
-            <span class="task-meta">${t.poin} Poin</span>
-          </div>
-          <div class="badge ${isDone ? 'badge-done' : 'badge-pending'}">
-            ${isDone ? 'Selesai' : `${progress}/${t.target}`}
-          </div>
-        `;
-        list.appendChild(div);
-      });
-    });
-}
-
-// ==========================================
-// 9. RIWAYAT AKTIVITAS (NEW)
+// 7. RIWAYAT AKTIVITAS
 // ==========================================
 function loadHistory(userId) {
     const list = document.getElementById('historyList');
     
-    // Ambil 10 aktivitas terbaru dari collection 'activity' (jika ada) atau gabungan
-    // Di sini kita query checkin dan laporan lalu gabungkan
+    // Gabungkan Checkin & Laporan
+    // Sederhana: Query checkin dan laporan terpisah, tampilkan gabungan
     
-    const startOfDay = new Date();
-    startOfDay.setHours(0,0,0,0);
-    
-    // Listener untuk Checkin hari ini
-    db.collection('checkin')
-    .where('uid', '==', userId)
-    .orderBy('waktu', 'desc')
-    .limit(5)
-    .onSnapshot(snap => {
+    db.collection('task_done').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).onSnapshot(async snap => {
         let html = '';
         if(snap.empty) html += '<li style="border:none; text-align:center; color:#64748b;">Belum ada aktivitas</li>';
         
@@ -803,14 +695,13 @@ function loadHistory(userId) {
             const time = d.waktu.toDate().toLocaleString('id-ID');
             html += `<li style="border-left-color: var(--success);">
                 <div style="display:flex; justify-content:space-between;">
-                    <b><i class="fas fa-check-circle" style="color:var(--success)"></i> Check-In</b>
+                    <b><i class="fas fa-check-circle" style="color:var(--success)"></i> Tugas Selesai</b>
                     <small style="color:#64748b">${time}</small>
                 </div>
             </li>`;
         });
         
-        // Tambahkan Laporan
-        db.collection('laporan').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).get().then(lapSnap => {
+        db.collection('laporan').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).onSnapshot(lapSnap => {
             lapSnap.forEach(doc => {
                 const d = doc.data();
                 const time = d.waktu.toDate().toLocaleString('id-ID');
@@ -819,7 +710,6 @@ function loadHistory(userId) {
                         <b><i class="fas fa-file-alt" style="color:var(--warning)"></i> Laporan</b>
                         <small style="color:#64748b">${time}</small>
                     </div>
-                    <p style="font-size:0.8rem; margin-top:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;">${d.masalah}</p>
                 </li>`;
             });
             list.innerHTML = html;
@@ -828,7 +718,7 @@ function loadHistory(userId) {
 }
 
 // ==========================================
-// 10. LOAD DATA LAINNYA
+// 8. LOAD DATA LAINNYA
 // ==========================================
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
@@ -876,19 +766,18 @@ function loadLeaderboard(){
 }
 
 // ==========================================
-// 11. REWARD SYSTEM
+// 9. REWARD SYSTEM
 // ==========================================
 function loadReward(userId) {
   db.collection('users').doc(userId).onSnapshot(userDoc => {
     const userPoin = userDoc.data()?.poin || 0;
     
-    // Hardcoded Rewards jika collection kosong
-    // Anda bisa pindahkan ke Firestore nanti
+    // Hardcoded Rewards (Bisa pindah ke Firestore)
     const rewards = [
-      { hadiah: "Pulsa 10rb", poin: 100 },
-      { hadiah: "Voucher Makan", poin: 250 },
-      { hadiah: "Kaos PDI", poin: 500 },
-      { hadiah: "Jaket Exlusive", poin: 1000 }
+      { hadiah: "Stiker PDI", poin: 50 },
+      { hadiah: "Pin PDI", poin: 100 },
+      { hadiah: "Kaos PDI", poin: 250 },
+      { hadiah: "Jaket Exclusive", poin: 500 }
     ];
 
     rewardList.innerHTML = '';
