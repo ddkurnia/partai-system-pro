@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Google Fonts & Icons -->
+<!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -73,12 +73,12 @@ header {
   margin: 0 auto;
 }
 
-/* LOGO - PERBAIKAN: Background transparan agar logo PNG kelihatan */
+/* LOGO */
 .logo {
   width: 50px; height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  background: transparent; /* Diubah dari white */
+  background: transparent; 
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
   border: 2px solid rgba(227, 30, 37, 0.1);
@@ -180,8 +180,15 @@ button:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
 .btn-task { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 8px 16px; width: auto; font-size: 0.85rem; margin: 0; }
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; }
 
-/* MAP */
-#map { height: 300px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); z-index: 1; background: #fff; }
+/* MAP - PERBAIKAN DISPLAY */
+#map { 
+  height: 300px; 
+  border-radius: 18px; 
+  border: 2px solid rgba(255,255,255,0.5); 
+  z-index: 1; 
+  background: #fff; 
+}
+/* Paksa tile peta agar selalu terlihat */
 .leaflet-tile { visibility: visible !important; opacity: 1 !important; }
 
 /* USER PROFILE */
@@ -262,7 +269,6 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; p
 <header>
   <div class="header-content">
     <div class="logo">
-      <!-- PERBAIKAN LOGO: Langsung pakai link asli, onerror pakai avatar huruf -->
       <img src="https://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff';">
     </div>
     <div class="header-text">
@@ -280,7 +286,6 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; p
     <h2 class="hero-title">Sistem Elite<br>Monitoring Kader</h2>
     <p class="hero-subtitle">Platform digital terintegrasi untuk mengontrol, mengelola, dan meningkatkan kinerja kader secara realtime.</p>
   </div>
-
   <div class="card">
     <h3><i class="fas fa-route"></i> Cara Kerja</h3>
     <div class="step-item"><div class="step-num">1</div><div class="step-content">Kader login ke sistem.</div></div>
@@ -289,7 +294,6 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; p
     <div class="step-item"><div class="step-num">4</div><div class="step-content">Kumpulkan poin.</div></div>
     <div class="step-item"><div class="step-num">5</div><div class="step-content">Tukar reward.</div></div>
   </div>
-
   <div class="card">
     <h3><i class="fas fa-coins"></i> Reward</h3>
     <div class="reward-highlight">
@@ -426,19 +430,24 @@ const getInitials = (name) => {
 };
 
 // ==========================================
-// 4. MAP
+// 4. MAP SETUP - PERBAIKAN TILE LAYER
 // ==========================================
 function initMap() {
   if (map) return;
   map = L.map('map').setView([0.99, 102.7], 12);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png').addTo(map);
+  
+  // GANTI Tile Layer ke OSM Standar (Paling stabil)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
+  }).addTo(map);
 }
 
 function getUserIcon(isMe) {
   const color = isMe ? '#E31E25' : '#10B981';
   return L.divIcon({
     className: '',
-    html: `<div style="background:${color}; width:30px; height:30px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center;"><i class='fas fa-user' style="color:white; font-size:12px;"></i></div>`,
+    html: `<div style="background:${color}; width:30px; height:30px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);"><i class='fas fa-user' style="color:white; font-size:12px;"></i></div>`,
     iconSize: [30, 30],
     iconAnchor: [15, 30]
   });
@@ -541,7 +550,6 @@ function previewFile(input) {
     }
 }
 
-// PERBAIKAN: Save Profile Tangguh
 async function saveProfile() {
     const nama = document.getElementById('editNama').value;
     const hp = document.getElementById('editHp').value;
@@ -550,7 +558,6 @@ async function saveProfile() {
 
     let photoURL = currentUserData.photoURL || "";
 
-    // 1. Proses Foto jika ada
     if(editFile){
         try {
             const ref = storage.ref("profile/" + user.uid + "_" + Date.now());
@@ -558,16 +565,13 @@ async function saveProfile() {
             photoURL = await ref.getDownloadURL();
         } catch(e) {
             console.error("Upload Error:", e);
-            // Jangan return, lanjut simpan data lainnya
             alert("Gagal upload foto (Cek Console/Permission), data lain disimpan.");
         }
     }
 
-    // 2. Simpan ke Firestore
     try {
         await db.collection('users').doc(user.uid).update({ nama, hp, photoURL });
 
-        // 3. Update Presence
         if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                  db.collection('presence').doc(user.uid).set({
