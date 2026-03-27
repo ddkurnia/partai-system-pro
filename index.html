@@ -237,22 +237,6 @@ input[type="file"]::file-selector-button:hover { background: #334155; }
 .badge-progress { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
 .badge-done { background: rgba(16, 185, 129, 0.15); color: var(--success); }
 
-/* Progress Bar */
-.progress-bar {
-  width: 100%;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 3px;
-  margin-top: 8px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-
 /* LISTS */
 ul { list-style: none; max-height: 300px; overflow-y: auto; padding-right: 5px; }
 ul::-webkit-scrollbar { width: 5px; }
@@ -344,12 +328,21 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   <div id="user"></div>
 </div>
 
-<!-- TASK CARD (NEW) -->
+<!-- TASK CARD (UPDATED) -->
 <div class="card" id="taskCard" style="display:none;">
-  <h3><i class="fas fa-list-check"></i> Tugas Kader</h3>
-  <div id="taskList">
-    <p style="text-align:center; color:#64748b; font-size:0.9rem;">Memuat tugas...</p>
-  </div>
+  <h3><i class="fas fa-list-check"></i> Tugas Bulan Ini</h3>
+  <p id="bulanInfo" style="font-size:0.85rem; color:#64748b; margin-bottom:15px;"></p>
+  <ul id="tugasList">
+    <li style="text-align:center; border:none; color:#94a3b8;">Memuat tugas...</li>
+  </ul>
+</div>
+
+<!-- REWARD CARD (NEW) -->
+<div class="card" id="rewardCard" style="display:none;">
+  <h3><i class="fas fa-gift"></i> Reward Saya</h3>
+  <ul id="rewardList">
+    <li style="text-align:center; border:none; color:#94a3b8;">Memuat reward...</li>
+  </ul>
 </div>
 
 <!-- REPORT CARD -->
@@ -442,7 +435,7 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById('user').innerHTML = `
       <div class="user-info">
         <span class="user-name"><i class="fas fa-user-circle"></i> ${data?.nama || "Kader"}</span>
-        <span class="user-id">ID: ${data?.id || "-"}</span>
+        <span class="user-id">ID: ${data?.id || "-"} | Poin: ${data?.poin || 0}</span>
       </div>
       <button class="btn-logout" onclick="logout()">
         <i class="fas fa-right-from-bracket"></i> Keluar
@@ -452,12 +445,20 @@ auth.onAuthStateChanged(async user=>{
     document.getElementById('loginForm').classList.remove('active');
     document.getElementById('registerForm').classList.remove('active');
 
+    // Tampilkan Card
+    document.getElementById('taskCard').style.display = 'block';
+    document.getElementById('rewardCard').style.display = 'block';
+
     loadData();
     loadLeaderboard();
-    loadTasks(user.uid); // Load Tasks
-    document.getElementById('taskCard').style.display = 'block';
+    
+    // Jalankan Sistem Tugas & Reward
+    await autoGenerateTugas(user.uid);
+    loadTugas(user.uid);
+    loadReward(user.uid);
   } else {
     document.getElementById('taskCard').style.display = 'none';
+    document.getElementById('rewardCard').style.display = 'none';
   }
 });
 
@@ -583,112 +584,207 @@ function loadLeaderboard(){
 }
 
 // ==========================================
-// FITUR BARU: TUGAS KADER
+// FITUR PRO: SISTEM TUGAS BULANAN & REWARD
 // ==========================================
 
-// Load Tasks
-function loadTasks(userId) {
-  const taskListContainer = document.getElementById('taskList');
+const masterTugas = [
+  { nama: "Kunjungan Warga", deskripsi: "Kunjungi minimal 5 rumah warga di wilayah Anda.", poin: 50 },
+  { nama: "Sebar Brosur", deskripsi: "Sebar brosur sosialisasi program partai.", poin: 30 },
+  { nama: "Pendataan Pemilih", deskripsi: "Catat data pemilih potensial di TPS terdekat.", poin: 60 },
+  { nama: "Posting Sosmed", deskripsi: "Upload foto aktivitas ke medsos dengan hashtag partai.", poin: 20 },
+  { nama: "Koordinasi Tim", deskripsi: "Mengadakan rapat koordinasi kecil dengan kader.", poin: 40 },
+  { nama: "Absensi Kader", deskripsi: "Pastikan 10 kader aktif melakukan login.", poin: 35 },
+  { nama: "Lapor Kegiatan", deskripsi: "Kirim laporan kegiatan via sistem minimal 2x.", poin: 25 }
+];
 
-  // 1. Ambil daftar tugas yang aktif
-  db.collection('tugas').where('status', '==', 'aktif').onSnapshot(async taskSnapshot => {
-    if (taskSnapshot.empty) {
-      taskListContainer.innerHTML = '<p style="text-align:center; color:#64748b; font-size:0.9rem;">Tidak ada tugas saat ini.</p>';
-      return;
-    }
+// 1. Auto Generate Tugas
+async function autoGenerateTugas(userId) {
+  const db = firebase.firestore();
+  let now = new Date();
+  let bulanSekarang = now.getFullYear() + "-" + (now.getMonth() + 1);
 
-    // 2. Cek riwayat tugas user untuk semua tugas ini sekaligus
-    const historySnapshot = await db.collection('riwayat_tugas')
-      .where('userId', '==', userId)
+  try {
+    const checkTugas = await db.collection("tugas")
+      .where("userId", "==", userId)
+      .where("bulan", "==", bulanSekarang)
       .get();
 
-    // Buat map riwayat untuk akses cepat { tugasId: data }
-    const historyMap = {};
-    historySnapshot.forEach(doc => {
-      historyMap[doc.data().tugasId] = doc.data();
-    });
-
-    taskListContainer.innerHTML = '';
-
-    taskSnapshot.forEach(doc => {
-      const tugas = doc.data();
-      const tugasId = doc.id;
-      const userHistory = historyMap[tugasId];
-
-      const div = document.createElement('div');
-      div.className = 'task-item';
-
-      let actionHtml = '';
-      let infoHtml = `<div class="task-info">
-                        <h4>${tugas.nama}</h4>
-                        <p>${tugas.deskripsi}</p>
-                        <span class="task-meta"><i class='fas fa-coins'></i> ${tugas.poin} Poin</span>
-                      </div>`;
-
-      if (userHistory) {
-        // Jika sudah pernah ambil
-        const percent = Math.min(100, (userHistory.progress / tugas.target) * 100);
-        
-        if (userHistory.status === 'selesai') {
-          actionHtml = `<div class="task-action"><span class="badge badge-done"><i class="fas fa-check"></i> Selesai</span></div>`;
-        } else {
-          // Jika masih proses
-          actionHtml = `<div class="task-action">
-                          <span class="badge badge-progress">${userHistory.progress}/${tugas.target}</span>
-                          <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%"></div></div>
-                        </div>`;
+    if (checkTugas.empty) {
+      const jumlahTugas = Math.floor(Math.random() * 3) + 3; // 3-5 tugas
+      const tugasTerpilih = [];
+      
+      while(tugasTerpilih.length < jumlahTugas) {
+        const randomIndex = Math.floor(Math.random() * masterTugas.length);
+        if (!tugasTerpilih.includes(randomIndex)) {
+          tugasTerpilih.push(randomIndex);
         }
-      } else {
-        // Jika belum pernah ambil
-        actionHtml = `<div class="task-action">
-                        <button class="btn-task" onclick="ambilTugas('${tugasId}', ${tugas.target})">
-                          <i class="fas fa-play"></i> Kerjakan
-                        </button>
-                      </div>`;
       }
 
-      div.innerHTML = infoHtml + actionHtml;
-      taskListContainer.appendChild(div);
-    });
-  });
+      const batch = db.batch();
+      tugasTerpilih.forEach(index => {
+        const template = masterTugas[index];
+        const ref = db.collection("tugas").doc();
+        
+        batch.set(ref, {
+          userId: userId,
+          nama: template.nama,
+          deskripsi: template.deskripsi,
+          poin: template.poin,
+          status: "aktif",
+          bulan: bulanSekarang,
+          createdAt: new Date()
+        });
+      });
+
+      await batch.commit();
+      console.log("Tugas bulan ini berhasil di-generate.");
+    }
+  } catch (e) {
+    console.error("Error generate tugas:", e);
+  }
 }
 
-// Ambil Tugas
-async function ambilTugas(tugasId, target) {
-  const user = auth.currentUser;
-  if (!user) return;
+// 2. Load Tugas (Realtime)
+function loadTugas(userId) {
+  const db = firebase.firestore();
+  const tugasList = document.getElementById('tugasList');
+  const bulanInfo = document.getElementById('bulanInfo');
 
-  // Validasi double check
-  const check = await db.collection('riwayat_tugas')
-    .where('userId', '==', user.uid)
-    .where('tugasId', '==', tugasId)
-    .get();
+  let now = new Date();
+  let bulanSekarang = now.getFullYear() + "-" + (now.getMonth() + 1);
+  
+  const namaBulan = now.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+  bulanInfo.innerText = `Periode: ${namaBulan}`;
 
-  if (!check.empty) {
-    return alert("Anda sudah mengambil tugas ini sebelumnya.");
+  db.collection("tugas")
+    .where("userId", "==", userId)
+    .where("bulan", "==", bulanSekarang)
+    .onSnapshot(snapshot => {
+      tugasList.innerHTML = "";
+      
+      if(snapshot.empty){
+        tugasList.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Tidak ada tugas bulan ini.</li>";
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        let t = doc.data();
+        let id = doc.id;
+        
+        let li = document.createElement('li');
+        
+        if(t.status === "selesai") {
+          li.style.opacity = "0.7";
+          li.style.background = "rgba(16, 185, 129, 0.1)";
+          li.style.borderLeftColor = "#10B981";
+        }
+
+        li.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:start;">
+            <div style="flex:1;">
+              <b style="font-size:0.95rem;">${t.nama}</b> <br>
+              <small style="color:#64748b;">${t.deskripsi}</small><br>
+              <span style="font-size:0.8rem; font-weight:700; color:#E31E25; margin-top:4px; display:inline-block;">
+                <i class="fas fa-coins"></i> ${t.poin} Poin
+              </span>
+            </div>
+            <div style="margin-left:10px;">
+              ${t.status === 'aktif' 
+                ? `<button class="btn-task" onclick="selesaikanTugas('${id}', ${t.poin})" style="padding:6px 12px; font-size:0.8rem;">
+                     <i class="fas fa-check"></i> Selesai
+                   </button>` 
+                : `<span class="badge badge-done"><i class="fas fa-check-circle"></i> Selesai</span>`
+              }
+            </div>
+          </div>
+        `;
+        tugasList.appendChild(li);
+      });
+    });
+}
+
+// 3. Selesaikan Tugas
+async function selesaikanTugas(id, poin) {
+  const db = firebase.firestore();
+  const user = firebase.auth().currentUser;
+
+  if(!user) return alert("Sesi habis, silakan login ulang.");
+  if(!confirm("Anda yakin ingin menyelesaikan tugas ini?")) return;
+
+  try {
+    await db.collection("tugas").doc(id).update({
+      status: "selesai"
+    });
+
+    await db.collection("users").doc(user.uid).update({
+      poin: firebase.firestore.FieldValue.increment(poin)
+    });
+
+    alert("Tugas diselesaikan! +" + poin + " Poin.");
+  
+  } catch (e) {
+    alert("Gagal menyelesaikan tugas: " + e.message);
   }
+}
 
-  // Simpan ke riwayat_tugas
-  db.collection('riwayat_tugas').add({
-    userId: user.uid,
-    tugasId: tugasId,
-    progress: 1, // Langsung isi progress 1
-    status: (target <= 1) ? 'selesai' : 'proses', // Jika target 1, langsung selesai
-    waktu: new Date()
-  }).then(() => {
-    // Update poin user jika target 1 (langsung selesai)
-    if (target <= 1) {
-       db.collection('tugas').doc(tugasId).get().then(tDoc => {
-          const poin = tDoc.data().poin;
-          db.collection("users").doc(user.uid).update({
-            poin: firebase.firestore.FieldValue.increment(poin)
-          });
-       });
-       alert("Selamat! Tugas selesai dan poin ditambahkan.");
-    } else {
-       alert("Tugas dikerjakan! Lengkapi target " + target + " kali.");
-    }
-  }).catch(e => alert("Gagal mengambil tugas: " + e.message));
+// 4. Load Reward
+function loadReward(userId) {
+  const db = firebase.firestore();
+  const rewardList = document.getElementById('rewardList');
+
+  db.collection("users").doc(userId).onSnapshot(userDoc => {
+    if (!userDoc.exists) return;
+    
+    const userPoin = userDoc.data().poin || 0;
+
+    db.collection("reward").orderBy("poin", "asc").get().then(snapshot => {
+      rewardList.innerHTML = "";
+      
+      if(snapshot.empty){
+        rewardList.innerHTML = "<li style='text-align:center; border:none;'>Belum ada reward tersedia.</li>";
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        let r = doc.data();
+        let li = document.createElement('li');
+
+        if(userPoin >= r.poin) {
+          li.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <b style="color:#10B981;">${r.nama}</b><br>
+                <small>${r.deskripsi}</small>
+              </div>
+              <div class="badge badge-done" style="background:rgba(16, 185, 129, 0.15); color:#10B981;">
+                Terbuka
+              </div>
+            </div>
+            <small style="display:block; margin-top:5px; color:#64748b;">
+              Syarat: ${r.poin} Poin (Poin Anda: ${userPoin})
+            </small>
+          `;
+        } else {
+          li.style.opacity = "0.8";
+          li.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <b>${r.nama}</b><br>
+                <small>${r.deskripsi}</small>
+              </div>
+              <div class="badge" style="background:#e5e7eb; color:#64748b;">
+                <i class="fas fa-lock"></i> Terkunci
+              </div>
+            </div>
+            <small style="display:block; margin-top:5px; color:#E31E25;">
+              Butuh ${r.poin - userPoin} poin lagi
+            </small>
+          `;
+        }
+        rewardList.appendChild(li);
+      });
+    });
+  });
 }
 
 </script>
