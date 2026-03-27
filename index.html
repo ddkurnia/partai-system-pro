@@ -84,21 +84,20 @@ header {
 
 /* LOGO STYLING */
 .logo {
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
+  width: 50px; /* Ukuran disesuaikan */
+  height: 50px;
+  border-radius: 50%; /* Bulat penuh */
   overflow: hidden;
   background: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
   position: relative;
+  border: 2px solid rgba(227, 30, 37, 0.1);
 }
 .logo img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 2px;
-  background: white;
+  object-fit: cover; /* Cover agar penuh */
 }
 
 .header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
@@ -354,10 +353,9 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 
 <header>
   <div class="header-content">
-    <!-- LOGO DARI GITHUB -->
     <div class="logo">
-      <!-- GANTI DENGAN URL LOGO GITHUB ANDA -->
-      <img src="https://raw.githubusercontent.com/nama-user/nama-repo/main/logo-pdi.png" alt="Logo PDI Perjuangan">
+      <!-- LOGO DARI URL YANG DIBERIKAN -->
+      <img src="http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI Perjuangan">
     </div>
     
     <div class="header-text">
@@ -584,12 +582,9 @@ function renderUserInfo() {
 function signup(){
   let data = { nama: regNama.value, id: regId.value, email: regEmail.value, hp: regHp.value, alamat: regAlamat.value };
   if(!Object.values(data).every(v => v) || !regPassword.value) return alert("Lengkapi semua data!");
-
   auth.createUserWithEmailAndPassword(data.email, regPassword.value)
-  .then(res => {
-    db.collection("users").doc(res.user.uid).set({...data, poin:0});
-    alert("Berhasil!"); showLogin();
-  }).catch(e => alert(e.message));
+  .then(res => { db.collection("users").doc(res.user.uid).set({...data, poin:0}); alert("Berhasil!"); showLogin(); })
+  .catch(e => alert(e.message));
 }
 
 function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).catch(e=>alert(e.message)); }
@@ -601,11 +596,9 @@ function logout(){ auth.signOut(); location.reload(); }
 async function loadTugasBulanan(userId) {
   const list = document.getElementById('taskList');
   const info = document.getElementById('bulanInfo');
-  
   const now = new Date();
   const currentMonth = now.getMonth() + 1; 
   const currentYear = now.getFullYear();
-  
   info.innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
 
   const checkSnap = await db.collection('tugas').where('bulan', '==', currentMonth).where('tahun', '==', currentYear).limit(1).get();
@@ -614,7 +607,6 @@ async function loadTugasBulanan(userId) {
   db.collection('tugas').where('bulan', '==', currentMonth).where('tahun', '==', currentYear)
     .onSnapshot(async taskSnap => {
       if (taskSnap.empty) { list.innerHTML = '<p style="text-align:center; color:#64748b;">Tidak ada tugas.</p>'; return; }
-
       const doneSnap = await db.collection('task_done').where('userId', '==', userId).get();
       const doneTaskIds = new Set();
       doneSnap.forEach(d => doneTaskIds.add(d.data().taskId));
@@ -626,26 +618,12 @@ async function loadTugasBulanan(userId) {
         const isDone = doneTaskIds.has(taskId);
         const div = document.createElement('div');
         div.className = `task-item ${isDone ? 'is-done' : ''}`;
-        
         const statusIcon = isDone ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : '<i class="fas fa-circle" style="color:var(--primary); font-size:8px;"></i>';
-
         let formHtml = '';
         if (!isDone) {
-            if (t.tipe === 'digital' || t.tipe === 'link') {
-                formHtml = `<div class="task-form" id="form-${taskId}">
-                        <input type="url" id="input-${taskId}" placeholder="Masukkan Link...">
-                        <button class="btn-task" onclick="submitTugasLink('${taskId}', ${t.poin})">Kirim Link</button>
-                    </div>`;
-            } else if (t.tipe === 'lapangan' || t.tipe === 'foto') {
-                 formHtml = `<div class="task-form" id="form-${taskId}">
-                        <input type="file" id="file-${taskId}" accept="image/*">
-                        <button class="btn-task" onclick="submitTugasFoto('${taskId}', ${t.poin})">Upload Bukti</button>
-                    </div>`;
-            } else if (t.tipe === 'checkin') {
-                 formHtml = `<div class="task-form" id="form-${taskId}" style="display:block;">
-                        <button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button>
-                    </div>`;
-            }
+            if (t.tipe === 'digital' || t.tipe === 'link') formHtml = `<div class="task-form" id="form-${taskId}"><input type="url" id="input-${taskId}" placeholder="Masukkan Link..."><button class="btn-task" onclick="submitTugasLink('${taskId}', ${t.poin})">Kirim Link</button></div>`;
+            else if (t.tipe === 'lapangan' || t.tipe === 'foto') formHtml = `<div class="task-form" id="form-${taskId}"><input type="file" id="file-${taskId}" accept="image/*"><button class="btn-task" onclick="submitTugasFoto('${taskId}', ${t.poin})">Upload Bukti</button></div>`;
+            else if (t.tipe === 'checkin') formHtml = `<div class="task-form" id="form-${taskId}" style="display:block;"><button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button></div>`;
         }
         const actionBtn = isDone ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggleForm('${taskId}')">Kerjakan</button>`;
         div.innerHTML = `<div class="task-header"><span class="task-title">${statusIcon} ${t.nama}</span><span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span></div><div class="task-meta"><span><i class="fas fa-tag"></i> ${t.tipe}</span>${t.butuhFoto ? '<span><i class="fas fa-camera"></i> Foto</span>' : ''}${t.butuhGPS ? '<span><i class="fas fa-map"></i> GPS</span>' : ''}</div><div class="task-action">${actionBtn}</div>${formHtml}`;
@@ -667,35 +645,26 @@ async function generateDummyTugas(month, year) {
     await batch.commit();
 }
 
-function toggleForm(taskId) {
-    const form = document.getElementById(`form-${taskId}`);
-    if(form) { if (form.style.display === 'block') form.style.display = 'none'; else form.style.display = 'block'; }
-}
+function toggleForm(taskId) { const form = document.getElementById(`form-${taskId}`); if(form) { if (form.style.display === 'block') form.style.display = 'none'; else form.style.display = 'block'; } }
 
 // ==========================================
 // 6. SUBMIT HANDLERS
 // ==========================================
 async function submitTugasLink(taskId, poin) {
-    const input = document.getElementById(`input-${taskId}`);
-    const link = input.value;
+    const input = document.getElementById(`input-${taskId}`); const link = input.value;
     if(!link) return alert("Link tidak boleh kosong!");
     if(!link.startsWith("http")) return alert("Format link tidak valid");
-    const user = auth.currentUser;
-    if(!user) return;
+    const user = auth.currentUser; if(!user) return;
     await db.collection('task_done').add({ userId: user.uid, taskId: taskId, bukti: link, tipe: 'link', waktu: new Date() });
     await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
     alert("Tugas berhasil dikirim! +" + poin + " Poin");
 }
 
 async function submitTugasFoto(taskId, poin) {
-    const fileInput = document.getElementById(`file-${taskId}`);
-    const file = fileInput.files[0];
+    const fileInput = document.getElementById(`file-${taskId}`); const file = fileInput.files[0];
     if(!file) return alert("Pilih foto terlebih dahulu!");
-    const user = auth.currentUser;
-    if(!user) return;
-    const ref = storage.ref("tugas_foto/"+Date.now());
-    await ref.put(file);
-    const url = await ref.getDownloadURL();
+    const user = auth.currentUser; if(!user) return;
+    const ref = storage.ref("tugas_foto/"+Date.now()); await ref.put(file); const url = await ref.getDownloadURL();
     navigator.geolocation.getCurrentPosition(async pos => {
         await db.collection('task_done').add({ userId: user.uid, taskId: taskId, foto: url, lat: pos.coords.latitude, lng: pos.coords.longitude, tipe: 'foto', waktu: new Date() });
         await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
@@ -708,16 +677,13 @@ async function submitTugasFoto(taskId, poin) {
 }
 
 async function taskCheckin(taskId, poin) {
-    const user = auth.currentUser;
-    if(!user) return;
-    if(!navigator.geolocation) return alert("GPS tidak didukung.");
+    const user = auth.currentUser; if(!user) return; if(!navigator.geolocation) return alert("GPS tidak didukung.");
     navigator.geolocation.getCurrentPosition(async pos => {
       const check = await db.collection('task_done').where('userId', '==', user.uid).where('taskId', '==', taskId).get();
       if(!check.empty) return alert("Tugas sudah dikerjakan!");
       await db.collection('task_done').add({ userId: user.uid, taskId: taskId, lat: pos.coords.latitude, lng: pos.coords.longitude, tipe: 'checkin', waktu: new Date() });
       await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
-      alert("Check-in Berhasil! +" + poin + " Poin.");
-      loadHistory(user.uid);
+      alert("Check-in Berhasil! +" + poin + " Poin."); loadHistory(user.uid);
     }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
 }
 
@@ -725,23 +691,16 @@ async function taskCheckin(taskId, poin) {
 // 7. LAPORAN UMUM
 // ==========================================
 async function kirim(){
-  const user = auth.currentUser;
-  const masalah = document.getElementById('masalah').value;
-  const file = document.getElementById('foto').files[0];
+  const user = auth.currentUser; const masalah = document.getElementById('masalah').value; const file = document.getElementById('foto').files[0];
   if(masalah.length < 50) return alert("Laporan minimal 50 karakter!");
   if(!navigator.geolocation) return alert("GPS tidak didukung.");
-  
   navigator.geolocation.getCurrentPosition(async pos => {
     let fotoURL = "";
-    if(file){
-      try { let ref = storage.ref("foto/"+Date.now()); await ref.put(file); fotoURL = await ref.getDownloadURL(); } catch(e) { console.error(e); }
-    }
+    if(file){ try { let ref = storage.ref("foto/"+Date.now()); await ref.put(file); fotoURL = await ref.getDownloadURL(); } catch(e) { console.error(e); } }
     await db.collection("laporan").add({ userId: user.uid, nama: currentUserData.nama, masalah, foto: fotoURL, lat: pos.coords.latitude, lng: pos.coords.longitude, tanggal: getTodayString(), waktu: new Date() });
     await db.collection('users').doc(user.uid).update({ poin: firebase.firestore.FieldValue.increment(10) });
     alert("Laporan Terkirim! +10 Poin.");
-    document.getElementById('masalah').value="";
-    document.getElementById('foto').value="";
-    loadHistory(user.uid);
+    document.getElementById('masalah').value=""; document.getElementById('foto').value=""; loadHistory(user.uid);
   }, () => alert("Gagal ambil lokasi."), { enableHighAccuracy: true, timeout: 10000 });
 }
 
@@ -751,22 +710,16 @@ async function kirim(){
 function loadHistory(userId) {
     const list = document.getElementById('historyList');
     db.collection('task_done').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).onSnapshot(async snap => {
-        let html = '';
-        if(snap.empty) html += '<li style="border:none; text-align:center; color:#64748b;">Belum ada aktivitas</li>';
+        let html = ''; if(snap.empty) html += '<li style="border:none; text-align:center; color:#64748b;">Belum ada aktivitas</li>';
         snap.forEach(doc => {
-            const d = doc.data();
-            const time = d.waktu.toDate().toLocaleString('id-ID');
+            const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID');
             let icon = 'fa-check'; let color = 'var(--success)';
             if(d.tipe === 'link') { icon = 'fa-link'; color = 'var(--primary)'; }
             if(d.tipe === 'foto') { icon = 'fa-image'; color = 'var(--warning)'; }
             html += `<li style="border-left-color: ${color};"><div style="display:flex; justify-content:space-between;"><b><i class="fas ${icon}" style="color:${color}"></i> Tugas Selesai</b><small style="color:#64748b">${time}</small></div></li>`;
         });
         db.collection('laporan').where('userId', '==', userId).orderBy('waktu', 'desc').limit(3).onSnapshot(lapSnap => {
-            lapSnap.forEach(doc => {
-                const d = doc.data();
-                const time = d.waktu.toDate().toLocaleString('id-ID');
-                html += `<li style="border-left-color: var(--warning);"><div style="display:flex; justify-content:space-between;"><b><i class="fas fa-file-alt" style="color:var(--warning)"></i> Laporan</b><small style="color:#64748b">${time}</small></div></li>`;
-            });
+            lapSnap.forEach(doc => { const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID'); html += `<li style="border-left-color: var(--warning);"><div style="display:flex; justify-content:space-between;"><b><i class="fas fa-file-alt" style="color:var(--warning)"></i> Laporan</b><small style="color:#64748b">${time}</small></div></li>`; });
             list.innerHTML = html;
         });
     });
@@ -789,36 +742,18 @@ function loadData(){
 
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(snapshot => {
-    leaderboard.innerHTML="";
-    if(snapshot.empty) leaderboard.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada data</li>";
+    leaderboard.innerHTML=""; if(snapshot.empty) leaderboard.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada data</li>";
     let rank=1;
-    snapshot.forEach(doc => {
-      let d=doc.data();
-      let li=document.createElement('li');
-      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
-      li.innerHTML=`<span><strong>#${rank}</strong> &nbsp; ${d.nama}</span><span class="poin-badge">${d.poin} poin</span>`;
-      leaderboard.appendChild(li);
-      rank++;
-    });
+    snapshot.forEach(doc => { let d=doc.data(); let li=document.createElement('li'); li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':''; li.innerHTML=`<span><strong>#${rank}</strong> &nbsp; ${d.nama}</span><span class="poin-badge">${d.poin} poin</span>`; leaderboard.appendChild(li); rank++; });
   });
 }
 
 function loadReward(userId) {
   db.collection('users').doc(userId).onSnapshot(userDoc => {
     const userPoin = userDoc.data()?.poin || 0;
-    const rewards = [
-      { hadiah: "Stiker PDI", poin: 50 },
-      { hadiah: "Pin PDI", poin: 100 },
-      { hadiah: "Kaos PDI", poin: 250 },
-      { hadiah: "Jaket Exclusive", poin: 500 }
-    ];
+    const rewards = [ { hadiah: "Stiker PDI", poin: 50 }, { hadiah: "Pin PDI", poin: 100 }, { hadiah: "Kaos PDI", poin: 250 }, { hadiah: "Jaket Exclusive", poin: 500 } ];
     rewardList.innerHTML = '';
-    rewards.forEach(r => {
-      const achieved = userPoin >= r.poin;
-      const li = document.createElement('li');
-      li.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><div><b style="${achieved ? 'color:var(--success)' : ''}">${r.hadiah}</b><br><small>Syarat: ${r.poin} Poin</small></div><span class="badge ${achieved ? 'badge-done' : 'badge-pending'}">${achieved ? 'Terbuka' : `${r.poin - userPoin} lagi`}</span></div>`;
-      rewardList.appendChild(li);
-    });
+    rewards.forEach(r => { const achieved = userPoin >= r.poin; const li = document.createElement('li'); li.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><div><b style="${achieved ? 'color:var(--success)' : ''}">${r.hadiah}</b><br><small>Syarat: ${r.poin} Poin</small></div><span class="badge ${achieved ? 'badge-done' : 'badge-pending'}">${achieved ? 'Terbuka' : `${r.poin - userPoin} lagi`}</span></div>`; rewardList.appendChild(li); });
   });
 }
 </script>
