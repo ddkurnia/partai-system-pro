@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "PDI Meranti - Sistem Kader",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "PDI Meranti",
+  "start_url": "/",
+  "theme_color": "#e31e25",
+  "id": "com.kedaimedia.pdimeranti",
+  "description": "Aplikasi monitoring kader PDI Perjuangan Kabupaten Kepulauan Meranti untuk laporan lapangan, absensi, dan sistem tugas berbasis poin."
+}
