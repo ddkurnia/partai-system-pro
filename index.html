@@ -87,7 +87,7 @@ header {
   transition: opacity 1s ease-in-out;
   background-size: cover;
   background-position: center;
-  background-color: #e2e8f0; /* Fallback bg */
+  background-color: #e2e8f0;
 }
 .hero-slide.active { opacity: 1; }
 .hero-overlay {
@@ -279,7 +279,7 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
 
 <!-- VIEW 1: BERANDA UTAMA -->
 <div id="view-beranda" class="view-section active">
-  <!-- 1. HERO BANNER -->
+  <!-- HERO -->
   <div class="hero-banner">
     <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
     <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
@@ -298,7 +298,7 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
     </div>
   </div>
 
-  <!-- 2. WELCOME CARD -->
+  <!-- WELCOME -->
   <div class="welcome-card">
     <div class="welcome-icon"><i class="fas fa-hand-wave"></i></div>
     <div class="welcome-text">
@@ -307,14 +307,14 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
     </div>
   </div>
 
-  <!-- 3. QUICK STATS -->
+  <!-- STATS -->
   <div class="stats-grid">
     <div class="stat-item"><div class="stat-value" id="statKader">-</div><div class="stat-label">Total Kader</div></div>
     <div class="stat-item"><div class="stat-value" id="statLaporan">-</div><div class="stat-label">Laporan</div></div>
     <div class="stat-item"><div class="stat-value">12</div><div class="stat-label">Desa</div></div>
   </div>
 
-  <!-- 4. MENU UTAMA -->
+  <!-- MENU -->
   <div class="section-title">Layanan Utama</div>
   <div class="menu-grid">
     <div class="menu-item" onclick="showView('berita')"><div class="menu-icon c-blue"><i class="fas fa-newspaper"></i></div><span class="menu-text">Berita</span></div>
@@ -327,21 +327,134 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
     <div class="menu-item" onclick="navigateToDashboard()"><div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div><span class="menu-text">Dashboard</span></div>
   </div>
 
-  <!-- 5. TOP KADER -->
+  <!-- TOP KADER -->
   <div class="section-title" style="margin-top:25px"><span>Top 10 Kader</span></div>
   <div class="leaderboard-card">
     <div id="topKaderList"><p style="text-align:center; color:#64748b; font-size:0.8rem">Memuat data...</p></div>
   </div>
+
+  <!-- BERITA TERKINI -->
+  <div class="section-title" style="margin-top:25px">Berita Terkini</div>
+  <div class="news-list">
+    <div class="news-item">
+      <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="news-img">
+      <div class="news-content">
+        <h4>Rapat Koordinasi Tim Pemenangan</h4>
+        <p>Kegiatan rakor tim sukses di sekretariat DPC Meranti.</p>
+      </div>
+    </div>
+    <div class="news-item">
+      <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="news-img">
+      <div class="news-content">
+        <h4>Bakti Sosial di Kecamatan Tebing Tinggi</h4>
+        <p>Pembagian sembako kepada masyarakat kurang mampu.</p>
+      </div>
+    </div>
+     <div class="news-item">
+      <img src="https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="news-img">
+      <div class="news-content">
+        <h4>Pelantikan Pengurus Baru</h4>
+        <p>Prosesi pelantikan struktur partai periode baru.</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- VIEWS UMUM (SINGKAT) -->
-<div id="view-berita" class="view-section"><div class="card"><h3>Berita</h3><p>Konten berita...</p></div></div>
-<div id="view-pengumuman" class="view-section"><div class="card"><h3>Pengumuman</h3><p>Konten pengumuman...</p></div></div>
-<div id="view-struktur" class="view-section"><div class="card"><h3>Struktur</h3><p>Konten struktur...</p></div></div>
-<div id="view-usulan" class="view-section"><div class="card"><h3>Usulan</h3><textarea placeholder="Usulan..."></textarea><button onclick="kirimUsulan()">Kirim</button></div></div>
-<div id="view-galeri" class="view-section"><div class="card"><h3>Galeri</h3><p>Konten galeri...</p></div></div>
-<div id="view-bantuan" class="view-section"><div class="card"><h3>Bantuan</h3><p>Form bantuan...</p></div></div>
-<div id="view-kontak" class="view-section"><div class="card"><h3>Kontak</h3><p>Info kontak...</p></div></div>
+<!-- VIEWS UMUM (KONTEN DIPERBAIKI) -->
+<div id="view-berita" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3>
+    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px">Informasi terkini seputar kegiatan partai.</p>
+    <div class="news-list">
+       <div class="news-item">
+          <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="news-img" style="width:100%; height:150px; border-radius:12px; margin-bottom:10px">
+          <div class="news-content">
+            <h4>Kunjungan Kerja ke DPRD Provinsi</h4>
+            <p>Delegasi DPC Meranti melakukan audiensi membahas pembangunan daerah.</p>
+          </div>
+       </div>
+       <div class="news-item">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="news-img" style="width:100%; height:150px; border-radius:12px; margin-bottom:10px">
+          <div class="news-content">
+            <h4>Sosialisasi Program Kerja</h4>
+            <p>Tim Kampung menyambung silaturahmi dengan masyarakat Desa Sungai Tohor.</p>
+          </div>
+       </div>
+    </div>
+  </div>
+</div>
+
+<div id="view-pengumuman" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3>
+    <ul>
+      <li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC. Agenda: Evaluasi program.</small></li>
+      <li><b>Pendaftaran Caleg</b><br><small>Dibuka mulai bulan depan. Siapkan berkas persyaratan.</small></li>
+      <li><b>Kegiatan Jumat Bersih</h3><br><small>Mohon kehadiran seluruh kader untuk kerja bakti.</small></li>
+    </ul>
+  </div>
+</div>
+
+<div id="view-struktur" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3>
+    <p style="font-size:0.85rem; color:#64748b; text-align:center; padding:20px 0; background:#f1f5f9; border-radius:12px">
+      <strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong><br><br>
+      <span style="font-size:0.8rem">Ketua: [...]<br>Sekretaris: [...]<br>Bendahara: [...]</span>
+    </p>
+  </div>
+</div>
+
+<div id="view-usulan" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3>
+    <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px">Sampaikan ide Anda untuk kemajuan partai dan masyarakat.</p>
+    <textarea id="usulanText" placeholder="Tulis usulan ide program kerja..."></textarea>
+    <input id="usulanNama" placeholder="Nama Pengusul">
+    <button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim Usulan</button>
+  </div>
+</div>
+
+<div id="view-galeri" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri Kegiatan</h3>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
+      <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
+      <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
+      <img src="https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
+      <img src="https://images.unsplash.com/photo-1540910419892-4a36d2c3268c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
+    </div>
+  </div>
+</div>
+
+<div id="view-bantuan" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Permohonan Bantuan</h3>
+    <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px">Isi form berikut untuk mengajukan bantuan (Kesehatan, Sosial, dll).</p>
+    <input placeholder="Nama Lengkap">
+    <input placeholder="Jenis Bantuan (Kesehatan/Sosial)">
+    <textarea placeholder="Deskripsi Kebutuhan"></textarea>
+    <button onclick="alert('Bantuan terkirim!')">Ajukan</button>
+  </div>
+</div>
+
+<div id="view-kontak" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
+        <i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Jl. Contoh No. 1, Selatpanjang
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
+        <i class="fab fa-whatsapp" style="color:#25D366"></i> +62 812-3456-7890
+      </div>
+       <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
+        <i class="fas fa-envelope" style="color:#EF4444"></i> admin@partai-meranti.com
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- VIEW: DASHBOARD -->
 <div id="view-dashboard" class="view-section">
