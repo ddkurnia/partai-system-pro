@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<link rel="manifest" href="/manifest.json">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDI Perjuangan Meranti - Sistem Elite</title>
@@ -47,7 +46,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ABSTRACT BACKGROUND */
+/* BACKGROUND */
 .bg-shape {
   position: fixed;
   border-radius: 50%;
@@ -65,7 +64,6 @@ body {
 header {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 12px 20px;
   position: sticky;
@@ -83,23 +81,18 @@ header {
   margin: 0 auto;
 }
 
-/* LOGO STYLING */
+/* LOGO */
 .logo {
-  width: 50px; /* Ukuran disesuaikan */
+  width: 50px;
   height: 50px;
-  border-radius: 50%; /* Bulat penuh */
+  border-radius: 50%;
   overflow: hidden;
   background: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   flex-shrink: 0;
-  position: relative;
   border: 2px solid rgba(227, 30, 37, 0.1);
 }
-.logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Cover agar penuh */
-}
+.logo img { width: 100%; height: 100%; object-fit: cover; }
 
 .header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
 .header-text p { font-size: 0.75rem; color: #64748b; font-weight: 500; }
@@ -114,11 +107,10 @@ header {
   gap: 25px;
 }
 
-/* CARD STANDARD */
+/* CARD */
 .card {
   background: var(--glass);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   padding: 25px;
@@ -127,7 +119,6 @@ header {
   position: relative;
   overflow: hidden;
 }
-
 .card::before {
   content: '';
   position: absolute;
@@ -137,11 +128,10 @@ header {
   opacity: 0.8;
   border-radius: 24px 24px 0 0;
 }
-
 .card h3 { color: var(--dark); font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 .card h3 i { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
 
-/* LANDING PAGE STYLES */
+/* LANDING PAGE */
 .hero-section {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
@@ -213,7 +203,7 @@ header {
 }
 .check-item i { color: var(--success); font-size: 1rem; }
 
-/* INPUTS & FORMS */
+/* INPUTS */
 input, textarea {
   width: 100%;
   padding: 14px 18px;
@@ -226,7 +216,6 @@ input, textarea {
   color: #334155;
   transition: all 0.3s ease;
 }
-
 input:focus, textarea:focus { outline: none; background: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(227, 30, 37, 0.1); }
 input::placeholder, textarea::placeholder { color: #94a3b8; }
 textarea { min-height: 100px; resize: none; }
@@ -249,7 +238,6 @@ button {
   justify-content: center;
   gap: 8px;
 }
-
 button:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
 button:active { transform: scale(0.98); }
 button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
@@ -271,7 +259,7 @@ input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor
 input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
 
 /* MAP */
-#map { height: 250px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); }
+#map { height: 300px; border-radius: 18px; border: 2px solid rgba(255,255,255,0.5); z-index: 1; }
 
 /* USER INFO */
 #user {
@@ -355,10 +343,8 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <header>
   <div class="header-content">
     <div class="logo">
-      <!-- LOGO DARI URL YANG DIBERIKAN -->
       <img src="http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI Perjuangan">
     </div>
-    
     <div class="header-text">
       <h1>PDI PERJUANGAN</h1>
       <p>Kab. Kepulauan Meranti</p>
@@ -431,6 +417,13 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
   <div id="user"></div>
 </div>
 
+<!-- MAP CARD (DIPINDAHKAN KE ATAS UNTUK PENTING) -->
+<div class="card" id="mapCard" style="display:none;">
+  <h3><i class="fas fa-map-location-dot"></i> Peta Realtime Kader</h3>
+  <p style="font-size:0.8rem; color:#64748b; margin-bottom:10px;">Lokasi Anda dan kader lainnya terlihat di sini.</p>
+  <div id="map"></div>
+</div>
+
 <!-- TASK CARD -->
 <div class="card" id="taskCard" style="display:none;">
   <h3><i class="fas fa-list-check"></i> Tugas Bulan Ini</h3>
@@ -452,27 +445,21 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 </div>
 
 <!-- REPORT CARD -->
-<div class="card" id="reportCard">
+<div class="card" id="reportCard" style="display:none;">
   <h3><i class="fas fa-bullhorn"></i> Laporan Lapangan</h3>
   <textarea id="masalah" placeholder="Tulis laporan kondisi di lapangan (min 50 karakter)..."></textarea>
   <input type="file" id="foto" accept="image/*">
   <button class="btn-main" onclick="kirim()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
 </div>
 
-<!-- MAP CARD -->
-<div class="card" id="mapCard">
-  <h3><i class="fas fa-map-location-dot"></i> Peta Realtime</h3>
-  <div id="map"></div>
-</div>
-
 <!-- DATA CARD -->
-<div class="card" id="dataCard">
+<div class="card" id="dataCard" style="display:none;">
   <h3><i class="fas fa-newspaper"></i> Laporan Terbaru</h3>
   <ul id="data"><li style="text-align:center; border:none; color:#94a3b8;">Belum ada laporan</li></ul>
 </div>
 
 <!-- LEADERBOARD CARD -->
-<div class="card" id="leaderboardCard">
+<div class="card" id="leaderboardCard" style="display:none;">
   <h3><i class="fas fa-ranking-star"></i> Top Kader</h3>
   <ul id="leaderboard"><li style="text-align:center; border:none; color:#94a3b8;">Belum ada data</li></ul>
 </div>
@@ -504,6 +491,8 @@ const storage = firebase.storage();
 // ==========================================
 let currentUserData = null;
 let unsubUser = null; 
+let mapMarkers = {}; // Object untuk menyimpan marker { uid: marker }
+let map = null; // Global map object
 
 const getTodayString = () => {
   const d = new Date();
@@ -513,17 +502,27 @@ const getTodayString = () => {
 // ==========================================
 // 3. MAP SETUP
 // ==========================================
-let map = L.map('map').setView([0.99, 102.7], 11);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png').addTo(map);
+function initMap() {
+  if (map) return; // Inisialisasi hanya sekali
+  map = L.map('map').setView([0.99, 102.7], 11);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png').addTo(map);
+}
 
-const pdipIcon = L.divIcon({
-  className: '',
-  html: `<div style="background:#E31E25; width:30px; height:30px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:2px solid white; display:flex; align-items:center; justify-content:center;"><i class='fas fa-flag' style="color:white; font-size:12px; transform:rotate(45deg)"></i></div>`,
-  iconSize: [30, 30],
-  iconAnchor: [15, 30]
-});
-
-let markers = [];
+// Custom Icon for User
+function getUserIcon(isMe = false) {
+  const color = isMe ? '#E31E25' : '#10B981'; // Merah untuk saya, Hijau untuk lain
+  const iconHtml = `<div style="background:${color}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+    <i class='fas fa-user' style="color:white; font-size:16px;"></i>
+   </div>`;
+   
+  return L.divIcon({
+    className: '',
+    html: iconHtml,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40]
+  });
+}
 
 // ==========================================
 // 4. AUTHENTICATION & UI TOGGLE
@@ -537,9 +536,13 @@ auth.onAuthStateChanged(async user => {
   if(user){
     landing.style.display = 'none';
     document.getElementById('authCard').style.display = 'block';
+    document.getElementById('mapCard').style.display = 'block'; // Pindahkan map card ke atas
     document.getElementById('taskCard').style.display = 'block';
     document.getElementById('rewardCard').style.display = 'block';
     document.getElementById('historyCard').style.display = 'block';
+    document.getElementById('reportCard').style.display = 'block';
+    document.getElementById('dataCard').style.display = 'block';
+    document.getElementById('leaderboardCard').style.display = 'block';
 
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
@@ -549,6 +552,13 @@ auth.onAuthStateChanged(async user => {
     document.getElementById('loginForm').classList.remove('active');
     document.getElementById('registerForm').classList.remove('active');
 
+    // Init Map
+    initMap();
+    
+    // Update lokasi sendiri ke DB (Realtime Presence)
+    updateMyLocation(user);
+
+    // Load All Data
     loadData(); 
     loadLeaderboard();
     loadTugasBulanan(user.uid);
@@ -557,14 +567,25 @@ auth.onAuthStateChanged(async user => {
 
   } else {
     landing.style.display = 'block';
+    document.getElementById('mapCard').style.display = 'none';
     document.getElementById('taskCard').style.display = 'none';
     document.getElementById('rewardCard').style.display = 'none';
     document.getElementById('historyCard').style.display = 'none';
+    document.getElementById('reportCard').style.display = 'none';
+    document.getElementById('dataCard').style.display = 'none';
+    document.getElementById('leaderboardCard').style.display = 'none';
+    
     document.getElementById('loginForm').classList.add('active');
     document.getElementById('registerForm').classList.remove('active');
     document.getElementById('user').innerHTML = '';
     currentUserData = null;
     if(unsubUser) unsubUser();
+    
+    // Clear markers
+    if(mapMarkers) {
+        Object.values(mapMarkers).forEach(m => map.removeLayer(m));
+        mapMarkers = {};
+    }
   }
 });
 
@@ -592,7 +613,60 @@ function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPasswor
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
-// 5. SISTEM TUGAS BULANAN
+// 5. REALTIME LOCATION SYSTEM
+// ==========================================
+
+// Update lokasi sendiri
+function updateMyLocation(user) {
+    if(!navigator.geolocation) return;
+
+    navigator.geolocation.watchPosition(pos => {
+        const { latitude, longitude } = pos.coords;
+        
+        // Update ke Firestore (Realtime Presence)
+        db.collection('presence').doc(user.uid).set({
+            lat: latitude,
+            lng: longitude,
+            lastSeen: new Date(),
+            nama: currentUserData?.nama || "Kader"
+        }, { merge: true });
+
+        // Listen to semua pergerakan kader lain
+        listenToOtherUsers();
+
+    }, err => {
+        console.warn("GPS Error:", err);
+        // Tetap listen walau GPS error
+        listenToOtherUsers();
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 });
+}
+
+// Listen pergerakan kader lain (Realtime)
+function listenToOtherUsers() {
+    db.collection('presence').onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+            const data = change.doc.data();
+            const uid = change.doc.id;
+
+            // Jika marker sudah ada, update posisi
+            if (mapMarkers[uid]) {
+                const newLatLng = [data.lat, data.lng];
+                mapMarkers[uid].setLatLng(newLatLng);
+            } else {
+                // Jika belum, buat marker baru
+                const isMe = (uid === auth.currentUser.uid);
+                const marker = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) })
+                    .addTo(map)
+                    .bindPopup(`<b style="color:${isMe ? 'var(--primary)' : 'var(--success)'}">${isMe ? 'Anda' : data.nama}</b>`);
+                
+                mapMarkers[uid] = marker;
+            }
+        });
+    });
+}
+
+// ==========================================
+// 6. SISTEM TUGAS BULANAN
 // ==========================================
 async function loadTugasBulanan(userId) {
   const list = document.getElementById('taskList');
@@ -627,7 +701,7 @@ async function loadTugasBulanan(userId) {
             else if (t.tipe === 'checkin') formHtml = `<div class="task-form" id="form-${taskId}" style="display:block;"><button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in</button></div>`;
         }
         const actionBtn = isDone ? `<span class="badge badge-done">Selesai</span>` : `<button class="btn-task" onclick="toggleForm('${taskId}')">Kerjakan</button>`;
-        div.innerHTML = `<div class="task-header"><span class="task-title">${statusIcon} ${t.nama}</span><span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span></div><div class="task-meta"><span><i class="fas fa-tag"></i> ${t.tipe}</span>${t.butuhFoto ? '<span><i class="fas fa-camera"></i> Foto</span>' : ''}${t.butuhGPS ? '<span><i class="fas fa-map"></i> GPS</span>' : ''}</div><div class="task-action">${actionBtn}</div>${formHtml}`;
+        div.innerHTML = `<div class="task-header"><span class="task-title">${statusIcon} ${t.nama}</span><span class="badge badge-pending" style="background:rgba(0,0,0,0.05); color:#333;">+${t.poin} Poin</span></div><div class="task-meta"><span><i class="fas fa-tag"></i> ${t.tipe}</span></div><div class="task-action">${actionBtn}</div>${formHtml}`;
         list.appendChild(div);
       });
     });
@@ -638,8 +712,7 @@ async function generateDummyTugas(month, year) {
         { nama: "Absensi Kehadiran", tipe: "checkin", poin: 10, butuhGPS: true, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Share Sosmed Partai", tipe: "digital", poin: 20, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Dokumentasi Kegiatan", tipe: "foto", poin: 30, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year },
-        { nama: "Input Data Pemilih", tipe: "link", poin: 50, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
-        { nama: "Laporan Kader", tipe: "lapangan", poin: 15, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year }
+        { nama: "Input Data Pemilih", tipe: "link", poin: 50, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year }
     ];
     const batch = db.batch();
     dummyData.forEach(d => { const ref = db.collection('tugas').doc(); batch.set(ref, d); });
@@ -649,7 +722,7 @@ async function generateDummyTugas(month, year) {
 function toggleForm(taskId) { const form = document.getElementById(`form-${taskId}`); if(form) { if (form.style.display === 'block') form.style.display = 'none'; else form.style.display = 'block'; } }
 
 // ==========================================
-// 6. SUBMIT HANDLERS
+// 7. SUBMIT HANDLERS
 // ==========================================
 async function submitTugasLink(taskId, poin) {
     const input = document.getElementById(`input-${taskId}`); const link = input.value;
@@ -689,7 +762,7 @@ async function taskCheckin(taskId, poin) {
 }
 
 // ==========================================
-// 7. LAPORAN UMUM
+// 8. LAPORAN UMUM
 // ==========================================
 async function kirim(){
   const user = auth.currentUser; const masalah = document.getElementById('masalah').value; const file = document.getElementById('foto').files[0];
@@ -706,19 +779,13 @@ async function kirim(){
 }
 
 // ==========================================
-// 8. UTILITIES
+// 9. UTILITIES
 // ==========================================
 function loadHistory(userId) {
     const list = document.getElementById('historyList');
     db.collection('task_done').where('userId', '==', userId).orderBy('waktu', 'desc').limit(5).onSnapshot(async snap => {
         let html = ''; if(snap.empty) html += '<li style="border:none; text-align:center; color:#64748b;">Belum ada aktivitas</li>';
-        snap.forEach(doc => {
-            const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID');
-            let icon = 'fa-check'; let color = 'var(--success)';
-            if(d.tipe === 'link') { icon = 'fa-link'; color = 'var(--primary)'; }
-            if(d.tipe === 'foto') { icon = 'fa-image'; color = 'var(--warning)'; }
-            html += `<li style="border-left-color: ${color};"><div style="display:flex; justify-content:space-between;"><b><i class="fas ${icon}" style="color:${color}"></i> Tugas Selesai</b><small style="color:#64748b">${time}</small></div></li>`;
-        });
+        snap.forEach(doc => { const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID'); html += `<li style="border-left-color: var(--success);"><div style="display:flex; justify-content:space-between;"><b><i class="fas fa-check" style="color:var(--success)"></i> ${d.tipe}</b><small style="color:#64748b">${time}</small></div></li>`; });
         db.collection('laporan').where('userId', '==', userId).orderBy('waktu', 'desc').limit(3).onSnapshot(lapSnap => {
             lapSnap.forEach(doc => { const d = doc.data(); const time = d.waktu.toDate().toLocaleString('id-ID'); html += `<li style="border-left-color: var(--warning);"><div style="display:flex; justify-content:space-between;"><b><i class="fas fa-file-alt" style="color:var(--warning)"></i> Laporan</b><small style="color:#64748b">${time}</small></div></li>`; });
             list.innerHTML = html;
@@ -728,16 +795,9 @@ function loadHistory(userId) {
 
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc").onSnapshot(snapshot => {
-    data.innerHTML=""; markers.forEach(m=>map.removeLayer(m)); markers=[];
+    data.innerHTML="";
     if(snapshot.empty) data.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada laporan</li>";
-    snapshot.forEach(doc => {
-      let d=doc.data();
-      let li=document.createElement('li');
-      li.innerHTML=`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}<br><small style="color:#64748b">${d.waktu?.toDate?.().toLocaleString('id-ID') || ''}</small>${d.foto ? `<br><img src="${d.foto}" style="max-width:80px; border-radius:8px; margin-top:8px; border:2px solid #fff;">` : ''}`;
-      data.appendChild(li);
-      if(d.lat && d.lng){ let marker=L.marker([d.lat, d.lng], {icon: pdipIcon}).addTo(map).bindPopup(`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}`); markers.push(marker); }
-    });
-    if(markers.length > 0) map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
+    snapshot.forEach(doc => { let d=doc.data(); let li=document.createElement('li'); li.innerHTML=`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}<br><small style="color:#64748b">${d.waktu?.toDate?.().toLocaleString('id-ID') || ''}</small>${d.foto ? `<br><img src="${d.foto}" style="max-width:80px; border-radius:8px; margin-top:8px; border:2px solid #fff;">` : ''}`; data.appendChild(li); });
   });
 }
 
