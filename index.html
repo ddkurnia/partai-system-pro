@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDI P Meranti - Sistem PRO</title>  <!-- FIREBASE -->  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>  <style>
+  <title>PDI P Meranti - Sistem PRO</title>  <!-- FIREBASE COMPAT (WAJIB) -->  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>  <style>
     body { margin:0; font-family:Segoe UI; background:#0f172a; color:white; }
     header { background:#dc2626; padding:15px; text-align:center; }
     .container { padding:15px; display:grid; gap:15px; }
@@ -12,7 +12,7 @@
   </style></head>
 <body><header>
 🔴 PDI P KABUPATEN KEPULAUAN MERANTI<br>
-Login & Sistem Kader
+Sistem Login & Monitoring Kader
 </header><div class="container"><div class="card">
 <h3>🔐 Login Kader</h3>
 <input id="email" placeholder="Email">
@@ -23,21 +23,22 @@ Login & Sistem Kader
 <h3>📩 Input Laporan</h3>
 <input id="nama" placeholder="Nama">
 <input id="lokasi" placeholder="Lokasi">
-<textarea id="masalah"></textarea>
+<textarea id="masalah" placeholder="Masalah"></textarea>
 <button onclick="getLocation()">📍 Ambil Lokasi</button>
 <button onclick="kirim()">Kirim</button>
 </div><div class="card">
-<h3>📋 Data Laporan</h3>
+<h3>📋 Data Laporan (Realtime)</h3>
 <ul id="data"></ul>
 </div></div><script>
 
-// 🔥 GANTI DENGAN FIREBASE CONFIG KAMU
+// 🔥 CONFIG DARI FIREBASE (PASTE PUNYA KAMU)
 const firebaseConfig = {
-  apiKey: "ISI_API_KEY",
-  authDomain: "ISI_DOMAIN",
-  projectId: "ISI_PROJECT_ID"
+  apiKey: "PASTE_API_KEY_KAMU",
+  authDomain: "PASTE_AUTH_DOMAIN",
+  projectId: "PASTE_PROJECT_ID"
 };
 
+// INIT FIREBASE
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -73,12 +74,11 @@ function kirim(){
   };
 
   db.collection("laporan").add(data).then(()=>{
-    alert("Tersimpan");
-    loadData();
+    alert("Laporan tersimpan");
   });
 }
 
-// LOAD DATA
+// LOAD DATA REALTIME
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
@@ -90,7 +90,7 @@ function loadData(){
       let li = document.createElement('li');
       li.innerHTML = `
         <b>${d.nama}</b><br>
-        <a href="${d.lokasi}" target="_blank">Lokasi</a><br>
+        <a href="${d.lokasi}" target="_blank">📍 Lokasi</a><br>
         ${d.masalah}
       `;
       list.appendChild(li);
