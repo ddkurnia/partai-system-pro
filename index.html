@@ -325,6 +325,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <header>
   <div class="header-content">
     <div class="logo">
+      <!-- PERBAIKAN LOGO: Pakai proxy https dan fallback yang benar -->
       <img src="https://corsproxy.io/?url=http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff';">
     </div>
     <div class="header-text">
@@ -513,7 +514,7 @@ function getInitials(name) {
 function initMap() {
   if (map) return; 
   map = L.map('map', { center: [0.99, 102.7], zoom: 12, scrollWheelZoom: true });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png', {
     attribution: '&copy; OSM &copy; CARTO',
     subdomains: 'abcd', maxZoom: 19
   }).addTo(map);
@@ -689,7 +690,12 @@ function signup(){
   .catch(e => alert(e.message));
 }
 
-function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).catch(e=>alert(e.message)); }
+// PERBAIKAN LOGIN: Tangkap error dengan benar
+function login(){ 
+    auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value)
+    .catch(e => alert(e.message)); 
+}
+
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
@@ -875,7 +881,7 @@ function loadLeaderboard(){
     snapshot.forEach(doc => { 
       let d=doc.data(); 
       let li=document.createElement('li'); 
-      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3:''; 
+      li.className = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':''; 
       
       const photoURL = d.photoURL;
       const initials = getInitials(d.nama);
