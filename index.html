@@ -30,6 +30,7 @@
   --blue: #2563EB;
   --purple: #7C3AED;
   --orange: #EA580C;
+  --gold: #F59E0B;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,8 +65,30 @@ header {
 .logo img { width: 100%; height: 100%; object-fit: cover; }
 .header-text h1 { font-size: 1rem; font-weight: 800; color: var(--dark); line-height: 1.2; }
 .header-text p { font-size: 0.7rem; color: var(--primary); font-weight: 700; }
-.header-profile { width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; overflow: hidden; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
-.header-profile img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Header Right: Coin Display */
+.header-right {
+  min-width: 80px;
+  display: flex;
+  justify-content: flex-end;
+}
+.coin-display {
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  color: #92400E;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.coin-display:hover { transform: scale(1.05); }
+.coin-display i { color: #F59E0B; }
 
 /* CONTAINER */
 .container { max-width: 500px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 25px; }
@@ -271,7 +294,10 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
         <p>Kab. Kepulauan Meranti</p>
       </div>
     </div>
-    <div id="authHeader" onclick="showView('dashboard')"></div>
+    <!-- DIGANTI: Icon Coin & Poin -->
+    <div class="header-right" id="authHeader" onclick="navigateToDashboard()">
+       <!-- Konten akan diisi JS -->
+    </div>
   </div>
 </header>
 
@@ -361,100 +387,14 @@ li { padding: 10px; background: white; border-radius: 10px; margin-top: 8px; fon
 
 </div>
 
-<!-- VIEWS UMUM (KONTEN DIPERBAIKI) -->
-<div id="view-berita" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3>
-    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px">Informasi terkini seputar kegiatan partai.</p>
-    <div class="news-list">
-       <div class="news-item">
-          <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="news-img" style="width:100%; height:150px; border-radius:12px; margin-bottom:10px">
-          <div class="news-content">
-            <h4>Kunjungan Kerja ke DPRD Provinsi</h4>
-            <p>Delegasi DPC Meranti melakukan audiensi membahas pembangunan daerah.</p>
-          </div>
-       </div>
-       <div class="news-item">
-          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="news-img" style="width:100%; height:150px; border-radius:12px; margin-bottom:10px">
-          <div class="news-content">
-            <h4>Sosialisasi Program Kerja</h4>
-            <p>Tim Kampung menyambung silaturahmi dengan masyarakat Desa Sungai Tohor.</p>
-          </div>
-       </div>
-    </div>
-  </div>
-</div>
-
-<div id="view-pengumuman" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3>
-    <ul>
-      <li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC. Agenda: Evaluasi program.</small></li>
-      <li><b>Pendaftaran Caleg</b><br><small>Dibuka mulai bulan depan. Siapkan berkas persyaratan.</small></li>
-      <li><b>Kegiatan Jumat Bersih</h3><br><small>Mohon kehadiran seluruh kader untuk kerja bakti.</small></li>
-    </ul>
-  </div>
-</div>
-
-<div id="view-struktur" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3>
-    <p style="font-size:0.85rem; color:#64748b; text-align:center; padding:20px 0; background:#f1f5f9; border-radius:12px">
-      <strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong><br><br>
-      <span style="font-size:0.8rem">Ketua: [...]<br>Sekretaris: [...]<br>Bendahara: [...]</span>
-    </p>
-  </div>
-</div>
-
-<div id="view-usulan" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3>
-    <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px">Sampaikan ide Anda untuk kemajuan partai dan masyarakat.</p>
-    <textarea id="usulanText" placeholder="Tulis usulan ide program kerja..."></textarea>
-    <input id="usulanNama" placeholder="Nama Pengusul">
-    <button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim Usulan</button>
-  </div>
-</div>
-
-<div id="view-galeri" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri Kegiatan</h3>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
-      <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
-      <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
-      <img src="https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
-      <img src="https://images.unsplash.com/photo-1540910419892-4a36d2c3268c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px">
-    </div>
-  </div>
-</div>
-
-<div id="view-bantuan" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Permohonan Bantuan</h3>
-    <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px">Isi form berikut untuk mengajukan bantuan (Kesehatan, Sosial, dll).</p>
-    <input placeholder="Nama Lengkap">
-    <input placeholder="Jenis Bantuan (Kesehatan/Sosial)">
-    <textarea placeholder="Deskripsi Kebutuhan"></textarea>
-    <button onclick="alert('Bantuan terkirim!')">Ajukan</button>
-  </div>
-</div>
-
-<div id="view-kontak" class="view-section">
-  <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3>
-    <div style="display:flex; flex-direction:column; gap:10px">
-      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
-        <i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Jl. Contoh No. 1, Selatpanjang
-      </div>
-      <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
-        <i class="fab fa-whatsapp" style="color:#25D366"></i> +62 812-3456-7890
-      </div>
-       <div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px">
-        <i class="fas fa-envelope" style="color:#EF4444"></i> admin@partai-meranti.com
-      </div>
-    </div>
-  </div>
-</div>
+<!-- VIEWS UMUM -->
+<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:#64748b; margin-bottom:15px">Informasi terkini seputar kegiatan partai.</p><div class="news-list"><div class="news-item"><img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="news-img" style="width:100%; height:150px; border-radius:12px; margin-bottom:10px"><div class="news-content"><h4>Kunjungan Kerja ke DPRD Provinsi</h4><p>Delegasi DPC Meranti melakukan audiensi membahas pembangunan daerah.</p></div></div></div></div></div>
+<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><ul><li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC.</small></li><li><b>Pendaftaran Caleg</b><br><small>Dibuka mulai bulan depan.</small></li></ul></div></div>
+<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="font-size:0.85rem; color:#64748b; text-align:center; padding:20px 0; background:#f1f5f9; border-radius:12px"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong><br><br><span style="font-size:0.8rem">Ketua: [...]<br>Sekretaris: [...]<br>Bendahara: [...]</span></p></div></div>
+<div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
+<div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3><div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px"><img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px"><img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" style="width:100%; border-radius:8px"></div></div></div>
+<div id="view-bantuan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Bantuan</h3><input placeholder="Nama Lengkap"><input placeholder="Jenis Bantuan"><textarea placeholder="Deskripsi"></textarea><button onclick="alert('Terkirim!')">Ajukan</button></div></div>
+<div id="view-kontak" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3><div style="display:flex; flex-direction:column; gap:10px"><div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px"><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Jl. Contoh No. 1</div><div style="display:flex; align-items:center; gap:10px; padding:10px; background:#f1f5f9; border-radius:10px"><i class="fab fa-whatsapp" style="color:#25D366"></i> +62 812-3456-7890</div></div></div></div>
 
 <!-- VIEW: DASHBOARD -->
 <div id="view-dashboard" class="view-section">
@@ -609,13 +549,10 @@ auth.onAuthStateChanged(user => {
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
         renderUserInfo();
+        renderHeaderCoin(); // Render Coin di Header
         if(map) updateMyPresence(user.uid, currentUserData.nama);
     }, err => console.error("Error fetching user data", err));
     
-    const photo = currentUserData?.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData?.nama||'U');
-    document.getElementById('authHeader').innerHTML = `<div class="header-profile"><img src="${photo}"></div>`;
-    document.getElementById('authHeader').style.display = 'flex';
-
     closeAuthModal(); 
     
     initMap();
@@ -627,7 +564,8 @@ auth.onAuthStateChanged(user => {
     loadReward(user.uid);
     loadStats();
   } else {
-    document.getElementById('authHeader').style.display = 'none';
+    // Clear header
+    document.getElementById('authHeader').innerHTML = '';
     document.getElementById('user').innerHTML = '';
     currentUserData = null;
     if(unsubUser) unsubUser();
@@ -635,6 +573,17 @@ auth.onAuthStateChanged(user => {
     if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
   }
 });
+
+// RENDER HEADER COIN (BARU)
+function renderHeaderCoin() {
+    const poin = currentUserData?.poin || 0;
+    document.getElementById('authHeader').innerHTML = `
+        <div class="coin-display">
+            <i class="fas fa-coins"></i>
+            <span id="headerPoinValue">${poin}</span>
+        </div>
+    `;
+}
 
 function renderUserInfo() {
     if(!currentUserData) return;
@@ -735,7 +684,7 @@ function loadStats(){
     db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }, err => { document.getElementById('statKader').innerText = "0"; console.warn("Stats Error:", err); }); 
     db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }, err => { document.getElementById('statLaporan').innerText = "0"; console.warn("Stats Error:", err); }); 
 }
-function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }, err => { document.getElementById('data').innerHTML="<li>Error loading data</li>"; console.warn("Load Data Error:", err); }); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }, err => { document.getElementById('data').innerHTML="<li>Error</li>"; console.warn("Load Data Error:", err); }); }
 function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; const rw=[{h:"Stiker",p:50},{h:"Pin",p:100}]; let h=""; rw.forEach(r=>{ const ok=p>=r.p; h+=`<li><div style="display:flex;justify-content:space-between"><div><b>${r.h}</b></div><span class="badge ${ok?'badge-done':'badge-pending'}">${ok?'Terbuka':(r.p-p)+' lagi'}</span></div></li>`; }); document.getElementById('rewardList').innerHTML=h; }, err => console.warn("Load Reward Error:", err)); }
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => {
