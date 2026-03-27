@@ -18,7 +18,7 @@
 <!-- Google Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https:/>/fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -96,7 +96,7 @@ header {
   gap: 25px;
 }
 
-/* CARD */
+/* CARD STANDARD */
 .card {
   background: var(--glass);
   backdrop-filter: blur(12px);
@@ -123,7 +123,118 @@ header {
 .card h3 { color: var(--dark); font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 .card h3 i { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
 
-/* INPUTS */
+/* ==========================================
+   LANDING PAGE STYLES (NEW)
+   ========================================== */
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 40px 20px;
+  border-radius: 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(227, 30, 37, 0.3);
+  margin-bottom: 10px;
+}
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.hero-subtitle { font-size: 0.95rem; opacity: 0.95; line-height: 1.6; font-weight: 400; max-width: 350px; margin: 0 auto; }
+
+/* Info Grid for Cara Kerja & Keunggulan */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+.info-item {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 15px 10px;
+  border-radius: 16px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+.info-item:hover { transform: translateY(-3px); background: rgba(255,255,255,0.7); }
+.info-icon { 
+  width: 40px; height: 40px; 
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1.1rem;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 4px 10px rgba(227,30,37,0.2);
+}
+.info-text { font-size: 0.8rem; font-weight: 600; color: var(--dark); line-height: 1.3; }
+.info-desc { font-size: 0.7rem; color: #64748b; margin-top: 4px; }
+
+/* Steps List for Cara Kerja */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255,255,255,0.6);
+  padding: 12px;
+  border-radius: 14px;
+  border-left: 4px solid var(--primary);
+}
+.step-num {
+  min-width: 30px; height: 30px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.step-content { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
+
+/* Reward Highlight */
+.reward-highlight {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  background: rgba(255,255,255,0.4);
+  padding: 12px;
+  border-radius: 12px;
+}
+.reward-item { text-align: center; flex: 1; border-right: 1px solid rgba(0,0,0,0.05); }
+.reward-item:last-child { border-right: none; }
+.reward-value { font-weight: 800; color: var(--primary); font-size: 1.1rem; display: block; }
+.reward-label { font-size: 0.7rem; color: #64748b; }
+
+/* Check Feature List */
+.check-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--dark);
+}
+.check-item i { color: var(--success); }
+
+/* FORMS & INPUTS */
 input, textarea {
   width: 100%;
   padding: 14px 18px;
@@ -175,9 +286,7 @@ button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow
   font-size: 0.85rem;
   margin: 0;
 }
-.btn-task:hover { transform: translateY(0); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .btn-task.done { background: var(--success); pointer-events: none; }
-.btn-task i { font-size: 0.9rem; margin-right: 5px; }
 
 /* FILE INPUT */
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 0.85rem; }
@@ -201,15 +310,10 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
 #user::after { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: rgba(255,255,255,0.1); border-radius: 50%; pointer-events: none; }
 .user-info { display: flex; flex-direction: column; gap: 5px; }
 .user-name { font-size: 1.1rem; font-weight: 700; }
-.user-poin { 
-  font-size: 1.5rem; 
-  font-weight: 800; 
-  margin-top: 5px; 
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+.user-poin { font-size: 1.5rem; font-weight: 800; margin-top: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .user-id { font-size: 0.85rem; opacity: 0.9; }
 
-/* TASK ITEM (EXPANDABLE) */
+/* TASK ITEM */
 .task-item {
   background: rgba(255, 255, 255, 0.6);
   padding: 15px;
@@ -221,42 +325,19 @@ input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px
   gap: 8px;
   transition: all 0.3s;
 }
-.task-item.is-done {
-  border-left-color: var(--success);
-  opacity: 0.8;
-  background: rgba(16, 185, 129, 0.05);
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.task-item.is-done { border-left-color: var(--success); opacity: 0.8; background: rgba(16, 185, 129, 0.05); }
+.task-header { display: flex; justify-content: space-between; align-items: center; }
 .task-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
 .task-meta { font-size: 0.8rem; color: #64748b; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 .task-action { margin-top: 5px; display: flex; justify-content: flex-end; }
-
-/* Collapsible Content */
-.task-form {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(0,0,0,0.05);
-  display: none; /* Hidden by default */
-}
+.task-form { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.05); display: none; }
 .task-form input { font-size: 0.85rem; padding: 10px; }
 .task-form button { font-size: 0.85rem; padding: 10px; }
 
 /* Badge */
-.badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-align: center;
-  display: inline-block;
-}
+.badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-align: center; display: inline-block; }
 .badge-done { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-.badge-pending { background: rgba(227, 30, 37, 0.15); color: var(--primary); }
+.badge-pending { background: rgba(100, 116, 139, 0.15); color: #64748b; }
 
 /* LISTS */
 ul { list-style: none; max-height: 300px; overflow-y: auto; padding-right: 5px; }
@@ -285,6 +366,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 @media (max-width: 480px) {
   .card { padding: 20px; }
   .header-text h1 { font-size: 1.1rem; }
+  .hero-title { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -320,7 +402,84 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 
 <div class="container">
 
-<!-- AUTH CARD -->
+<!-- ==========================================
+     LANDING PAGE SECTION (START)
+     ========================================== -->
+
+<!-- 1. HERO SECTION -->
+<div class="hero-section">
+  <div class="hero-title">Sistem Elite<br>Monitoring Kader</div>
+  <div class="hero-subtitle">
+    Platform digital untuk mengontrol, mengelola, dan meningkatkan kinerja kader secara realtime melalui sistem tugas, laporan lapangan, dan reward berbasis poin.
+  </div>
+</div>
+
+<!-- 2. CARA KERJA -->
+<div class="card">
+  <h3><i class="fas fa-sitemap"></i> Cara Kerja Sistem</h3>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">Kader login ke dalam sistem</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">Mengerjakan tugas yang tersedia</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">Kirim laporan lapangan (foto + GPS)</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">Dapatkan poin otomatis</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-content">Tukar poin dengan reward</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. SISTEM POIN & REWARD -->
+<div class="card">
+  <h3><i class="fas fa-coins"></i> Sistem Poin & Reward</h3>
+  <p style="font-size:0.85rem; color:#64748b; line-height:1.5;">
+    Setiap aktivitas kader bernilai. Semakin aktif, semakin besar poin yang dikumpulkan. Poin dapat ditukar dengan berbagai reward sesuai pencapaian.
+  </p>
+  <div class="reward-highlight">
+    <div class="reward-item">
+      <span class="reward-value">100</span>
+      <span class="reward-label">Poin = Pulsa</span>
+    </div>
+    <div class="reward-item">
+      <span class="reward-value">300</span>
+      <span class="reward-label">Poin = Kaos</span>
+    </div>
+    <div class="reward-item">
+      <span class="reward-value">500</span>
+      <span class="reward-label">Poin = Bonus</span>
+    </div>
+  </div>
+</div>
+
+<!-- 4. KEUNGGULAN -->
+<div class="card">
+  <h3><i class="fas fa-star"></i> Keunggulan Sistem</h3>
+  <div class="check-list">
+    <div class="check-item"><i class="fas fa-check-circle"></i> Monitoring realtime berbasis GPS</div>
+    <div class="check-item"><i class="fas fa-check-circle"></i> Laporan lapangan terintegrasi</div>
+    <div class="check-item"><i class="fas fa-check-circle"></i> Sistem tugas otomatis bulanan</div>
+    <div class="check-item"><i class="fas fa-check-circle"></i> Leaderboard kader terbaik</div>
+    <div class="check-item"><i class="fas fa-check-circle"></i> Transparansi dan akuntabilitas</div>
+  </div>
+</div>
+
+<!-- ==========================================
+     LANDING PAGE SECTION (END)
+     ========================================== -->
+
+<!-- AUTH CARD (MASUK KE SISTEM) -->
 <div class="card">
   <h3><i class="fas fa-fingerprint"></i> Portal Kader</h3>
   
@@ -514,7 +673,7 @@ function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPasswor
 function logout(){ auth.signOut(); location.reload(); }
 
 // ==========================================
-// 5. SISTEM TUGAS BULANAN (GENERATE + SUBMIT)
+// 5. SISTEM TUGAS BULANAN
 // ==========================================
 
 async function loadTugasBulanan(userId) {
@@ -527,7 +686,6 @@ async function loadTugasBulanan(userId) {
   
   info.innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
 
-  // 1. Cek apakah tugas bulan ini ada, jika tidak -> GENERATE
   const checkSnap = await db.collection('tugas')
     .where('bulan', '==', currentMonth)
     .where('tahun', '==', currentYear)
@@ -538,7 +696,6 @@ async function loadTugasBulanan(userId) {
      await generateDummyTugas(currentMonth, currentYear);
   }
 
-  // 2. Load Tugas & Listen Realtime
   db.collection('tugas')
     .where('bulan', '==', currentMonth)
     .where('tahun', '==', currentYear)
@@ -549,7 +706,6 @@ async function loadTugasBulanan(userId) {
         return;
       }
 
-      // Ambil Status Penyelesaian
       const doneSnap = await db.collection('task_done').where('userId', '==', userId).get();
       const doneTaskIds = new Set();
       doneSnap.forEach(d => doneTaskIds.add(d.data().taskId));
@@ -569,7 +725,6 @@ async function loadTugasBulanan(userId) {
           ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' 
           : '<i class="fas fa-circle" style="color:var(--primary); font-size:8px;"></i>';
 
-        // Form Dinamis
         let formHtml = '';
         if (!isDone) {
             if (t.tipe === 'digital' || t.tipe === 'link') {
@@ -590,7 +745,6 @@ async function loadTugasBulanan(userId) {
                         <button class="btn-task" onclick="taskCheckin('${taskId}', ${t.poin})"><i class="fas fa-location-dot"></i> Check-in Lokasi</button>
                     </div>`;
             } else {
-                // Default
                 formHtml = `
                     <div class="task-form" id="form-${taskId}">
                         <input type="text" id="input-${taskId}" placeholder="Keterangan penyelesaian...">
@@ -599,7 +753,6 @@ async function loadTugasBulanan(userId) {
             }
         }
 
-        // Aksi Button Toggle
         const actionBtn = isDone 
           ? `<span class="badge badge-done"><i class="fas fa-check"></i> Selesai</span>`
           : `<button class="btn-task" onclick="toggleForm('${taskId}')"><i class="fas fa-pencil"></i> Kerjakan</button>`;
@@ -624,13 +777,12 @@ async function loadTugasBulanan(userId) {
     });
 }
 
-// Generator Tugas Dummy (Hanya jalan sekali per bulan)
 async function generateDummyTugas(month, year) {
     const dummyData = [
         { nama: "Absensi Kehadiran", tipe: "checkin", poin: 10, butuhGPS: true, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Share Sosmed Partai", tipe: "digital", poin: 20, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Dokumentasi Kegiatan", tipe: "foto", poin: 30, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year },
-        { nama: "input Data Pemilih", tipe: "link", poin: 50, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
+        { nama: "Input Data Pemilih", tipe: "link", poin: 50, butuhGPS: false, butuhFoto: false, bulan: month, tahun: year },
         { nama: "Laporan Kader", tipe: "lapangan", poin: 15, butuhGPS: true, butuhFoto: true, bulan: month, tahun: year }
     ];
 
@@ -643,7 +795,6 @@ async function generateDummyTugas(month, year) {
     console.log("Tugas bulan ini berhasil digenerate");
 }
 
-// Toggle Form Submit
 function toggleForm(taskId) {
     const form = document.getElementById(`form-${taskId}`);
     if(form) {
@@ -656,7 +807,6 @@ function toggleForm(taskId) {
 // 6. SUBMIT HANDLERS
 // ==========================================
 
-// Handler untuk Link
 async function submitTugasLink(taskId, poin) {
     const input = document.getElementById(`input-${taskId}`);
     const link = input.value;
@@ -681,7 +831,6 @@ async function submitTugasLink(taskId, poin) {
     alert("Tugas Link berhasil dikirim! +" + poin + " Poin");
 }
 
-// Handler untuk Foto
 async function submitTugasFoto(taskId, poin) {
     const fileInput = document.getElementById(`file-${taskId}`);
     const file = fileInput.files[0];
@@ -690,12 +839,10 @@ async function submitTugasFoto(taskId, poin) {
     const user = auth.currentUser;
     if(!user) return;
 
-    // Upload Foto
     const ref = storage.ref("tugas_foto/"+Date.now());
     await ref.put(file);
     const url = await ref.getDownloadURL();
 
-    // Ambil GPS opsional
     navigator.geolocation.getCurrentPosition(async pos => {
         await db.collection('task_done').add({
             userId: user.uid,
@@ -713,7 +860,6 @@ async function submitTugasFoto(taskId, poin) {
 
         alert("Tugas Foto berhasil dikirim! +" + poin + " Poin");
     }, async () => {
-        // Jika GPS gagal, tetap simpan tanpa lokasi
         await db.collection('task_done').add({
             userId: user.uid,
             taskId: taskId,
@@ -728,7 +874,6 @@ async function submitTugasFoto(taskId, poin) {
     }, { timeout: 5000 });
 }
 
-// Handler Checkin
 async function taskCheckin(taskId, poin) {
     const user = auth.currentUser;
     if(!user) return;
