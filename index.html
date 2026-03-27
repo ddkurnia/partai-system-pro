@@ -12,8 +12,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <!-- Google Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +81,7 @@ header {
   margin: 0 auto;
 }
 
-/* LOGO - PERBAIKAN: Hanya target img di dalam .logo */
+/* LOGO */
 .logo {
   width: 50px;
   height: 50px;
@@ -96,7 +96,7 @@ header {
   width: 100%; 
   height: 100%; 
   object-fit: cover; 
-  display: block; /* Menghindari spasi di bawah gambar */
+  display: block;
 }
 
 .header-text h1 { font-size: 1.1rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; line-height: 1.2; }
@@ -263,20 +263,22 @@ button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow
 input[type="file"] { padding: 10px; background: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 0.85rem; }
 input[type="file"]::file-selector-button { padding: 8px 16px; margin-right: 10px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
 
-/* MAP - PERBAIKAN PENTING */
+/* MAP - PERBAIKAN KRITIS */
 #map { 
   height: 300px; 
   border-radius: 18px; 
   border: 2px solid rgba(255,255,255,0.5); 
-  z-index: 1; /* Pastikan peta di atas background */
+  z-index: 1; 
   position: relative;
+  background: #fff; /* Default background */
 }
-/* Perbaikan Leaflet: Pastikan tiles gambar peta terlihat */
-.leaflet-container { background: #fff; }
-.leaflet-tile-pane { 
+/* Paksa tile peta tampil benar */
+.leaflet-container { background: #fff; font-family: inherit; }
+.leaflet-tile { 
+    visibility: visible !important; 
     opacity: 1 !important; 
-    visibility: visible !important;
 }
+.leaflet-control-attribution { font-size: 8px; background: rgba(255,255,255,0.7); }
 
 /* USER INFO */
 #user {
@@ -360,7 +362,8 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
 <header>
   <div class="header-content">
     <div class="logo">
-      <img src="http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI Perjuangan">
+      <!-- PERBAIKAN: Gunakan link https dan parameter nocors untuk menghindari mixed content/cors -->
+      <img src="https://corsproxy.io/?url=http://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI Perjuangan" onerror="this.onerror=null; this.src='https://via.placeholder.com/50x50?text=PDI';">
     </div>
     <div class="header-text">
       <h1>PDI PERJUANGAN</h1>
@@ -404,7 +407,7 @@ footer { text-align: center; padding: 20px; color: #64748b; font-size: 0.8rem; m
       <div class="check-item"><i class="fas fa-check-circle"></i> Laporan lapangan terintegrasi</div>
       <div class="check-item"><i class="fas fa-check-circle"></i> Sistem tugas otomatis bulanan</div>
       <div class="check-item"><i class="fas fa-check-circle"></i> Leaderboard kader terbaik</div>
-      <div class="check-item"><i class="fas fa-check-circle"></i> Transparansi & Akuntabilitas</div>
+      <div class="check-item"><i class="fas fa-check-circle"></i> Transparensi & Akuntabilitas</div>
     </div>
   </div>
 </div>
@@ -521,8 +524,14 @@ const getTodayString = () => {
 // ==========================================
 function initMap() {
   if (map) return; 
-  map = L.map('map').setView([0.99, 102.7], 11);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}{y}{r}.png', {
+  map = L.map('map', {
+    center: [0.99, 102.7], 
+    zoom: 12,
+    scrollWheelZoom: true
+  });
+  
+  // Gunakan HTTPS
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains: 'abcd',
     maxZoom: 19
@@ -531,12 +540,9 @@ function initMap() {
 
 function getUserIcon(isMe = false) {
   const color = isMe ? '#E31E25' : '#10B981'; 
-  const iconHtml = `<div style="background:${color}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
-    <i class='fas fa-user' style="color:white; font-size:16px;"></i>
-   </div>`;
-   
+  const iconHtml = `<div style="background:${color}; width:40px; height:40px; border-radius:50%; border:3px solid white; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3);"><i class='fas fa-user' style="color:white; font-size:16px;"></i></div>`;
   return L.divIcon({
-    className: 'custom-marker-icon', // Class khusus agar tidak kena CSS global
+    className: 'custom-marker',
     html: iconHtml,
     iconSize: [40, 40],
     iconAnchor: [20, 40],
@@ -567,7 +573,6 @@ auth.onAuthStateChanged(async user => {
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => {
         currentUserData = doc.data();
         renderUserInfo();
-        // Update nama di presence jika data user berubah
         if(currentUserData && map) updateMyPresence(user.uid, currentUserData.nama);
     });
 
@@ -575,8 +580,8 @@ auth.onAuthStateChanged(async user => {
     document.getElementById('registerForm').classList.remove('active');
 
     initMap();
-    updateMyLocation(user); // Update lokasi GPS
-    listenToOtherUsers();   // Listen kader lain
+    updateMyLocation(user); 
+    listenToOtherUsers();   
     
     loadData(); 
     loadLeaderboard();
