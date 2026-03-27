@@ -5,12 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDI P Meranti - Sistem Elite</title>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
+<!-- Leaflet (FREE MAP) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
 body {margin:0;font-family:Segoe UI;background:#0f172a;color:white;}
@@ -33,7 +36,7 @@ Sistem Monitoring Kader
 
 <div class="container">
 
-<div class="card" id="authCard">
+<div class="card">
 <h3>🔐 Login / Daftar</h3>
 
 <input id="namaLengkap" placeholder="Nama Lengkap (untuk daftar)">
@@ -75,6 +78,7 @@ Sistem Monitoring Kader
 
 <script>
 
+// 🔥 FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
@@ -88,30 +92,25 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-let map;
+// 🔥 MAP INIT (LEAFLET)
+let map = L.map('map').setView([0.99, 102.7], 12);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+
 let markers = [];
 
-function initMap(){
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
-    center: { lat: 0.99, lng: 102.7 }
-  });
-}
-initMap();
-
-
 // 🔥 LOGIN STATE
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async user => {
   if(user){
 
-    db.collection("users").doc(user.uid).get().then(doc=>{
-      let data = doc.data();
+    let doc = await db.collection("users").doc(user.uid).get();
+    let data = doc.data();
 
-      document.getElementById('user').innerText =
-      "Selamat datang kader PDI P Kepulauan Meranti\n" + data.nama;
-    });
+    document.getElementById('user').innerText =
+    "Selamat datang kader PDI P Kepulauan Meranti\n" + (data?.nama || "");
 
-    // 🔥 UI bersih setelah login
     document.getElementById("authArea").innerHTML =
     `<button onclick="logout()">Logout</button>`;
 
@@ -136,44 +135,38 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-
 // 🔥 SIGNUP
 function signup(){
   let nama = document.getElementById('namaLengkap').value;
   let email = document.getElementById('email').value;
   let pass = document.getElementById('password').value;
 
-  if(!nama || !email || !pass)
-    return alert("Lengkapi semua data!");
+  if(!nama || !email || !pass) return alert("Lengkapi semua!");
 
   auth.createUserWithEmailAndPassword(email, pass)
   .then(res=>{
     db.collection("users").doc(res.user.uid).set({
-      nama: nama,
-      email: email,
+      nama,
+      email,
       poin: 0
     });
-
-    alert("✅ Akun berhasil dibuat");
+    alert("Akun berhasil dibuat");
   })
-  .catch(err=>alert(err.message));
+  .catch(e=>alert(e.message));
 }
-
 
 // 🔥 LOGIN
 function login(){
   auth.signInWithEmailAndPassword(
     document.getElementById('email').value,
     document.getElementById('password').value
-  ).catch(err=>alert(err.message));
+  ).catch(e=>alert(e.message));
 }
-
 
 // 🔥 LOGOUT
 function logout(){
   auth.signOut();
 }
-
 
 // 🔥 KIRIM LAPORAN
 function kirim(){
@@ -209,22 +202,18 @@ function kirim(){
       poin: firebase.firestore.FieldValue.increment(10)
     });
 
-    alert("✅ Laporan berhasil dikirim");
-
-    document.getElementById('nama').value = "";
-    document.getElementById('masalah').value = "";
+    alert("Laporan berhasil dikirim");
   });
 }
 
-
-// 🔥 DATA + MAP
+// 🔥 LOAD DATA + MAP
 function loadData(){
   db.collection("laporan").orderBy("waktu","desc")
   .onSnapshot(snapshot=>{
 
     document.getElementById('data').innerHTML = "";
 
-    markers.forEach(m=>m.setMap(null));
+    markers.forEach(m=>map.removeLayer(m));
     markers = [];
 
     snapshot.forEach(doc=>{
@@ -238,18 +227,16 @@ function loadData(){
       `;
       document.getElementById('data').appendChild(li);
 
-      let marker = new google.maps.Marker({
-        position: {lat:d.lat, lng:d.lng},
-        map: map
-      });
+      let marker = L.marker([d.lat, d.lng])
+        .addTo(map)
+        .bindPopup(`<b>${d.nama}</b><br>${d.masalah}`);
 
       markers.push(marker);
     });
   });
 }
 
-
-// 🔥 LEADERBOARD FINAL
+// 🔥 LEADERBOARD
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc")
   .onSnapshot(snapshot=>{
@@ -258,10 +245,8 @@ function loadLeaderboard(){
 
     snapshot.forEach(doc=>{
       let d = doc.data();
-
       let li = document.createElement('li');
       li.innerText = d.nama + " - " + d.poin + " poin";
-
       lb.appendChild(li);
     });
   });
