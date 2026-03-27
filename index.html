@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistem Partai PRO</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Sistem Partai PRO</h1>
+
+<!-- FORM MASYARAKAT -->
+<div class="card">
+  <h2>Laporan Masyarakat</h2>
+  <input id="nama" placeholder="Nama">
+  <input id="lokasi" placeholder="Lokasi">
+  <input id="masalah" placeholder="Masalah">
+  <button onclick="kirim()">Kirim</button>
+</div>
+
+<!-- DASHBOARD KADER -->
+<div class="card">
+  <h2>Dashboard Kader</h2>
+  <p>Poin: <span id="poin">0</span></p>
+  <ul id="tugas"></ul>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="card">
+  <h2>Leaderboard</h2>
+  <ol id="leaderboard"></ol>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
