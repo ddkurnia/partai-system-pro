@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDI P Meranti - Sistem Elite</title>
+<title>PDI Perjuangan Meranti - Sistem Elite</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -15,77 +15,478 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-body {margin:0;font-family:Segoe UI;background:#0f172a;color:white;}
-header {background:#dc2626;padding:15px;text-align:center;font-weight:bold;}
-.container {padding:15px;display:grid;gap:15px;}
-.card {background:#1e293b;padding:15px;border-radius:12px;}
-input, textarea {width:100%;padding:10px;margin-top:8px;border:none;border-radius:8px;}
-button {margin-top:10px;padding:10px;background:#dc2626;color:white;border:none;border-radius:8px;}
-#map {height:300px;border-radius:10px;}
-img {max-width:100px;border-radius:8px;margin-top:5px;}
-.toggle {cursor:pointer;color:#ccc;margin-top:10px;}
+:root {
+  --primary: #E31E25;
+  --primary-dark: #B91C1C;
+  --accent: #FF4D4D;
+  --dark: #0F172A;
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(227, 30, 37, 0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #fce7f3 0%, #ffe4e6 50%, #fff1f2 100%);
+  color: #1e293b;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ABSTRACT BACKGROUND SHAPES */
+.bg-shape {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  animation: float 20s infinite ease-in-out;
+}
+.shape-1 {
+  width: 400px; height: 400px;
+  background: rgba(227, 30, 37, 0.15);
+  top: -100px; left: -100px;
+}
+.shape-2 {
+  width: 300px; height: 300px;
+  background: rgba(255, 255, 255, 0.6);
+  bottom: 10%; right: -50px;
+  animation-delay: -5s;
+}
+.shape-3 {
+  width: 200px; height: 200px;
+  background: rgba(227, 30, 37, 0.1);
+  top: 40%; left: 10%;
+  animation-delay: -10s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 50px) scale(1.1); }
+}
+
+/* HEADER */
+header {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 18px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 6px rgba(227, 30, 37, 0.3));
+}
+
+.header-text h1 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.header-text p {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 25px 20px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* CARD GLASSMORPHISM */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 25px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  opacity: 0.8;
+  border-radius: 24px 24px 0 0;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(227, 30, 37, 0.15);
+}
+
+.card h3 {
+  color: var(--dark);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card h3 i {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.2rem;
+}
+
+/* FORMS */
+input, textarea {
+  width: 100%;
+  padding: 14px 18px;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(227, 30, 37, 0.15);
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #334155;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(227, 30, 37, 0.1);
+}
+
+input::placeholder, textarea::placeholder { color: #94a3b8; }
+
+textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+/* BUTTONS */
+button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(227, 30, 37, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+button:active { transform: scale(0.98); }
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  box-shadow: none;
+}
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* FILE INPUT */
+input[type="file"] {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  background: var(--dark);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+input[type="file"]::file-selector-button:hover {
+  background: #334155;
+}
+
+/* MAP */
+#map {
+  height: 280px;
+  border-radius: 18px;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* TOGGLE */
+.toggle {
+  cursor: pointer;
+  color: var(--primary);
+  margin-top: 18px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+.toggle:hover { opacity: 0.8; }
+
+/* USER INFO */
+#user {
+  background: linear-gradient(135deg, var(--primary), #d62246);
+  color: white;
+  padding: 18px;
+  border-radius: 16px;
+  margin-top: 15px;
+  font-weight: 500;
+  box-shadow: 0 10px 25px rgba(227, 30, 37, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+#user::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* LISTS */
+ul {
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+ul::-webkit-scrollbar { width: 5px; }
+ul::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px; }
+ul::-webkit-scrollbar-thumb { background: rgba(227, 30, 37, 0.3); border-radius: 10px; }
+
+li {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.6);
+  margin-top: 10px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  border-left: 4px solid var(--primary);
+  transition: all 0.3s;
+}
+li:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateX(5px);
+}
+
+/* LEADERBOARD */
+#leaderboard li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: none;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  margin-top: 0;
+  padding: 12px 15px;
+}
+#leaderboard li:last-child { border-bottom: none; }
+
+.rank-1 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent); }
+.rank-2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.15), transparent); }
+.rank-3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); }
+
+.poin-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 5px rgba(227, 30, 37, 0.2);
+}
+
+/* ANIMATIONS */
+.form-section { display: none; animation: fadeIn 0.5s ease; }
+.form-section.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #64748b;
+  font-size: 0.8rem;
+  margin-top: -50px;
+  padding-bottom: 30px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .card { padding: 20px; border-radius: 20px; }
+  .header-text h1 { font-size: 1.1rem; }
+}
 </style>
 </head>
-
 <body>
 
+<!-- Background Shapes -->
+<div class="bg-shape shape-1"></div>
+<div class="bg-shape shape-2"></div>
+<div class="bg-shape shape-3"></div>
+
 <header>
-🔴 PDI P KABUPATEN KEPULAUAN MERANTI<br>
-Sistem Monitoring Kader
+  <div class="header-content">
+    <div class="logo">
+      <!-- Logo PDI Perjuangan Modern -->
+      <svg viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E31E25;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#B91C1C;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="48" fill="url(#grad1)"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="white" stroke-width="2" stroke-dasharray="8 4"/>
+        <text x="50" y="45" text-anchor="middle" fill="white" font-family="Inter" font-weight="800" font-size="18">PDI</text>
+        <text x="50" y="65" text-anchor="middle" fill="white" font-family="Inter" font-weight="600" font-size="10">PERJUANGAN</text>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>PDI PERJUANGAN</h1>
+      <p>Sistem Monitoring Kader Meranti</p>
+    </div>
+  </div>
 </header>
 
 <div class="container">
 
+<!-- AUTH CARD -->
 <div class="card">
-
-<h3>🔐 Login</h3>
-<div id="loginForm">
-  <input id="loginEmail" placeholder="Email">
-  <input id="loginPassword" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <div class="toggle" onclick="showRegister()">Belum punya akun? Daftar</div>
+  <h3><i class="fas fa-fingerprint"></i> Portal Kader</h3>
+  
+  <!-- Login Form -->
+  <div id="loginForm" class="form-section active">
+    <input id="loginEmail" placeholder="Email Kader" type="email">
+    <input id="loginPassword" type="password" placeholder="Password Rahasia">
+    <button onclick="login()"><i class="fas fa-arrow-right-to-bracket"></i> Masuk Sistem</button>
+    <div class="toggle" onclick="showRegister()">Belum terdaftar? Daftar di sini</div>
+  </div>
+  
+  <!-- Register Form -->
+  <div id="registerForm" class="form-section">
+    <input id="regNama" placeholder="Nama Lengkap">
+    <input id="regId" placeholder="ID Kader">
+    <input id="regEmail" placeholder="Email Aktif" type="email">
+    <input id="regHp" placeholder="No. WhatsApp">
+    <input id="regAlamat" placeholder="Alamat">
+    <input id="regPassword" type="password" placeholder="Buat Password">
+    <button onclick="signup()"><i class="fas fa-user-plus"></i> Daftar Sekarang</button>
+    <div class="toggle" onclick="showLogin()">Sudah punya akun? Masuk</div>
+  </div>
+  
+  <div id="user"></div>
 </div>
 
-<h3 style="margin-top:20px;">📝 Daftar Kader</h3>
-<div id="registerForm" style="display:none;">
-  <input id="regNama" placeholder="Nama Lengkap">
-  <input id="regId" placeholder="ID Kader">
-  <input id="regEmail" placeholder="Email">
-  <input id="regHp" placeholder="Nomor HP">
-  <input id="regAlamat" placeholder="Alamat">
-  <input id="regPassword" type="password" placeholder="Password">
-  <button onclick="signup()">Daftar</button>
-  <div class="toggle" onclick="showLogin()">Sudah punya akun? Login</div>
-</div>
-
-<p id="user">Belum login</p>
-
-</div>
-
+<!-- REPORT CARD -->
 <div class="card">
-<h3>📩 Laporan Kader</h3>
-<textarea id="masalah" placeholder="Masalah"></textarea>
-<input type="file" id="foto">
-<button onclick="kirim()">Kirim Laporan</button>
+  <h3><i class="fas fa-bullhorn"></i> Laporan Lapangan</h3>
+  <textarea id="masalah" placeholder="Tulis laporan kondisi di lapangan..."></textarea>
+  <input type="file" id="foto" accept="image/*">
+  <button onclick="kirim()"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
 </div>
 
+<!-- MAP CARD -->
 <div class="card">
-<h3>🗺️ Map Realtime</h3>
-<div id="map"></div>
+  <h3><i class="fas fa-map-location-dot"></i> Peta Realtime</h3>
+  <div id="map"></div>
 </div>
 
+<!-- DATA CARD -->
 <div class="card">
-<h3>📋 Data Laporan</h3>
-<ul id="data"></ul>
+  <h3><i class="fas fa-newspaper"></i> Laporan Terbaru</h3>
+  <ul id="data">
+    <li style="text-align:center; border:none; color:#94a3b8;">Belum ada laporan</li>
+  </ul>
 </div>
 
+<!-- LEADERBOARD CARD -->
 <div class="card">
-<h3>🏆 Leaderboard</h3>
-<ul id="leaderboard"></ul>
+  <h3><i class="fas fa-ranking-star"></i> Top Kader</h3>
+  <ul id="leaderboard">
+    <li style="text-align:center; border:none; color:#94a3b8;">Belum ada data</li>
+  </ul>
 </div>
 
 </div>
+
+<footer>
+  <strong>PDI Perjuangan</strong> Kab. Kepulauan Meranti
+</footer>
 
 <script>
 
@@ -103,35 +504,49 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// MAP
-let map = L.map('map').setView([0.99, 102.7], 12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// MAP INIT
+let map = L.map('map').setView([0.99, 102.7], 11);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+// Custom Marker
+const pdipIcon = L.divIcon({
+  className: '',
+  html: `<div style="background:#E31E25; width:36px; height:36px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:3px solid white; box-shadow:0 4px 10px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
+          <i class='fas fa-flag' style="color:white; font-size:14px; transform:rotate(45deg)"></i>
+         </div>`,
+  iconSize: [36, 36],
+  iconAnchor: [18, 36],
+  popupAnchor: [0, -36]
+});
+
 let markers = [];
 
 // TOGGLE
 function showRegister(){
-  document.getElementById('loginForm').style.display="none";
-  document.getElementById('registerForm').style.display="block";
+  document.getElementById('loginForm').classList.remove('active');
+  document.getElementById('registerForm').classList.add('active');
 }
 function showLogin(){
-  document.getElementById('loginForm').style.display="block";
-  document.getElementById('registerForm').style.display="none";
+  document.getElementById('loginForm').classList.add('active');
+  document.getElementById('registerForm').classList.remove('active');
 }
 
-// LOGIN STATE
+// AUTH STATE
 auth.onAuthStateChanged(async user=>{
   if(user){
     let doc = await db.collection("users").doc(user.uid).get();
     let data = doc.data();
 
-    document.getElementById('user').innerText =
-    "Selamat datang kader\n" + (data?.nama || "");
+    document.getElementById('user').innerHTML =
+    `<i class="fas fa-user-circle" style="font-size: 1.2em; margin-right:8px;"></i> ${data?.nama || "Kader"}
+     <br><small style="opacity:0.9">ID: ${data?.id || "-"}</small>
+     <br><button class="btn-outline" onclick="logout()" style="margin-top:12px; padding:10px 20px; box-shadow:none;">
+     <i class="fas fa-right-from-bracket"></i> Keluar</button>`;
 
-    document.getElementById('loginForm').style.display="none";
-    document.getElementById('registerForm').style.display="none";
-
-    document.getElementById('user').innerHTML +=
-    `<br><button onclick="logout()">Logout</button>`;
+    document.getElementById('loginForm').classList.remove('active');
+    document.getElementById('registerForm').classList.remove('active');
 
     loadData();
     loadLeaderboard();
@@ -155,9 +570,9 @@ function signup(){
     db.collection("users").doc(res.user.uid).set({
       nama, id, email, hp, alamat, poin:0
     });
-    alert("Akun berhasil dibuat");
+    alert("Pendaftaran Berhasil!");
     showLogin();
-  });
+  }).catch(e => alert(e.message));
 }
 
 // LOGIN
@@ -179,6 +594,8 @@ function kirim(){
 
   let masalah = document.getElementById('masalah').value;
   let file = document.getElementById('foto').files[0];
+
+  if(!masalah) return alert("Isi laporan dulu!");
 
   navigator.geolocation.getCurrentPosition(async pos=>{
 
@@ -203,9 +620,10 @@ function kirim(){
       poin:firebase.firestore.FieldValue.increment(10)
     });
 
-    alert("Laporan terkirim");
-    masalah.value="";
-  });
+    alert("Laporan Terkirim! +10 Poin");
+    document.getElementById('masalah').value="";
+    document.getElementById('foto').value="";
+  }, () => alert("Aktifkan GPS!"));
 }
 
 // LOAD DATA
@@ -216,35 +634,63 @@ function loadData(){
     markers.forEach(m=>map.removeLayer(m));
     markers=[];
 
+    if(snapshot.empty){
+       data.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada laporan</li>";
+       return;
+    }
+
     snapshot.forEach(doc=>{
       let d=doc.data();
 
       let li=document.createElement('li');
-      li.innerHTML=`<b>${d.nama}</b><br>${d.masalah}`;
+      li.innerHTML=`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}<br>
+      <small style="color:#64748b">${d.waktu?.toDate?.().toLocaleString('id-ID') || 'Baru saja'}</small>
+      ${d.foto ? `<br><img src="${d.foto}" style="max-width:80px; border-radius:8px; margin-top:8px; border:2px solid #fff;">` : ''}`;
       data.appendChild(li);
 
-      let marker=L.marker([d.lat,d.lng]).addTo(map)
-      .bindPopup(`<b>${d.nama}</b><br>${d.masalah}`);
-      markers.push(marker);
+      if(d.lat && d.lng){
+        let marker=L.marker([d.lat, d.lng], {icon: pdipIcon}).addTo(map)
+        .bindPopup(`<b style="color:#E31E25">${d.nama}</b><br>${d.masalah}`);
+        markers.push(marker);
+      }
     });
+    
+    if(markers.length > 0) map.fitBounds(L.featureGroup(markers).getBounds().pad(0.1));
   });
 }
 
 // LEADERBOARD
 function loadLeaderboard(){
-  db.collection("users").orderBy("poin","desc")
+  db.collection("users").orderBy("poin","desc").limit(10)
   .onSnapshot(snapshot=>{
     leaderboard.innerHTML="";
+    
+    if(snapshot.empty){
+       leaderboard.innerHTML = "<li style='text-align:center; border:none; color:#94a3b8;'>Belum ada data</li>";
+       return;
+    }
+
+    let rank=1;
     snapshot.forEach(doc=>{
       let d=doc.data();
       let li=document.createElement('li');
-      li.innerText=d.nama+" - "+d.poin+" poin";
+      
+      let rankClass = '';
+      if(rank===1) rankClass='rank-1';
+      else if(rank===2) rankClass='rank-2';
+      else if(rank===3) rankClass='rank-3';
+      
+      li.className = rankClass;
+      li.innerHTML=`
+        <span><strong>#${rank}</strong> &nbsp; ${d.nama}</span>
+        <span class="poin-badge">${d.poin} poin</span>
+      `;
       leaderboard.appendChild(li);
+      rank++;
     });
   });
 }
 
 </script>
-
 </body>
 </html>
