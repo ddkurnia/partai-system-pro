@@ -7,7 +7,19 @@
   "scope": "/",
   "short_name": "PDI Meranti",
   "start_url": "/",
-  "theme_color": "#e31e25",
+  "theme_color": "#E31E25",
   "id": "com.kedaimedia.pdimeranti",
-  "description": "Aplikasi monitoring kader PDI Perjuangan Kabupaten Kepulauan Meranti untuk laporan lapangan, absensi, dan sistem tugas berbasis poin."
+  "description": "Aplikasi monitoring kader PDI Perjuangan Kabupaten Kepulauan Meranti untuk laporan lapangan, absensi, dan sistem tugas berbasis poin.",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
