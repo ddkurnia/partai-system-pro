@@ -258,9 +258,339 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .percent-bar { height: 4px; background: var(--border-color); border-radius: 2px; margin-top: 4px; overflow: hidden; }
 .percent-fill { height: 100%; background: var(--primary); border-radius: 2px; }
 
+/* ========================================== */
+/* AUTH SCREEN - CSS BARU (NON-DESTRUCTIVE)  */
+/* ========================================== */
+.auth-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.auth-container {
+  width: 90%;
+  max-width: 380px;
+  background: #1f2937;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.auth-header {
+  margin-bottom: 25px;
+}
+
+.auth-logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+  border: 3px solid var(--primary);
+  object-fit: cover;
+  background: white;
+}
+
+.auth-header h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+  color: white;
+}
+
+.auth-header p {
+  font-size: 0.85rem;
+  color: #9CA3AF;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 14px 16px;
+  margin: 8px 0;
+  border-radius: 12px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+}
+
+.auth-container input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(227, 30, 37, 0.2);
+}
+
+.auth-container input::placeholder {
+  color: #6B7280;
+}
+
+.auth-container button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(227, 30, 37, 0.3);
+  transition: all 0.3s ease;
+}
+
+.auth-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(227, 30, 37, 0.4);
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  font-size: 0.85rem;
+}
+
+.auth-links span {
+  color: #9CA3AF;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.auth-links span:hover {
+  color: var(--primary);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #6B7280;
+  font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #374151;
+}
+
+.auth-divider::before {
+  margin-right: 15px;
+}
+
+.auth-divider::after {
+  margin-left: 15px;
+}
+
+.auth-full-register {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.auth-full-register::-webkit-scrollbar {
+  width: 4px;
+}
+
+.auth-full-register::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 2px;
+}
+
+.auth-full-register::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+.auth-full-register select {
+  width: 100%;
+  padding: 14px 16px;
+  margin: 8px 0;
+  border-radius: 12px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.auth-full-register select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.auth-full-register .form-label {
+  display: block;
+  text-align: left;
+  font-size: 0.8rem;
+  color: #9CA3AF;
+  margin-top: 12px;
+  margin-bottom: -2px;
+  font-weight: 500;
+}
+
+/* Loading State */
+.auth-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.auth-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #374151;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.auth-loading p {
+  margin-top: 15px;
+  color: #9CA3AF;
+  font-size: 0.85rem;
+}
+
+/* Guest Login Option */
+.auth-guest {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #374151;
+}
+
+.auth-guest button {
+  background: transparent;
+  border: 1px solid #374151;
+  color: #9CA3AF;
+  box-shadow: none;
+}
+
+.auth-guest button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: none;
+  box-shadow: none;
+}
+
 </style>
 </head>
 <body>
+
+<!-- ========================================== -->
+<!-- AUTH SCREEN - PALING ATAS (NON-DESTRUCTIVE) -->
+<!-- ========================================== -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-container">
+    <div class="auth-header">
+      <img src="https://partai.kedaimedia.com/logo-pdi.png" class="auth-logo" alt="Logo PDI" onerror="this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff&size=70'">
+      <h2>Portal Kader PDI Perjuangan</h2>
+      <p>Silakan masuk untuk melanjutkan</p>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="authLogin">
+      <input type="email" id="authLoginEmail" placeholder="Email">
+      <input type="password" id="authLoginPassword" placeholder="Password">
+      <button onclick="handleLogin()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+
+      <div class="auth-links">
+        <span onclick="switchToRegister()">Daftar Akun Baru</span>
+        <span onclick="switchToReset()">Lupa Password?</span>
+      </div>
+
+      <div class="auth-guest">
+        <button onclick="loginAsGuest()"><i class="fas fa-eye"></i> Lihat sebagai Tamu</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="authRegister" style="display:none;">
+      <div class="auth-full-register">
+        <label class="form-label">Nama Lengkap *</label>
+        <input type="text" id="authRegNama" placeholder="Nama Lengkap">
+        
+        <label class="form-label">Nomor WhatsApp *</label>
+        <input type="text" id="authRegNohp" placeholder="08xxxxxxxxxx">
+        
+        <label class="form-label">Provinsi *</label>
+        <select id="authRegProvinsi" onchange="loadAuthKabupaten(this.value)">
+          <option value="">Memuat provinsi...</option>
+        </select>
+        
+        <label class="form-label">Kabupaten/Kota *</label>
+        <select id="authRegKabupaten" onchange="loadAuthKecamatan(this.value)" disabled>
+          <option value="">Pilih Provinsi dulu</option>
+        </select>
+        
+        <label class="form-label">Kecamatan *</label>
+        <select id="authRegKecamatan" onchange="loadAuthDesa(this.value)" disabled>
+          <option value="">Pilih Kabupaten dulu</option>
+        </select>
+        
+        <label class="form-label">Desa/Kelurahan *</label>
+        <select id="authRegDesa" disabled>
+          <option value="">Pilih Kecamatan dulu</option>
+        </select>
+        
+        <label class="form-label">Jabatan *</label>
+        <select id="authRegJabatan">
+          <option value="Kader">Kader</option>
+          <option value="Relawan">Relawan</option>
+        </select>
+        
+        <label class="form-label">Email *</label>
+        <input type="email" id="authRegEmail" placeholder="Email Aktif">
+        
+        <label class="form-label">Password *</label>
+        <input type="password" id="authRegPassword" placeholder="Min. 6 karakter">
+
+        <button onclick="handleSignup()" style="margin-top:20px"><i class="fas fa-user-plus"></i> Daftar</button>
+
+        <div class="auth-links">
+          <span onclick="switchToLogin()">Sudah punya akun? Masuk</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESET PASSWORD FORM -->
+    <div id="authReset" style="display:none;">
+      <input type="email" id="authResetEmail" placeholder="Email Akun">
+      <button onclick="handleResetPassword()"><i class="fas fa-paper-plane"></i> Kirim Link Reset</button>
+
+      <div class="auth-links">
+        <span onclick="switchToLogin()">Kembali ke Login</span>
+      </div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div id="authLoading" style="display:none;">
+      <div class="auth-loading">
+        <div class="spinner"></div>
+        <p>Memproses...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END AUTH SCREEN -->
 
 <header>
   <div class="header-content">
@@ -526,6 +856,7 @@ let mapMarkers = {};
 let map = null; 
 let slideIndex = 0;
 let analyticsChart = null; 
+let isGuestMode = false; // NEW: Track guest mode
 
 // ==========================================
 // 3. API WILAYAH
@@ -566,9 +897,11 @@ setTimeout(updateSlide, 4000);
 // ==========================================
 auth.onAuthStateChanged(user => {
   if(user){
+    showApp(); // NEW: Hide auth screen, show app
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); if(map) updateMyPresence(user.uid, currentUserData.nama); }, err => console.error(err));
     closeAuthModal(); initMap(); updateMyLocation(user); listenToOtherUsers(); loadData(); loadLeaderboard(); loadTugasBulanan(user.uid); loadReward(user.uid); loadStats();
   } else {
+    showAuth(); // NEW: Show auth screen, hide app
     document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; } if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
   }
 });
@@ -734,9 +1067,248 @@ async function tambahProduk() { const nama = document.getElementById('inputNamaP
 function loadProduk() { db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => { const g = document.getElementById('productGrid'); if(snap.empty) { g.innerHTML = "<p style='text-align:center;grid-column:span 2'>Kosong</p>"; return; } let h=""; snap.forEach(d => { const p=d.data(); const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', {day:'numeric',month:'short'}) : '-'; h+=`<div class="product-card"><img src="${p.foto}" class="product-img"><div class="product-body"><div class="product-name">${p.nome}</div><div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div><div class="product-desc">${p.deskripsi}</div><div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${t}</div></div></div>`; }); g.innerHTML = h; }); }
 
 // ==========================================
+// ==========================================
+// AUTH SCREEN FUNCTIONS - BARU (NON-DESTRUCTIVE)
+// ==========================================
+// ==========================================
+
+// Show Main App - Hide Auth Screen
+function showApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  isGuestMode = false;
+}
+
+// Show Auth Screen - Hide Main App
+function showAuth() {
+  if (!isGuestMode) {
+    document.getElementById('authScreen').style.display = 'flex';
+  }
+}
+
+// Switch to Login Form
+function switchToLogin() {
+  document.getElementById('authLogin').style.display = 'block';
+  document.getElementById('authRegister').style.display = 'none';
+  document.getElementById('authReset').style.display = 'none';
+  document.getElementById('authLoading').style.display = 'none';
+}
+
+// Switch to Register Form
+function switchToRegister() {
+  document.getElementById('authLogin').style.display = 'none';
+  document.getElementById('authRegister').style.display = 'block';
+  document.getElementById('authReset').style.display = 'none';
+  document.getElementById('authLoading').style.display = 'none';
+  loadAuthProvinces(); // Load provinces for auth screen
+}
+
+// Switch to Reset Password Form
+function switchToReset() {
+  document.getElementById('authLogin').style.display = 'none';
+  document.getElementById('authRegister').style.display = 'none';
+  document.getElementById('authReset').style.display = 'block';
+  document.getElementById('authLoading').style.display = 'none';
+}
+
+// Show Loading State
+function showAuthLoading() {
+  document.getElementById('authLogin').style.display = 'none';
+  document.getElementById('authRegister').style.display = 'none';
+  document.getElementById('authReset').style.display = 'none';
+  document.getElementById('authLoading').style.display = 'block';
+}
+
+// Handle Login from Auth Screen
+function handleLogin() {
+  const email = document.getElementById('authLoginEmail').value;
+  const password = document.getElementById('authLoginPassword').value;
+  
+  if (!email || !password) {
+    alert("Email dan password wajib diisi!");
+    return;
+  }
+  
+  showAuthLoading();
+  
+  auth.signInWithEmailAndPassword(email, password)
+    .then(user => {
+      if (!user.user.emailVerified) {
+        alert("Email belum verifikasi. Cek inbox email Anda.");
+      }
+      // Auth state listener will handle the rest
+    })
+    .catch(e => {
+      switchToLogin();
+      alert(e.message);
+    });
+}
+
+// Handle Signup from Auth Screen
+function handleSignup() {
+  const get = (id) => document.getElementById(id); 
+  const getVal = (id) => get(id).value; 
+  const getTxt = (id) => {
+    const sel = get(id);
+    if (sel && sel.selectedIndex >= 0 && sel.options[sel.selectedIndex]) {
+      return sel.options[sel.selectedIndex].getAttribute('data-name') || "";
+    }
+    return "";
+  };
+  const getId = (id) => get(id)?.value || "";
+
+  const data = {
+    nama: getVal('authRegNama'),
+    nohp: getVal('authRegNohp'),
+    provinsi: getTxt('authRegProvinsi'),
+    provinsi_id: getId('authRegProvinsi'),
+    kabupaten: getTxt('authRegKabupaten'),
+    kabupaten_id: getId('authRegKabupaten'),
+    kecamatan: getTxt('authRegKecamatan'),
+    kecamatan_id: getId('authRegKecamatan'),
+    desa: getTxt('authRegDesa'),
+    desa_id: getId('authRegDesa'),
+    jabatan: getVal('authRegJabatan'),
+    email: getVal('authRegEmail'),
+    status: 'Aktif'
+  };
+  
+  const pass = getVal('authRegPassword');
+  
+  if (!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) {
+    alert("Lengkapi semua data wajib!");
+    return;
+  }
+  
+  if (pass.length < 6) {
+    alert("Password minimal 6 karakter!");
+    return;
+  }
+  
+  showAuthLoading();
+  
+  auth.createUserWithEmailAndPassword(data.email, pass)
+    .then(async res => {
+      await res.user.sendEmailVerification();
+      await db.collection("users").doc(res.user.uid).set({
+        ...data, 
+        poin: 0, 
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("Pendaftaran berhasil! Cek email untuk verifikasi.");
+    })
+    .catch(e => {
+      switchToRegister();
+      alert(e.message);
+    });
+}
+
+// Handle Reset Password from Auth Screen
+function handleResetPassword() {
+  const email = document.getElementById('authResetEmail').value;
+  
+  if (!email) {
+    alert("Masukkan email akun Anda!");
+    return;
+  }
+  
+  showAuthLoading();
+  
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      alert("Link reset password telah dikirim ke email Anda!");
+      switchToLogin();
+    })
+    .catch(e => {
+      switchToReset();
+      alert(e.message);
+    });
+}
+
+// Login as Guest - Bypass Auth Screen
+function loginAsGuest() {
+  isGuestMode = true;
+  document.getElementById('authScreen').style.display = 'none';
+}
+
+// Load Provinces for Auth Screen Register Form
+async function loadAuthProvinces() {
+  const s = document.getElementById('authRegProvinsi');
+  if (!s) return;
+  s.innerHTML = '<option value="">Pilih Provinsi</option>';
+  const provinces = await fetchWilayah(`${API_WILAYAH}/provinces.json`);
+  provinces.forEach(p => {
+    s.innerHTML += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`;
+  });
+}
+
+// Load Kabupaten for Auth Screen
+async function loadAuthKabupaten(pid) {
+  const s = document.getElementById('authRegKabupaten');
+  const s2 = document.getElementById('authRegKecamatan');
+  const s3 = document.getElementById('authRegDesa');
+  
+  s.innerHTML = '<option value="">Memuat...</option>';
+  s.disabled = true;
+  s2.innerHTML = '<option value="">Pilih Kabupaten</option>';
+  s2.disabled = true;
+  s3.innerHTML = '<option value="">Pilih Kecamatan</option>';
+  s3.disabled = true;
+  
+  if (!pid) return;
+  
+  const kabupatens = await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`);
+  s.innerHTML = '<option value="">Pilih Kabupaten</option>';
+  kabupatens.forEach(k => {
+    s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`;
+  });
+  s.disabled = false;
+}
+
+// Load Kecamatan for Auth Screen
+async function loadAuthKecamatan(kid) {
+  const s = document.getElementById('authRegKecamatan');
+  const s2 = document.getElementById('authRegDesa');
+  
+  s.innerHTML = '<option value="">Memuat...</option>';
+  s.disabled = true;
+  s2.innerHTML = '<option value="">Pilih Kecamatan</option>';
+  s2.disabled = true;
+  
+  if (!kid) return;
+  
+  const kecamatans = await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`);
+  s.innerHTML = '<option value="">Pilih Kecamatan</option>';
+  kecamatans.forEach(k => {
+    s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`;
+  });
+  s.disabled = false;
+}
+
+// Load Desa for Auth Screen
+async function loadAuthDesa(kid) {
+  const s = document.getElementById('authRegDesa');
+  s.innerHTML = '<option value="">Memuat...</option>';
+  s.disabled = true;
+  
+  if (!kid) return;
+  
+  const desas = await fetchWilayah(`${API_WILAYAH}/villages/${kid}.json`);
+  s.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+  desas.forEach(d => {
+    s.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`;
+  });
+  s.disabled = false;
+}
+
+// ==========================================
 // INIT
 // ==========================================
-window.onload = function() { loadTheme(); loadProvinces(); loadProduk(); initAnalytics(); };
+window.onload = function() { 
+  loadTheme(); 
+  loadProvinces(); 
+  loadProduk(); 
+  initAnalytics(); 
+};
 
 </script>
 </body>
