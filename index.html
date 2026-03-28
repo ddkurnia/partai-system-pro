@@ -53,14 +53,18 @@ body.dark-mode {
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Inter', sans-serif;
-  background: var(--bg-body);
-  color: var(--text-main);
+  color: white;
   min-height: 100vh;
   overflow-x: hidden;
   padding-bottom: 80px;
-  transition: background 0.3s, color 0.3s;
-}
 
+  background: 
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)),
+    url('https://images.unsplash.com/photo-1520975922284-9e0ce827c1e9');
+
+  background-size: cover;
+  background-position: center;
+}
 /* HEADER */
 header {
   background: var(--glass);
@@ -277,12 +281,17 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .auth-container {
   width: 90%;
   max-width: 380px;
-  background: #1f2937;
   padding: 30px;
   border-radius: 20px;
   text-align: center;
   color: white;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
 .auth-header {
@@ -316,11 +325,15 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   padding: 14px 16px;
   margin: 8px 0;
   border-radius: 12px;
-  border: 1px solid #374151;
-  background: #111827;
+
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+
   color: white;
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
+
+  outline: none;
 }
 
 .auth-container input:focus {
@@ -336,21 +349,31 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .auth-container button {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+
+  background: linear-gradient(135deg, #ff2d2d, #b30000);
   color: white;
+
   border: none;
   border-radius: 12px;
+
   font-weight: 700;
   font-size: 1rem;
-  cursor: pointer;
+
   margin-top: 10px;
-  box-shadow: 0 4px 15px rgba(227, 30, 37, 0.3);
+
+  box-shadow: 0 6px 20px rgba(255,0,0,0.4);
   transition: all 0.3s ease;
 }
 
 .auth-container button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(227, 30, 37, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(255, 0, 0, 0.6);
+}
+
+  .auth-container button:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+}
 }
 
 .auth-links {
