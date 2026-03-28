@@ -1134,6 +1134,19 @@ function switchStoreTab(tab) { App.safeRun('Store', 'switchStoreTab', tab); }
 function previewProductPhoto(input) { App.safeRun('Store', 'previewProductPhoto', input); }
 function tambahProduk() { App.safeRun('Store', 'tambahProduk'); }
 
+function kirimKeSheet(type, payload) {
+  fetch("https://script.google.com/macros/s/AKfycbxgSF91hW5d2E-hY8DrBw-AEvl66OWXztW8YF_ioORdtnbIOnL31jysLL6Gya_aw6n7/exec", {
+    method: "POST",
+    body: JSON.stringify({
+      type: type,
+      payload: payload
+    })
+  })
+  .then(res => res.text())
+  .then(res => console.log("Sheet:", res))
+  .catch(err => console.error("Error:", err));
+}
+
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
