@@ -1147,6 +1147,14 @@ function kirimKeSheet(type, payload) {
   .catch(err => console.error("Error:", err));
 }
 
+function showApp() {
+  document.getElementById("authScreen").style.display = "none";
+}
+
+function showAuth() {
+  document.getElementById("authScreen").style.display = "flex";
+}
+
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
