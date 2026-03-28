@@ -9,7 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<!-- Storage dihapus, menggunakan Cloudinary -->
 
 <!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -465,7 +464,7 @@ body.dark-mode .task-info-box li { color: #FCA5A5; }
       <div onclick="showReg()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Daftar Akun Baru</div>
     </div>
 
-    <!-- REGISTER FORM (UPDATED) -->
+    <!-- REGISTER FORM -->
     <div id="registerForm" class="form-section">
       <h3 style="margin-bottom:20px; text-align:center">Daftar Kader Baru</h3>
       
@@ -480,23 +479,22 @@ body.dark-mode .task-info-box li { color: #FCA5A5; }
 
       <label class="form-label">Provinsi *</label>
       <select id="regProvinsi" onchange="loadKabupaten(this.value)">
-        <option value="">Pilih Provinsi</option>
-        <option value="riau">Riau</option>
+        <option value="">Memuat Provinsi...</option>
       </select>
 
-      <label class="form-label">Kabupaten *</label>
+      <label class="form-label">Kabupaten/Kota *</label>
       <select id="regKabupaten" onchange="loadKecamatan(this.value)" disabled>
-        <option value="">Pilih Kabupaten</option>
+        <option value="">Pilih Provinsi Dulu</option>
       </select>
 
       <label class="form-label">Kecamatan *</label>
       <select id="regKecamatan" onchange="loadDesa(this.value)" disabled>
-        <option value="">Pilih Kecamatan</option>
+        <option value="">Pilih Kabupaten Dulu</option>
       </select>
 
-      <label class="form-label">Desa *</label>
+      <label class="form-label">Desa/Kelurahan *</label>
       <select id="regDesa" disabled>
-        <option value="">Pilih Desa</option>
+        <option value="">Pilih Kecamatan Dulu</option>
       </select>
 
       <label class="form-label">Alamat Lengkap</label>
@@ -575,77 +573,128 @@ let editFile = null;
 let slideIndex = 0;
 
 // ==========================================
-// 3. WILAYAH DATA (SIMPLE JSON)
+// 3. API WILAYAH INDONESIA (EMSIFA)
 // ==========================================
-const wilayahData = {
-  "riau": {
-    "Kepulauan Meranti": {
-      "Tebing Tinggi": ["Tebing Tinggi Kota", "Selatpanjang Kota", "Kepau Baru", "Nipah Sendanu"],
-      "Tebing Tinggi Barat": ["Linau", "Mengkapan", "Senayang", "Tasik Raya"],
-      "Rangsang": ["Tanjung Kedabu", "Sungai Gayung Kiri", "Rangsang", "Rangsang Barat"],
-      "Rangsang Pesisir": ["Kempas Jaya", "Teluk Belitung", "Sungai Beringin"]
+const API_WILAYAH = "https://www.emsifa.com/api-wilayah-indonesia/api";
+
+// Fungsi helper untuk fetch
+async function fetchWilayah(url) {
+    try {
+        const response = await fetch(url);
+        return await response.json();
+    } catch (error) {
+        console.error("Gagal memuat data wilayah:", error);
+        return [];
     }
-  }
-};
-
-function loadKabupaten(prov) {
-  const kabSelect = document.getElementById('regKabupaten');
-  kabSelect.innerHTML = '<option value="">Pilih Kabupaten</option>';
-  kabSelect.disabled = true;
-  document.getElementById('regKecamatan').innerHTML = '<option value="">Pilih Kecamatan</option>';
-  document.getElementById('regKecamatan').disabled = true;
-  document.getElementById('regDesa').innerHTML = '<option value="">Pilih Desa</option>';
-  document.getElementById('regDesa').disabled = true;
-
-  if(prov && wilayahData[prov]) {
-    const kabupatens = Object.keys(wilayahData[prov]);
-    kabupatens.forEach(k => {
-      const opt = document.createElement('option');
-      opt.value = k;
-      opt.innerText = k;
-      kabSelect.appendChild(opt);
-    });
-    kabSelect.disabled = false;
-  }
 }
 
-function loadKecamatan(kab) {
-  const prov = document.getElementById('regProvinsi').value;
-  const kecSelect = document.getElementById('regKecamatan');
-  kecSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
-  kecSelect.disabled = true;
-  document.getElementById('regDesa').innerHTML = '<option value="">Pilih Desa</option>';
-  document.getElementById('regDesa').disabled = true;
-
-  if(prov && kab && wilayahData[prov] && wilayahData[prov][kab]) {
-    const kecamatans = Object.keys(wilayahData[prov][kab]);
-    kecamatans.forEach(k => {
-      const opt = document.createElement('option');
-      opt.value = k;
-      opt.innerText = k;
-      kecSelect.appendChild(opt);
-    });
-    kecSelect.disabled = false;
-  }
+// Load Provinsi
+async function loadProvinces() {
+    const select = document.getElementById('regProvinsi');
+    select.innerHTML = '<option value="">Pilih Provinsi</option>';
+    
+    const data = await fetchWilayah(`${API_WILAYAH}/provinces.json`);
+    
+    if(data.length > 0) {
+        data.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.id; // simpan ID
+            opt.setAttribute('data-name', p.name); // simpan Nama di attribute
+            opt.innerText = p.name;
+            select.appendChild(opt);
+        });
+    }
 }
 
-function loadDesa(kec) {
-  const prov = document.getElementById('regProvinsi').value;
-  const kab = document.getElementById('regKabupaten').value;
-  const desaSelect = document.getElementById('regDesa');
-  desaSelect.innerHTML = '<option value="">Pilih Desa</option>';
-  desaSelect.disabled = true;
+// Load Kabupaten/Kota
+async function loadKabupaten(provId) {
+    const kabSelect = document.getElementById('regKabupaten');
+    const kecSelect = document.getElementById('regKecamatan');
+    const desaSelect = document.getElementById('regDesa');
 
-  if(prov && kab && kec && wilayahData[prov] && wilayahData[prov][kab] && wilayahData[prov][kab][kec]) {
-    const desas = wilayahData[prov][kab][kec];
-    desas.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d;
-      opt.innerText = d;
-      desaSelect.appendChild(opt);
-    });
-    desaSelect.disabled = false;
-  }
+    // Reset child dropdowns
+    kabSelect.innerHTML = '<option value="">Memuat...</option>';
+    kabSelect.disabled = true;
+    kecSelect.innerHTML = '<option value="">Pilih Kabupaten Dulu</option>';
+    kecSelect.disabled = true;
+    desaSelect.innerHTML = '<option value="">Pilih Kecamatan Dulu</option>';
+    desaSelect.disabled = true;
+
+    if (!provId) {
+        kabSelect.innerHTML = '<option value="">Pilih Provinsi Dulu</option>';
+        return;
+    }
+
+    const data = await fetchWilayah(`${API_WILAYAH}/regencies/${provId}.json`);
+    
+    kabSelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+    if(data.length > 0) {
+        data.forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k.id;
+            opt.setAttribute('data-name', k.name);
+            opt.innerText = k.name;
+            kabSelect.appendChild(opt);
+        });
+        kabSelect.disabled = false;
+    }
+}
+
+// Load Kecamatan
+async function loadKecamatan(kabId) {
+    const kecSelect = document.getElementById('regKecamatan');
+    const desaSelect = document.getElementById('regDesa');
+
+    kecSelect.innerHTML = '<option value="">Memuat...</option>';
+    kecSelect.disabled = true;
+    desaSelect.innerHTML = '<option value="">Pilih Kecamatan Dulu</option>';
+    desaSelect.disabled = true;
+
+    if (!kabId) {
+        kecSelect.innerHTML = '<option value="">Pilih Kabupaten Dulu</option>';
+        return;
+    }
+
+    const data = await fetchWilayah(`${API_WILAYAH}/districts/${kabId}.json`);
+    
+    kecSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+    if(data.length > 0) {
+        data.forEach(k => {
+            const opt = document.createElement('option');
+            opt.value = k.id;
+            opt.setAttribute('data-name', k.name);
+            opt.innerText = k.name;
+            kecSelect.appendChild(opt);
+        });
+        kecSelect.disabled = false;
+    }
+}
+
+// Load Desa/Kelurahan
+async function loadDesa(kecId) {
+    const desaSelect = document.getElementById('regDesa');
+
+    desaSelect.innerHTML = '<option value="">Memuat...</option>';
+    desaSelect.disabled = true;
+
+    if (!kecId) {
+        desaSelect.innerHTML = '<option value="">Pilih Kecamatan Dulu</option>';
+        return;
+    }
+
+    const data = await fetchWilayah(`${API_WILAYAH}/villages/${kecId}.json`);
+    
+    desaSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+    if(data.length > 0) {
+        data.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.id;
+            opt.setAttribute('data-name', d.name);
+            opt.innerText = d.name;
+            desaSelect.appendChild(opt);
+        });
+        desaSelect.disabled = false;
+    }
 }
 
 // ==========================================
@@ -779,7 +828,7 @@ function renderUserInfo() {
 }
 
 function openEditModal() {
-    document.getElementById('editNama').value = currentUserData.nama || "";
+    document.getElementById('editNome').value = currentUserData.nome || "";
     document.getElementById('editHp').value = currentUserData.hp || "";
     const preview = document.getElementById('previewAvatar');
     const photoURL = currentUserData.photoURL;
@@ -797,28 +846,41 @@ function previewFile(input) {
     }
 }
 async function saveProfile() {
-    const nama = document.getElementById('editNama').value;
+    const nome = document.getElementById('editNome').value;
     const hp = document.getElementById('editHp').value;
     const user = auth.currentUser;
-    if(!nama) return alert("Nama wajib!");
+    if(!nome) return alert("Nama wajib!");
     let photoURL = currentUserData.photoURL || "";
     if(editFile){ try { const ref = storage.ref("profile/" + user.uid + "_" + Date.now()); await ref.put(editFile); photoURL = await ref.getDownloadURL(); } catch(e) { alert("Gagal upload foto."); } }
-    try { await db.collection('users').doc(user.uid).update({ nama, hp, photoURL }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); }
+    try { await db.collection('users').doc(user.uid).update({ nome, hp, photoURL }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); }
 }
 
 // ==========================================
 // 8. AUTH ACTIONS (UPDATED)
 // ==========================================
 function signup(){
-  // Ambil data dari form
+  // Helper untuk ambil nama dari select option
+  const getSelectedText = (id) => {
+      const select = document.getElementById(id);
+      return select.options[select.selectedIndex].getAttribute('data-name') || "";
+  }
+  const getSelectedId = (id) => document.getElementById(id).value;
+
   const data = {
     idAnggota: document.getElementById('regIdAnggota').value.trim(),
-    nama: document.getElementById('regNama').value.trim(),
+    nome: document.getElementById('regNome').value.trim(),
     nohp: document.getElementById('regNohp').value.trim(),
-    provinsi: document.getElementById('regProvinsi').value,
-    kabupaten: document.getElementById('regKabupaten').value,
-    kecamatan: document.getElementById('regKecamatan').value,
-    desa: document.getElementById('regDesa').value,
+    
+    // Wilayah (ID dan Nama)
+    provinsi: getSelectedText('regProvinsi'),
+    provinsiId: getSelectedId('regProvinsi'),
+    kabupaten: getSelectedText('regKabupaten'),
+    kabupatenId: getSelectedId('regKabupaten'),
+    kecamatan: getSelectedText('regKecamatan'),
+    kecamatanId: getSelectedId('regKecamatan'),
+    desa: getSelectedText('regDesa'),
+    desaId: getSelectedId('regDesa'),
+    
     alamat: document.getElementById('regAlamat').value.trim(),
     jabatan: document.getElementById('regJabatan').value,
     status: document.getElementById('regStatus').value,
@@ -826,19 +888,15 @@ function signup(){
   };
   const password = document.getElementById('regPassword').value;
 
-  // Validasi wajib
-  if(!data.nama || !data.nohp || !data.provinsi || !data.kabupaten || !data.kecamatan || !data.desa || !data.jabatan || !data.status || !data.email || !password) {
+  // Validasi
+  if(!data.nome || !data.nohp || !data.provinsiId || !data.kabupatenId || !data.kecamatanId || !data.desaId || !data.jabatan || !data.status || !data.email || !password) {
     return alert("Harap lengkapi semua field wajib (*)");
   }
   if(password.length < 6) return alert("Password minimal 6 karakter");
 
-  // Proses daftar
   auth.createUserWithEmailAndPassword(data.email, password)
   .then(async res => {
-    // Kirim Email Verifikasi
     await res.user.sendEmailVerification();
-    
-    // Simpan ke Firestore dengan field tambahan
     await db.collection("users").doc(res.user.uid).set({
         ...data,
         poin: 0,
@@ -846,9 +904,8 @@ function signup(){
         totalLaporan: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    
     alert("Registrasi Berhasil!\n\nSilakan cek email Anda untuk verifikasi akun sebelum login.");
-    showLog(); // Kembali ke form login
+    showLog();
   })
   .catch(e => alert("Gagal Daftar: " + e.message));
 }
@@ -858,8 +915,6 @@ function login(){
     .then(user => {
         if(!user.user.emailVerified) {
             alert("Email Anda belum diverifikasi. Silakan cek email Anda.");
-            // Opsional: logout langsung jika belum verifikasi
-            // auth.signOut(); 
         }
         closeAuthModal(); 
         showView('dashboard');
@@ -870,7 +925,6 @@ function login(){
 function resetPassword() {
     const email = document.getElementById('resetEmail').value;
     if(!email) return alert("Masukkan email Anda");
-    
     auth.sendPasswordResetEmail(email)
     .then(() => {
         alert("Link reset password telah dikirim ke email Anda. Silakan cek inbox atau folder spam.");
@@ -886,9 +940,9 @@ function logout(){ auth.signOut(); }
 // ==========================================
 function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
 function getUserIcon(isMe) { const c = isMe ? '#E31E25' : '#10B981'; return L.divIcon({ className: '', html: `<div style="background:${c}; width:24px; height:24px; border-radius:50%; border:2px solid white; display:flex; align-items:center; justify-content:center;"><i class='fas fa-user' style="color:white; font-size:10px;"></i></div>`, iconSize: [24, 24], iconAnchor: [12, 24] }); }
-function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => console.warn(err), { enableHighAccuracy: true }); }
-function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama, photoURL: currentUserData?.photoURL || null }, { merge: true }); }
-function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const data = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([data.lat, data.lng]); } else { let m = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : data.nama}</b>`); mapMarkers[uid] = m; } }); }); }
+function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nome || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => console.warn(err), { enableHighAccuracy: true }); }
+function updateMyPresence(uid, nome, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nome, photoURL: currentUserData?.photoURL || null }, { merge: true }); }
+function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const data = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([data.lat, data.lng]); } else { let m = L.marker([data.lat, data.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : data.nome}</b>`); mapMarkers[uid] = m; } }); }); }
 
 // ==========================================
 // 10. TASK LOGIC
@@ -900,9 +954,9 @@ async function loadTugasBulanan(userId) {
   const y = now.getFullYear();
   document.getElementById('bulanInfo').innerText = `Periode: ${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`;
   const tasksDef = [
-    { nama: "Checkin Harian", tipe: "checkin", poin: 10, deskripsi: "Tekan tombol checkin setiap hari." },
-    { nama: "Rekrut Anggota", tipe: "rekrut", poin: 50, deskripsi: "Ajak teman bergabung melalui link referral." },
-    { nama: "Misi Media Sosial", tipe: "sosmed", poin: 25, deskripsi: "Posting/Like/Share konten Partai PDI." }
+    { nome: "Checkin Harian", tipe: "checkin", poin: 10, deskripsi: "Tekan tombol checkin setiap hari." },
+    { nome: "Rekrut Anggota", tipe: "rekrut", poin: 50, deskripsi: "Ajak teman bergabung melalui link referral." },
+    { nome: "Misi Media Sosial", tipe: "sosmed", poin: 25, deskripsi: "Posting/Like/Share konten Partai PDI." }
   ];
   const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get().catch(e => console.error(e));
   if (cek && cek.empty) { const batch = db.batch(); tasksDef.forEach(t => { const ref = db.collection('tugas').doc(); batch.set(ref, {...t, bulan:m, tahun:y}); }); await batch.commit().catch(e => console.error(e)); }
@@ -921,7 +975,7 @@ async function loadTugasBulanan(userId) {
             isCheckinDoneToday = timestamps.some(ts => ts.toDate().toDateString() === todayStr);
             isCompleted = isCheckinDoneToday;
         } else { isCompleted = doneMap[id] && doneMap[id].length > 0; }
-        let html = `<div class="task-item ${isCompleted ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="color:var(--text-main)">${t.nama}</b><div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px">${t.deskripsi}</div></div><span class="badge badge-pending">+${t.poin}</span></div>`;
+        let html = `<div class="task-item ${isCompleted ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="color:var(--text-main)">${t.nome}</b><div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px">${t.deskripsi}</div></div><span class="badge badge-pending">+${t.poin}</span></div>`;
         if (t.tipe === 'checkin') {
             if (isCheckinDoneToday) { html += `<button class="btn-disabled" disabled><i class="fas fa-check"></i> Sudah Checkin</button>`; } 
             else { html += `<button onclick="checkin('${id}',${t.poin})"><i class="fas fa-map-marker-alt"></i> Checkin</button>`; }
@@ -938,7 +992,7 @@ async function loadTugasBulanan(userId) {
 }
 function openSosmedSubmit(id, poin) { const bukti = prompt("Masukkan Link/Bukti:"); if(bukti) submitLink(id, poin, bukti); }
 async function submitLink(id, p, val) { if(!val) return; try { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, bukti:val, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Sukses +"+p); } catch(e) { alert("Error"); } }
-async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { try { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Checkin Sukses! +"+p); } catch(e) { alert("Error"); } }, ()=>alert("GPS error")); }
+async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { try { await db.collection('task_done').add({userId:auth.currentUser.uid, taskId:id, lat:pos.coords.latitude, lng:pos.coords.longitude, tempo:new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin:firebase.firestore.FieldValue.increment(p)}); alert("Checkin Sucesso! +"+p); } catch(e) { alert("Error"); } }, ()=>alert("GPS error")); }
 
 // ==========================================
 // 11. MISC LOADERS
@@ -948,13 +1002,13 @@ function loadStats(){
     db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; });
     db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; });
 }
-function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
+function loadData(){ db.collection("laporan").orderBy("tempo","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nome}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
 function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; const rw=[{h:"Token Listrik", p:1000, icon:"fa-bolt", color:"#F59E0B", desc:"Token PLN"}, {h:"Jaket Partai", p:5000, icon:"fa-tshirt", color:"#E31E25", desc:"Merchandise"}, {h:"Topi Partai", p:2500, icon:"fa-hat-cowboy", color:"#1E40AF", desc:"Aksesoris"}, {h:"Paket Data", p:1500, icon:"fa-wifi", color:"#10B981", desc:"Kuota Internet"}]; let h=""; rw.forEach(r=>{ const ok=p>=r.p; h+=`<div class="reward-item"><div class="reward-icon" style="background:${r.color}20; color:${r.color}"><i class="fas ${r.icon}"></i></div><div class="reward-info"><h4>${r.h}</h4><p>${r.desc}</p><small>Poin: ${r.p}</small></div><div class="reward-action"><button style="background:${ok ? 'var(--primary)' : 'var(--border-color)'}; color:${ok ? 'white' : 'var(--text-muted)'}; padding:8px 12px" ${ok ? '' : 'disabled'}>${ok ? 'Tukar' : 'Terkunci'}</button></div></div>`; }); document.getElementById('rewardCatalog').innerHTML=h; }); }
 function loadLeaderboard(){
   db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => {
-    let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li style="display:flex; align-items:center; gap:10px; background:var(--bg-card)"><b style="color:var(--primary)">#${i}</b> ${v.nama} <span style="margin-left:auto; font-weight:700">${v.poin}</span></li>`; i++; });
+    let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li style="display:flex; align-items:center; gap:10px; background:var(--bg-card)"><b style="color:var(--primary)">#${i}</b> ${v.nome} <span style="margin-left:auto; font-weight:700">${v.poin}</span></li>`; i++; });
     document.getElementById('leaderboard').innerHTML=h||'Kosong';
-    let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; });
+    let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nome}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nome}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; });
     document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data';
   });
 }
@@ -963,13 +1017,13 @@ async function kirimLaporan(){
   if(txt.length < 10) return alert("Terlalu pendek");
   navigator.geolocation.getCurrentPosition(async pos => {
     let url = ""; if(file){ try { const r=storage.ref("l/"+Date.now()); await r.put(file); url=await r.getDownloadURL(); } catch(e){} }
-    try { await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, foto:url, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); document.getElementById('masalah').value=""; document.getElementById('foto').value=""; } catch(e) { alert("Gagal"); }
+    try { await db.collection("laporan").add({ userId:auth.currentUser.uid, nome:currentUserData.nome, masalah:txt, foto:url, lat:pos.coords.latitude, lng:pos.coords.longitude, tempo:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); document.getElementById('masalah').value=""; document.getElementById('foto').value=""; } catch(e) { alert("Gagal"); }
   }, ()=>alert("GPS error"));
 }
-function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, waktu:new Date() }).then(() => { alert("Usulan terkirim!"); document.getElementById('usulanText').value=""; document.getElementById('usulanNama').value=""; }).catch(e => alert("Error: " + e.message)); }
+function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNome').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nome:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); document.getElementById('usulanText').value=""; document.getElementById('usulanNome').value=""; }).catch(e => alert("Error: " + e.message)); }
 
 // ==========================================
-// 12. STORE UMKM LOGIC (CLOUDINARY)
+// 12. STORE UMKM LOGIC
 // ==========================================
 function switchStoreTab(tab) {
     document.querySelectorAll('.store-tab').forEach(el => el.classList.remove('active'));
@@ -1018,13 +1072,13 @@ async function uploadFotoCloudinary(file) {
 }
 
 async function tambahProduk() {
-    const nama = document.getElementById('inputNamaProduk').value;
+    const nome = document.getElementById('inputNomeProduk').value;
     const harga = parseInt(document.getElementById('inputHargaProduk').value);
     const deskripsi = document.getElementById('inputDescProduk').value;
     const fileInput = document.getElementById('inputFotoProduk');
     const file = fileInput.files[0];
 
-    if (!nama || !harga || !deskripsi || !file) return alert("Lengkapi semua data!");
+    if (!nome || !harga || !deskripsi || !file) return alert("Lengkapi semua data!");
     if (file.size > 2000000) return alert("Ukuran gambar maksimal 2MB");
 
     const btn = event.target;
@@ -1036,17 +1090,17 @@ async function tambahProduk() {
 
     try {
         await db.collection("produk").add({
-            nama: nama,
+            nome: nome,
             harga: harga,
             deskripsi: deskripsi,
             foto: fotoUrl,
             userId: auth.currentUser.uid,
-            namaKader: currentUserData.nama || "Kader",
+            nomeKader: currentUserData.nome || "Kader",
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         alert("Produk berhasil ditambahkan!");
         
-        document.getElementById('inputNamaProduk').value = "";
+        document.getElementById('inputNomeProduk').value = "";
         document.getElementById('inputHargaProduk').value = "";
         document.getElementById('inputDescProduk').value = "";
         fileInput.value = "";
@@ -1071,15 +1125,15 @@ function loadProduk() {
         let html = "";
         snapshot.forEach(doc => {
             const p = doc.data();
-            const time = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '';
+            const tempo = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '';
             html += `
                 <div class="product-card">
-                    <img src="${p.foto}" class="product-img" alt="${p.nama}">
+                    <img src="${p.foto}" class="product-img" alt="${p.nome}">
                     <div class="product-body">
-                        <div class="product-name">${p.nama}</div>
+                        <div class="product-name">${p.nome}</div>
                         <div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div>
                         <div class="product-desc">${p.deskripsi}</div>
-                        <div class="product-seller"><i class="fas fa-user"></i> ${p.namaKader} • ${time}</div>
+                        <div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${tempo}</div>
                     </div>
                 </div>
             `;
@@ -1091,6 +1145,7 @@ function loadProduk() {
 // Load Theme on Start
 window.onload = function() { 
     loadTheme(); 
+    loadProvinces(); // Load Provinsi saat aplikasi mulai
     loadProduk();
 };
 
