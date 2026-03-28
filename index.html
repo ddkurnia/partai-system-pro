@@ -106,6 +106,37 @@ header {
 }
 .theme-toggle:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
+/* Notification Icon (NEW) */
+.notif-icon {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.3s;
+}
+.notif-icon:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.notif-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  border: 2px solid white;
+  display: none; /* Hidden by default */
+}
+.notif-dot.active { display: block; }
+
 /* CONTAINER */
 .container { max-width: 500px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 25px; }
 
@@ -113,20 +144,17 @@ header {
 .running-text-container {
   background: linear-gradient(90deg, var(--primary), var(--primary-dark));
   color: white;
-  padding: 8px 0;
+  padding: 10px 0;
   overflow: hidden;
   white-space: nowrap;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(227, 30, 37, 0.2);
-  margin-bottom: 5px;
+  position: relative;
 }
 .running-text-content {
   display: inline-block;
-  animation: marquee 20s linear infinite;
   padding-left: 100%;
-}
-.running-text-content:hover {
-  animation-play-state: paused;
+  animation: marquee 25s linear infinite;
 }
 .running-item {
   display: inline-flex;
@@ -233,7 +261,6 @@ button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--p
 .btn-secondary { background: var(--border-color); color: var(--text-main); box-shadow: none; }
 .btn-logout { background: #FEF2F2; color: var(--primary); border: 1px solid #FECACA; box-shadow: none; margin-top: 10px; }
 .btn-link { background: none; border: none; color: var(--primary); font-size: 0.85rem; cursor: pointer; padding: 5px 0; box-shadow: none; width: auto; display: inline-block; }
-.btn-link:hover { text-decoration: underline; }
 
 /* MISC */
 .view-section { display: none; animation: fadeIn 0.4s ease; }
@@ -311,6 +338,11 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       </div>
     </div>
     <div class="header-right">
+       <!-- NOTIF ICON (NEW) -->
+       <div class="notif-icon" onclick="requestNotifPermission()">
+         <i class="fas fa-bell"></i>
+         <span class="notif-dot" id="notifDot"></span>
+       </div>
        <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
          <i class="fas fa-moon"></i>
        </div>
@@ -466,7 +498,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       <h3 style="margin-bottom:20px;">Edit Profil</h3>
       <div style="text-align:center;"><div style="width:80px; height:80px; margin:0 auto; border-radius:50%; background:var(--border-color); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem" id="previewAvatar"><span>A</span></div></div>
       <label class="form-label">Nama</label>
-      <input type="text" id="editNome" placeholder="Nome">
+      <input type="text" id="editNama" placeholder="Nama">
       <label class="form-label">No. HP</label>
       <input type="text" id="editHp" placeholder="HP">
       <button onclick="saveProfile()"><i class="fas fa-save"></i> Simpan</button>
@@ -503,7 +535,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
     <div id="registerForm" class="form-section">
       <h3 style="margin-bottom:20px; text-align:center">Daftar Kader</h3>
       <label class="form-label">Nama Lengkap *</label>
-      <input type="text" id="regNome" placeholder="Nome">
+      <input type="text" id="regNama" placeholder="Nama">
       <label class="form-label">No. HP *</label>
       <input type="text" id="regNohp" placeholder="08xx">
       <label class="form-label">Provinsi *</label>
@@ -551,14 +583,22 @@ const firebaseConfig = {
   authDomain: "partai-meranti.firebaseapp.com",
   projectId: "partai-meranti",
   storageBucket: "partai-meranti.appspot.com",
-  messagingSenderId: "409070967432", // Ganti dengan ID Project jika perlu
-  appId: "1:409070967432:web:abcd" // Ganti dengan App ID
+  messagingSenderId: "409070967432", 
+  appId: "1:409070967432:web:abcd" 
 };
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
-const messaging = firebase.messaging();
+
+// Init Messaging with try-catch
+let messaging = null;
+try {
+  messaging = firebase.messaging();
+} catch (e) {
+  console.warn("FCM not supported or config missing", e);
+}
 
 // ==========================================
 // 2. GLOBALS
@@ -609,17 +649,17 @@ setTimeout(updateSlide, 4000);
 // ==========================================
 auth.onAuthStateChanged(user => {
   if(user){
-    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); if(map) updateMyPresence(user.uid, currentUserData.nome); }, err => console.error(err));
+    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); if(map) updateMyPresence(user.uid, currentUserData.nama); }, err => console.error(err));
     closeAuthModal(); initMap(); updateMyLocation(user); listenToOtherUsers(); loadData(); loadLeaderboard(); loadTugasBulanan(user.uid); loadReward(user.uid); loadStats();
   } else {
     document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; } if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
   }
 });
 
-function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nome); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nome}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; }
-function openEditModal() { document.getElementById('editNome').value = currentUserData.nome || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nome||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
+function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; }
+function openEditModal() { document.getElementById('editNama').value = currentUserData.nama || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nama||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
 function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-async function saveProfile() { const nome = document.getElementById('editNome').value; const hp = document.getElementById('editHp').value; if(!nome) return alert("Nome wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nome, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
+async function saveProfile() { const nama = document.getElementById('editNama').value; const hp = document.getElementById('editHp').value; if(!nama) return alert("Nama wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nama, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
 
 // ==========================================
 // 8. AUTH ACTIONS
@@ -631,22 +671,22 @@ function signup(){
   const getId = (id) => get(id).value;
 
   const data = {
-    nome: getVal('regNome'),
+    nama: getVal('regNama'),
     nohp: getVal('regNohp'),
     provinsi: getTxt('regProvinsi'), provinsi_id: getId('regProvinsi'),
     kabupaten: getTxt('regKabupaten'), kabupaten_id: getId('regKabupaten'),
-    kecamatan: getTxt('regKecamatan'), kecamatan_id: getId('regKecamatan'), // FIX: Save Name & ID
+    kecamatan: getTxt('regKecamatan'), kecamatan_id: getId('regKecamatan'),
     desa: getTxt('regDesa'), desa_id: getId('regDesa'),
     jabatan: getVal('regJabatan'),
     email: getVal('regEmail'),
     status: 'Aktif'
   };
   const pass = getVal('regPassword');
-  if(!data.nome || !data.nohp || !data.kecamatan || !data.email || !pass) return alert("Lengkapi data!");
+  if(!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) return alert("Lengkapi data!");
   auth.createUserWithEmailAndPassword(data.email, pass).then(async res => {
     await res.user.sendEmailVerification();
     await db.collection("users").doc(res.user.uid).set({...data, poin: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
-    alert("Sucesso! Cek email."); showLog();
+    alert("Sukses! Cek email."); showLog();
   }).catch(e => alert(e.message));
 }
 function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).then(user => { if(!user.user.emailVerified) alert("Email belum verifikasi."); closeAuthModal(); showView('dashboard'); }).catch(e => alert(e.message)); }
@@ -658,14 +698,14 @@ function logout(){ auth.signOut(); }
 // ==========================================
 function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
 function getUserIcon(isMe) { return L.divIcon({ className: '', html: `<div style="background:${isMe ? '#E31E25' : '#10B981'}; width:20px; height:20px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [20, 20] }); }
-function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nome || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => {}, { enableHighAccuracy: true }); }
-function updateMyPresence(uid, nome, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nome }, { merge: true }); }
+function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => {}, { enableHighAccuracy: true }); }
+function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nome }, { merge: true }); }
 function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const d = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([d.lat, d.lng]); } else { mapMarkers[uid] = L.marker([d.lat, d.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : d.nome}</b>`); } }); }); }
 
 // ==========================================
 // 10. TASK
 // ==========================================
-async function loadTugasBulanan(userId) { const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear(); document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`; const cek = await db.collection('tugas').where('bulan', '==', m).where('ano', '==', y).limit(1).get(); if (cek && cek.empty) { await db.collection('tugas').doc().set({ nome: "Checkin", tipe: "checkin", poin: 10, mes: m, ano: y }); } db.collection('tugas').where('mes', '==', m).where('ano', '==', y).onSnapshot(async snap => { if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Tidak ada tugas.</p>'; return; } const done = await db.collection('task_done').where('userId', '==', userId).get(); const doneMap = {}; done.forEach(d => { const data = d.data(); if(!doneMap[data.taskId]) doneMap[data.taskId] = []; doneMap[data.taskId].push(data.waktu); }); list.innerHTML = ''; snap.forEach(doc => { const t = doc.data(); const id = doc.id; let isDone = false; if (t.tipe === 'checkin') { const ts = doneMap[id] || []; isDone = ts.some(x => x.toDate().toDateString() === new Date().toDateString()); } else { isDone = doneMap[id] && doneMap[id].length > 0; } list.innerHTML += `<div class="task-item ${isDone ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between"><b>${t.nome}</b><span class="badge badge-pending">+${t.poin}</span></div>${t.tipe === 'checkin' ? (isDone ? '<button class="btn-disabled" disabled>Selesai</button>' : '<button onclick="checkin(\''+id+'\','+t.poin+')">Checkin</button>') : (isDone ? '<span class="badge badge-done">Done</span>' : '<button onclick="submitLink(\''+id+'\','+t.poin+')">Submit</button>')}</div>`; }); }); }
+async function loadTugasBulanan(userId) { const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear(); document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`; const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get(); if (cek && cek.empty) { await db.collection('tugas').doc().set({ nome: "Checkin", tipe: "checkin", poin: 10, mes: m, ano: y }); } db.collection('tugas').where('mes', '==', m).where('ano', '==', y).onSnapshot(async snap => { if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Tidak ada tugas.</p>'; return; } const done = await db.collection('task_done').where('userId', '==', userId).get(); const doneMap = {}; done.forEach(d => { const data = d.data(); if(!doneMap[data.taskId]) doneMap[data.taskId] = []; doneMap[data.taskId].push(data.tempo); }); list.innerHTML = ''; snap.forEach(doc => { const t = doc.data(); const id = doc.id; let isDone = false; if (t.tipe === 'checkin') { const ts = doneMap[id] || []; isDone = ts.some(x => x.toDate().toDateString() === new Date().toDateString()); } else { isDone = doneMap[id] && doneMap[id].length > 0; } list.innerHTML += `<div class="task-item ${isDone ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between"><b>${t.nome}</b><span class="badge badge-pending">+${t.poin}</span></div>${t.tipe === 'checkin' ? (isDone ? '<button class="btn-disabled" disabled>Selesai</button>' : '<button onclick="checkin(\''+id+'\','+t.poin+')">Checkin</button>') : (isDone ? '<span class="badge badge-done">Done</span>' : '<button onclick="submitLink(\''+id+'\','+t.poin+')">Submit</button>')}</div>`; }); }); }
 async function submitLink(id, p) { const link = prompt("Link:"); if(link) { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, bukti: link, tempo: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sucesso!"); } }
 async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, lat: pos.coords.latitude, lng: pos.coords.longitude, tempo: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sucesso!"); }, () => alert("GPS Error")); }
 
@@ -690,7 +730,7 @@ function initAnalytics() {
         snapshot.forEach(d => {
             const u = d.data();
             total++;
-            let kecName = u.kecamatan || "Belum Lengkap"; // FIX: Read 'kecamatan' (Name)
+            let kecName = u.kecamatan || "Belum Lengkap";
             if (!dist[kecName]) dist[kecName] = 0;
             dist[kecName]++;
         });
@@ -740,7 +780,6 @@ function initRunningText() {
 function sensorNome(nome) {
     if (!nome) return "***";
     if (nome.length <= 2) return nome[0] + "*";
-    // Sensor: De** Pr* (Depp Pr*)
     return nome.split(' ').map(word => {
         if (word.length <= 2) return word[0] + '*';
         return word.substring(0, 2) + '*'.repeat(word.length - 2);
@@ -750,37 +789,40 @@ function sensorNome(nome) {
 // ==========================================
 // 14. FCM NOTIFICATION (NEW)
 // ==========================================
-async function initFCM() {
+async function requestNotifPermission() {
+    if (!messaging) {
+        alert("Notifikasi tidak didukung browser ini.");
+        return;
+    }
+
     try {
         const permission = await Notification.requestPermission();
-        if (permission !== 'granted') {
-            console.log("Izin notifikasi ditolak.");
-            return;
-        }
-        
-        const token = await messaging.getToken({ vapidKey: "YOUR_VAPID_KEY_HERE" }); // Ganti Vapid Key
-        if (token) {
-            console.log("FCM Token:", token);
-            // Simpan token ke user profile jika perlu
-            if(auth.currentUser) {
-               // await db.collection('users').doc(auth.currentUser.uid).update({ fcmToken: token });
+        if (permission === 'granted') {
+            const token = await messaging.getToken({ vapidKey: "YOUR_VAPID_KEY_HERE" }); 
+            if (token) {
+                console.log("FCM Token:", token);
+                alert("Notifikasi diaktifkan!");
+                document.getElementById('notifDot').classList.remove('active');
             }
+        } else {
+            alert("Izin notifikasi ditolak.");
         }
-
-        // Foreground Message
-        messaging.onMessage((payload) => {
-            console.log('Message received. ', payload);
-            const title = payload.notification.title;
-            const options = {
-                body: payload.notification.body,
-                icon: '/logo-pdi.png'
-            };
-            new Notification(title, options);
-        });
-
     } catch (error) {
         console.log("Error FCM:", error);
+        alert("Gagal mengaktifkan notifikasi. Coba refresh halaman.");
     }
+}
+
+function initFCM() {
+    if (!messaging) return;
+    
+    messaging.onMessage((payload) => {
+        console.log('Message received.', payload);
+        const title = payload.notification.title;
+        const options = { body: payload.notification.body, icon: '/logo-pdi.png' };
+        new Notification(title, options);
+        document.getElementById('notifDot').classList.add('active');
+    });
 }
 
 // ==========================================
@@ -800,7 +842,7 @@ window.onload = function() {
     loadProduk(); 
     initAnalytics(); 
     initRunningText();
-    // initFCM(); // Uncomment jika Vapid Key sudah diisi
+    initFCM();
 };
 
 </script>
