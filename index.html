@@ -9,7 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 
 <!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -61,55 +60,6 @@ body {
   padding-bottom: 80px;
   transition: background 0.3s, color 0.3s;
 }
-
-/* RUNNING TEXT & NOTIFICATION STYLES */
-.running-text-box {
-    background: var(--primary);
-    color: white;
-    padding: 8px 0;
-    font-size: 0.75rem;
-    font-weight: 600;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    z-index: 99;
-}
-.marquee {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marquee 30s linear infinite;
-}
-@keyframes marquee {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-100%, 0); }
-}
-
-.notification-container {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    z-index: 9999;
-    pointer-events: none;
-}
-.toast-notif {
-    background: var(--bg-card);
-    border-left: 4px solid var(--primary);
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transform: translateX(120%);
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    pointer-events: auto;
-    max-width: 300px;
-}
-.toast-notif.show { transform: translateX(0); }
-.toast-icon { width: 35px; height: 35px; background: #FEF2F2; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.toast-body b { display: block; font-size: 0.85rem; color: var(--text-main); }
-.toast-body span { font-size: 0.75rem; color: var(--text-muted); }
 
 /* HEADER */
 header {
@@ -192,6 +142,18 @@ header {
 .menu-item:hover .menu-icon { transform: scale(1.05); }
 .menu-text { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-align: center; }
 
+/* Colors */
+.c-red { background: linear-gradient(135deg, #EF4444, #DC2626); }
+.c-blue { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.c-green { background: linear-gradient(135deg, #10B981, #059669); }
+.c-purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+.c-orange { background: linear-gradient(135deg, #F97316, #EA580C); }
+.c-cyan { background: linear-gradient(135deg, #06B6D4, #0891B2); }
+.c-pink { background: linear-gradient(135deg, #EC4899, #DB2777); }
+.c-gray { background: linear-gradient(135deg, #64748B, #475569); }
+.c-teal { background: linear-gradient(135deg, #14B8A6, #0D9488); }
+.c-yellow { background: linear-gradient(135deg, #F59E0B, #D97706); }
+
 /* LEADERBOARD */
 .leaderboard-card { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
 .leaderboard-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
@@ -235,7 +197,6 @@ button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--p
 .btn-logout { background: #FEF2F2; color: var(--primary); border: 1px solid #FECACA; box-shadow: none; margin-top: 10px; }
 .btn-link { background: none; border: none; color: var(--primary); font-size: 0.85rem; cursor: pointer; padding: 5px 0; box-shadow: none; width: auto; display: inline-block; }
 .btn-link:hover { text-decoration: underline; }
-.btn-small { width: auto; padding: 6px 12px; font-size: 0.75rem; }
 
 /* MISC */
 .view-section { display: none; animation: fadeIn 0.4s ease; }
@@ -254,17 +215,42 @@ button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--p
 ul { list-style: none; padding: 0; margin: 0; }
 li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top: 8px; font-size: 0.85rem; border: 1px solid var(--border-color); }
 
-/* Colors */
-.c-red { background: linear-gradient(135deg, #EF4444, #DC2626); }
-.c-blue { background: linear-gradient(135deg, #3B82F6, #2563EB); }
-.c-green { background: linear-gradient(135deg, #10B981, #059669); }
-.c-purple { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
-.c-orange { background: linear-gradient(135deg, #F97316, #EA580C); }
-.c-teal { background: linear-gradient(135deg, #14B8A6, #0D9488); }
-.c-pink { background: linear-gradient(135deg, #EC4899, #DB2777); }
-.c-gray { background: linear-gradient(135deg, #64748B, #475569); }
+/* REWARD STYLES */
+.reward-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+.reward-item:last-child { border-bottom: none; }
+.reward-info { flex: 1; }
+.reward-info h4 { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
+.reward-info p { font-size: 0.8rem; color: var(--text-muted); }
 
-/* ANALYTICS */
+/* Card Style */
+.card { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
+
+/* STORE STYLES */
+.store-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.store-tab { flex: 1; padding: 12px; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all 0.2s; }
+.store-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+.product-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+.product-img { width: 100%; height: 140px; object-fit: cover; background: var(--bg-body); }
+.product-body { padding: 12px; }
+.product-name { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-price { color: var(--primary); font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; }
+.product-desc { font-size: 0.75rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
+.product-seller { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+.file-upload-area { border: 2px dashed var(--border-color); border-radius: 12px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s; margin-top: 12px; background: var(--bg-body); }
+.file-upload-area i { font-size: 2rem; color: var(--text-muted); margin-bottom: 10px; display: block; }
+.file-upload-area p { font-size: 0.8rem; color: var(--text-muted); }
+.file-upload-area input { display: none; }
+.preview-container { margin-top: 10px; display: none; }
+.preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; }
+
+.form-label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; margin-bottom: -5px; font-weight: 500; }
+
+/* ANALYTICS STYLES (UPDATED) */
+.analytics-section { margin-top: 25px; }
+.live-indicator { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; }
+.live-indicator::before { content: "🟢"; font-size: 0.6rem; }
 .chart-wrapper { position: relative; height: 250px; width: 100%; margin-bottom: 20px; }
 .table-analytics { width: 100%; border-collapse: collapse; margin-top: 10px; }
 .table-analytics th { text-align: left; font-size: 0.75rem; color: var(--text-muted); padding: 10px 5px; border-bottom: 2px solid var(--border-color); }
@@ -272,59 +258,9 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .percent-bar { height: 4px; background: var(--border-color); border-radius: 2px; margin-top: 4px; overflow: hidden; }
 .percent-fill { height: 100%; background: var(--primary); border-radius: 2px; }
 
-/* NEW TASK & REWARD STYLES */
-.task-card { background: var(--bg-card); border-radius: 16px; padding: 15px; margin-top: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); border: 1px solid var(--border-color); }
-.task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.task-title { font-weight: 700; font-size: 1rem; }
-.task-points { background: #FEF3C7; color: #D97706; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
-.task-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
-.task-example { background: var(--bg-body); border-radius: 8px; padding: 10px; font-size: 0.8rem; color: var(--text-main); margin-bottom: 10px; border-left: 3px solid var(--primary); }
-.task-rules { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; }
-.task-rules li { margin-top: 4px; border: none; padding: 0; background: none; }
-.input-group { margin-top: 10px; }
-.input-group input { margin-top: 0; }
-
-.reward-card { background: linear-gradient(135deg, #fff, #f8f9fa); border-radius: 16px; padding: 15px; margin-top: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); }
-.reward-icon { width: 40px; height: 40px; background: var(--border-color); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--primary); }
-.reward-info { flex: 1; padding: 0 15px; }
-.reward-name { font-weight: 700; font-size: 0.95rem; }
-.reward-cost { font-size: 0.8rem; color: var(--text-muted); }
-.btn-redeem { width: auto; padding: 8px 16px; font-size: 0.8rem; }
-.btn-redeem:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; }
-
-/* NEW: STORE UMKM STYLES */
-.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
-.product-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); position: relative; }
-.product-img { width: 100%; height: 120px; object-fit: cover; background: var(--bg-body); }
-.product-body { padding: 10px; }
-.product-title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.product-price { color: var(--primary); font-weight: 800; font-size: 0.9rem; margin-bottom: 4px; }
-.product-meta { font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
-.delete-btn { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.6); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
-.delete-btn:hover { background: var(--primary); }
-
-.upload-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color); }
-.upload-area { border: 2px dashed var(--border-color); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; margin-top: 10px; background: var(--bg-body); }
-.upload-area:hover { border-color: var(--primary); }
-.upload-area i { font-size: 2rem; color: var(--text-muted); margin-bottom: 5px; }
-.upload-area p { font-size: 0.8rem; color: var(--text-muted); }
-.upload-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none; }
-.form-row { display: flex; gap: 10px; }
-.form-row > div { flex: 1; }
-.form-label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; margin-bottom: -5px; }
-
-/* Terms Modal */
-.terms-content { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
-.terms-content h4 { margin-top: 10px; margin-bottom: 5px; color: var(--text-main); font-size: 0.9rem; }
-.terms-content ul { padding-left: 20px; list-style: disc; }
-.terms-content li { border: none; padding: 2px 0; font-size: 0.85rem; background: transparent; }
-
 </style>
 </head>
 <body>
-
-<!-- NOTIFICATION CONTAINER -->
-<div class="notification-container" id="notifContainer"></div>
 
 <header>
   <div class="header-content">
@@ -344,13 +280,6 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
     </div>
   </div>
 </header>
-
-<!-- RUNNING TEXT -->
-<div class="running-text-box">
-    <div class="marquee" id="runningText">
-        Selamat Datang di Portal Resmi DPC PDI Perjuangan Kabupaten Kepulauan Meranti. Merdeka! ✊
-    </div>
-</div>
 
 <div class="container">
 
@@ -405,28 +334,35 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   </div>
 
   <!-- ANALYTICS SECTION -->
-  <div class="analytics-section" style="margin-top:25px">
+  <div class="analytics-section">
     <div class="section-title">
       <span><i class="fas fa-chart-pie" style="color:var(--primary); margin-right:8px"></i> Peta Kekuatan Kader</span>
+      <div class="live-indicator">Data Live</div>
     </div>
-    <div class="card" style="background:var(--bg-card); border-radius:20px; padding:20px; border:1px solid var(--border-color)">
+    <div class="card">
       <div class="chart-wrapper">
         <canvas id="analyticsChart"></canvas>
       </div>
+      
+      <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align:right">
+        Update terakhir: <span id="lastUpdate">-</span>
+      </div>
+
       <table class="table-analytics">
         <thead>
           <tr>
             <th>Kecamatan</th>
             <th style="text-align:center">Jumlah</th>
-            <th style="text-align:right">Persentase</th>
+            <th style="text-align:right; width:30%">Persentase</th>
           </tr>
         </thead>
         <tbody id="analyticsTable">
-          <tr><td colspan="3" style="text-align:center">Memuat data...</td></tr>
+          <tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Memuat data...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
+  <!-- END ANALYTICS -->
 
   <!-- TOP KADER -->
   <div class="section-title" style="margin-top:25px"><span>Top 10 Kader</span></div>
@@ -447,90 +383,35 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   </div>
 </div>
 
-<!-- VIEWS LAINNYA -->
-<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px">Berita & Kabar</h3><p>Informasi terkini seputar kegiatan partai.</p></div></div>
-<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px">Pengumuman</h3><ul><li>Rapat Rutin Setiap Senin Malam</li></ul></div></div>
-<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px">Struktur Organisasi</h3><p>DPC PDI Perjuangan Kab. Kepulauan Meranti</p></div></div>
-<div id="view-usulan" class="view-section"><div class="card"><h3>Kirim Usulan</h3><textarea id="usulanText" placeholder="Usulan Anda"></textarea><input id="usulanNama" placeholder="Nama"><button onclick="kirimUsulan()">Kirim</button></div></div>
-<div id="view-galeri" class="view-section"><div class="card"><h3>Galeri</h3></div></div>
-<div id="view-kontak" class="view-section"><div class="card"><h3>Kontak</h3></div></div>
+<!-- VIEWS UMUM -->
+<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:var(--text-muted)">Informasi terkini seputar kegiatan partai.</p></div></div>
+<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><ul><li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC.</small></li></ul></div></div>
+<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong></p></div></div>
+<div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
+<div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
+<div id="view-bantuan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Bantuan</h3></div></div>
+<div id="view-kontak" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3></div></div>
 
-<!-- VIEW: STORE UMKM (UPDATED) -->
+<!-- VIEW: STORE UMKM -->
 <div id="view-store" class="view-section">
   <div class="card">
-    <h3><i class="fas fa-store" style="color:var(--primary); margin-right:8px"></i> Store UMKM Kader</h3>
-    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px">Dukung produk lokal kader PDI Perjuangan.</p>
-    
-    <!-- Product List -->
-    <div id="productGrid" class="product-grid">
-        <p style="text-align:center; grid-column: span 2; color:var(--text-muted)">Memuat produk...</p>
+    <h3 style="margin-bottom:15px"><i class="fas fa-store" style="color:#14B8A6; margin-right:8px"></i> Store UMKM</h3>
+    <div class="store-tabs">
+      <div class="store-tab active" onclick="switchStoreTab('list')"><i class="fas fa-list"></i> Produk</div>
+      <div class="store-tab" onclick="switchStoreTab('add')"><i class="fas fa-plus"></i> Jual</div>
     </div>
-
-    <!-- Upload Section -->
-    <div class="upload-section" id="uploadSection">
-        <div class="section-title" style="margin-bottom:10px"><span>Jual Produk Anda</span></div>
-        
-        <!-- Trigger Button -->
-        <div id="uploadTrigger">
-            <button onclick="openTermsModal()" class="btn-secondary"><i class="fas fa-plus"></i> Tambah Produk Baru</button>
-        </div>
-
-        <!-- Hidden Upload Form (Revealed after terms accepted) -->
-        <div id="uploadFormContainer" style="display:none;">
-            <div style="background:var(--bg-body); padding:15px; border-radius:12px; border:1px solid var(--border-color)">
-                <h4 style="margin-bottom:10px; font-size:0.9rem">Form Upload Produk</h4>
-                
-                <label class="form-label">Nama Produk *</label>
-                <input type="text" id="prodNama" placeholder="Contoh: Keripik Ikan" required>
-                
-                <div class="form-row">
-                    <div>
-                        <label class="form-label">Harga (Rp) *</label>
-                        <input type="number" id="prodHarga" placeholder="15000" required>
-                    </div>
-                    <div>
-                        <label class="form-label">Stok *</label>
-                        <input type="number" id="prodStok" placeholder="10" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div>
-                        <label class="form-label">Kategori</label>
-                        <select id="prodKategori">
-                            <option>Makanan</option>
-                            <option>Minuman</option>
-                            <option>Kerajinan</option>
-                            <option>Pertanian</option>
-                            <option>Lainnya</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="form-label">Kondisi</label>
-                        <select id="prodKondisi">
-                            <option>Baru</option>
-                            <option>Bekas</option>
-                        </select>
-                    </div>
-                </div>
-
-                <label class="form-label">Deskripsi Produk *</label>
-                <textarea id="prodDesc" placeholder="Jelaskan detail produk (bahan, ukuran,Expired date dll)" rows="3" required></textarea>
-
-                <label class="form-label">Foto Produk (Max 2MB) *</label>
-                <div class="upload-area" onclick="document.getElementById('prodFile').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p id="fileNameDisplay">Klik untuk pilih foto</p>
-                    <input type="file" id="prodFile" accept="image/*" style="display:none" onchange="previewFile(this)">
-                </div>
-                <img id="previewImg" class="upload-preview">
-                
-                <div style="display:flex; gap:10px; margin-top:15px">
-                    <button onclick="uploadProduct()"><i class="fas fa-upload"></i> Upload</button>
-                    <button onclick="cancelUpload()" class="btn-secondary">Batal</button>
-                </div>
-            </div>
-        </div>
+    <div id="store-list"><div id="productGrid" class="product-grid"><p style="text-align:center; grid-column: span 2;">Memuat produk...</p></div></div>
+    <div id="store-add" style="display:none;">
+      <input type="text" id="inputNamaProduk" placeholder="Nama Produk">
+      <input type="number" id="inputHargaProduk" placeholder="Harga (Rp)">
+      <textarea id="inputDescProduk" placeholder="Deskripsi Produk"></textarea>
+      <label class="file-upload-area">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Klik untuk upload foto (Max 2MB)</p>
+        <input type="file" id="inputFotoProduk" accept="image/*" onchange="previewProductPhoto(this)">
+      </label>
+      <div class="preview-container" id="previewPhotoContainer"><img src="" alt="Preview" class="preview-img" id="previewPhotoImg"></div>
+      <button onclick="tambahProduk()" style="margin-top:15px"><i class="fas fa-paper-plane"></i> Upload Produk</button>
     </div>
   </div>
 </div>
@@ -538,57 +419,33 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 <!-- VIEW: DASHBOARD -->
 <div id="view-dashboard" class="view-section">
   <div id="user"></div>
-  <div class="section-title" style="margin-top:20px">Menu Dashboard</div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 style="margin-bottom:20px;">Edit Profil</h3>
+      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden; background:var(--border-color); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem" id="previewAvatar"><span>A</span></div></div>
+      <label class="form-label">Nama</label>
+      <input type="text" id="editNama" placeholder="Nama">
+      <label class="form-label">No. HP</label>
+      <input type="text" id="editHp" placeholder="HP">
+      <button onclick="saveProfile()"><i class="fas fa-save"></i> Simpan</button>
+    </div>
+  </div>
+
+  <div class="section-title">Menu Dashboard</div>
   <div class="menu-grid">
     <div class="menu-item" onclick="showDashboardSection('peta')"><div class="menu-icon c-blue"><i class="fas fa-map-marked-alt"></i></div><span class="menu-text">Peta</span></div>
     <div class="menu-item" onclick="showDashboardSection('tugas')"><div class="menu-icon c-purple"><i class="fas fa-tasks"></i></div><span class="menu-text">Tugas</span></div>
     <div class="menu-item" onclick="showDashboardSection('laporan')"><div class="menu-icon c-orange"><i class="fas fa-file-alt"></i></div><span class="menu-text">Laporan</span></div>
     <div class="menu-item" onclick="showDashboardSection('reward')"><div class="menu-icon c-green"><i class="fas fa-trophy"></i></div><span class="menu-text">Reward</span></div>
   </div>
+
   <div id="dash-peta" class="card" style="margin-top:20px"></div>
-  <div id="dash-tugas" class="card" style="display:none; margin-top:20px"><h3>Misi & Tugas Sosmed</h3><div id="taskListContainer"></div></div>
-  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><button onclick="kirimLaporan()">Kirim</button><ul id="data"></ul></div>
-  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Katalog Reward</h3><div id="rewardCatalog"></div></div>
-</div>
-
-<!-- MODAL: TERMS & CONDITIONS -->
-<div id="termsModal" class="modal-overlay">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeTermsModal()">&times;</button>
-        <h3 style="margin-bottom:15px; text-align:center">Syarat & Ketentuan UMKM</h3>
-        <div class="terms-content">
-            <p>Sebelum mengupload produk, pastikan produk Anda memenuhi standar berikut:</p>
-            
-            <h4>1. Keamanan Pangan (BPOM & Halal)</h4>
-            <ul>
-                <li>Produk makanan/minuman wajib memiliki izin BPOM (P-IRT atau MD).</li>
-                <li>Wajib sertifikasi Halal MUI untuk produk konsumsi.</li>
-                <li>Kemasan harus kedap udara dan higienis.</li>
-            </ul>
-
-            <h4>2. Labelisasi</h4>
-            <ul>
-                <li>Label harus mencantumkan: Nama Produk, Komposisi, Berat Bersih, Tanggal Kedaluwarsa, Nama & Alamat Produsen, Izin BPOM, Logo Halal.</li>
-            </ul>
-
-            <h4>3. Foto Produk</h4>
-            <ul>
-                <li>Foto asli, jernih, dan tidak menipu.</li>
-                <li>Maksimal ukuran file 2MB.</li>
-                <li>Format: JPG, PNG.</li>
-            </ul>
-
-            <h4>4. Larangan</h4>
-            <ul>
-                <li>Dilarang menjual produk ilegal, obat berbahaya, atau makanan kadaluarsa.</li>
-                <li>Dilarang memasang harga di luar kewajaran (penipuan).</li>
-            </ul>
-        </div>
-        <div style="margin-top:20px; display:flex; gap:10px">
-            <button onclick="acceptTerms()" style="flex:1"><i class="fas fa-check"></i> Saya Setuju</button>
-            <button onclick="closeTermsModal()" class="btn-secondary" style="flex:1">Tolak</button>
-        </div>
-    </div>
+  <div id="dash-tugas" class="card" style="display:none; margin-top:20px"><h3>Tugas & Misi</h3><p id="bulanInfo" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px"></p><div id="taskList"></div></div>
+  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan Kader</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim Laporan</button><ul id="data" style="margin-top:15px"></ul></div>
+  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Katalog Reward</h3><div id="rewardCatalog"></div><h3 style="margin-top:25px">Top Kader</h3><ul id="leaderboard"></ul></div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -596,32 +453,43 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   <div class="modal-card">
     <button class="modal-close" onclick="closeAuthModal()">&times;</button>
     <div id="loginForm" class="form-section active">
-      <h3 style="margin-bottom:20px; text-align:center">Masuk Kader</h3>
+      <h3 style="margin-bottom:20px; text-align:center">Masuk Dashboard</h3>
       <input id="loginEmail" placeholder="Email" type="email">
       <input id="loginPassword" type="password" placeholder="Password">
-      <button onclick="login()">Masuk</button>
-      <div onclick="showReg()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center">Daftar Kader Baru</div>
+      <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+      <div style="text-align:center; margin-top:15px"><button class="btn-link" onclick="showResetPassword()">Lupa Password?</button></div>
+      <div onclick="showReg()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Daftar Akun Baru</div>
     </div>
+
     <div id="registerForm" class="form-section">
-      <h3 style="margin-bottom:20px; text-align:center">Pendaftaran Kader</h3>
+      <h3 style="margin-bottom:20px; text-align:center">Daftar Kader Baru</h3>
+      <label class="form-label">Nama Lengkap *</label>
       <input type="text" id="regNama" placeholder="Nama Lengkap">
-      <input type="text" id="regNohp" placeholder="Nomor WhatsApp">
-      <select id="regKecamatan">
-        <option value="">Pilih Kecamatan</option>
-        <option value="Tebing Tinggi">Tebing Tinggi</option>
-        <option value="Tebing Tinggi Barat">Tebing Tinggi Barat</option>
-        <option value="Tebing Tinggi Timur">Tebing Tinggi Timur</option>
-        <option value="Rangsang">Rangsang</option>
-        <option value="Rangsang Barat">Rangsang Barat</option>
-        <option value="Rangsang Pesisir">Rangsang Pesisir</option>
-        <option value="Pulau Merbau">Pulau Merbau</option>
-        <option value="Merbau">Merbau</option>
-        <option value="Tasik Putri Puyu">Tasik Putri Puyu</option>
-      </select>
-      <input type="email" id="regEmail" placeholder="Email">
-      <input type="password" id="regPassword" placeholder="Password">
-      <button onclick="signup()">Daftar</button>
-      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center">Sudah punya akun? Login</div>
+      <label class="form-label">Nomor WhatsApp *</label>
+      <input type="text" id="regNohp" placeholder="08xxxxxxxxxx">
+      <label class="form-label">Provinsi *</label>
+      <select id="regProvinsi" onchange="loadKabupaten(this.value)"><option value="">Memuat...</option></select>
+      <label class="form-label">Kabupaten/Kota *</label>
+      <select id="regKabupaten" onchange="loadKecamatan(this.value)" disabled><option value="">Pilih Provinsi</option></select>
+      <label class="form-label">Kecamatan *</label>
+      <select id="regKecamatan" onchange="loadDesa(this.value)" disabled><option value="">Pilih Kabupaten</option></select>
+      <label class="form-label">Desa/Kelurahan *</label>
+      <select id="regDesa" disabled><option value="">Pilih Kecamatan</option></select>
+      <label class="form-label">Jabatan *</label>
+      <select id="regJabatan"><option value="Kader">Kader</option><option value="Relawan">Relawan</option></select>
+      <label class="form-label">Email *</label>
+      <input type="email" id="regEmail" placeholder="Email Aktif">
+      <label class="form-label">Password *</label>
+      <input type="password" id="regPassword" placeholder="Min. 6 karakter">
+      <button onclick="signup()" style="margin-top:20px"><i class="fas fa-user-plus"></i> Daftar</button>
+      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Sudah punya akun?</div>
+    </div>
+
+    <div id="resetForm" class="form-section">
+      <h3 style="margin-bottom:20px; text-align:center">Reset Password</h3>
+      <input id="resetEmail" placeholder="Email Akun" type="email">
+      <button onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Kirim Link</button>
+      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Kembali</div>
     </div>
   </div>
 </div>
@@ -648,7 +516,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
 
 // ==========================================
 // 2. GLOBALS
@@ -658,258 +525,219 @@ let unsubUser = null;
 let mapMarkers = {}; 
 let map = null; 
 let slideIndex = 0;
-let analyticsChart = null;
-let isInitialLoad = true; 
+let analyticsChart = null; 
 
 // ==========================================
-// 3. CORE FUNCTIONS
+// 3. API WILAYAH
 // ==========================================
-function toggleTheme() { document.body.classList.toggle("dark-mode"); const isDark = document.body.classList.contains("dark-mode"); localStorage.setItem("theme", isDark ? "dark" : "light"); document.querySelector('#themeBtn i').className = isDark ? 'fas fa-sun' : 'fas fa-moon'; }
+const API_WILAYAH = "https://www.emsifa.com/api-wilayah-indonesia/api";
+async function fetchWilayah(url) { try { const r = await fetch(url); return r.json(); } catch (e) { return []; } }
+async function loadProvinces() { const s = document.getElementById('regProvinsi'); s.innerHTML = '<option value="">Pilih Provinsi</option>'; (await fetchWilayah(`${API_WILAYAH}/provinces.json`)).forEach(p => s.innerHTML += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`); }
+async function loadKabupaten(pid) { const s = document.getElementById('regKabupaten'); const s2 = document.getElementById('regKecamatan'); const s3 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kabupaten</option>'; s2.disabled = true; s3.innerHTML = '<option value="">Pilih Kecamatan</option>'; s3.disabled = true; if (!pid) return; (await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
+async function loadKecamatan(kid) { const s = document.getElementById('regKecamatan'); const s2 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kecamatan</option>'; s2.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
+async function loadDesa(kid) { const s = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/villages/${kid}.json`)).forEach(d => s.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`); s.disabled = false; }
+
+// ==========================================
+// 4. THEME
+// ==========================================
+function toggleTheme() { document.body.classList.toggle("dark-mode"); const isDark = document.body.classList.contains("dark-mode"); localStorage.setItem("theme", isDark ? "dark" : "light"); document.querySelector('#themeBtn i').className = isDark ? 'fas fa-sun' : 'fas fa-moon'; if(analyticsChart) updateChartTheme(); }
 function loadTheme() { if (localStorage.getItem("theme") === "dark") { document.body.classList.add("dark-mode"); document.querySelector('#themeBtn i').className = 'fas fa-sun'; } }
 
+// ==========================================
+// 5. NAVIGATION
+// ==========================================
 function showView(id) { document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active')); document.getElementById('view-'+id).classList.add('active'); window.scrollTo(0,0); const nav = document.querySelectorAll('.nav-item'); nav.forEach(n => n.classList.remove('active')); if(id==='beranda') nav[0].classList.add('active'); if(id==='store') nav[1].classList.add('active'); if(id==='dashboard') nav[2].classList.add('active'); }
 function showDashboardSection(sec) { document.querySelectorAll('[id^="dash-"]').forEach(e => e.style.display = 'none'); document.getElementById('dash-'+sec).style.display = 'block'; if(sec === 'peta' && !map) initMap(); }
 function navigateToDashboard() { if(auth.currentUser) { showView('dashboard'); } else { openAuthModal(); } }
 function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
 function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
-function showReg(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); }
-function showLog(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); }
+function showReg(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); document.getElementById('resetForm').classList.remove('active'); }
+function showLog(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); document.getElementById('resetForm').classList.remove('active'); }
+function showResetPassword() { document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.remove('active'); document.getElementById('resetForm').classList.add('active'); }
 
 // ==========================================
-// 4. REALTIME NOTIFICATION & RUNNING TEXT
+// 6. HERO
 // ==========================================
-function initRealtimeSensor() {
-    db.collection("users").orderBy("createdAt", "desc").limit(10).onSnapshot(snapshot => {
-        let kaderNames = [];
-        snapshot.docChanges().forEach(change => {
-            const data = change.doc.data();
-            if (change.type === "added") {
-                if (!isInitialLoad) {
-                    showNotificationToast(data.nama, data.kecamatan);
-                }
-            }
-        });
-        snapshot.docs.forEach(doc => {
-            const d = doc.data();
-            kaderNames.push(`${d.nama} (${d.kecamatan || 'Kader'})`);
-        });
-        const marqueeText = " ✊ Selamat Datang Kader Baru: " + kaderNames.join(" • ") + " • Tetap Solid! Merdeka! ✊ ";
-        document.getElementById('runningText').innerHTML = marqueeText + marqueeText; 
-        isInitialLoad = false;
-    });
-}
-
-function showNotificationToast(nama, kec) {
-    const container = document.getElementById('notifContainer');
-    const toast = document.createElement('div');
-    toast.className = 'toast-notif';
-    toast.innerHTML = `
-        <div class="toast-icon"><i class="fas fa-user-plus"></i></div>
-        <div class="toast-body">
-            <b>Pendaftaran Baru!</b>
-            <span>${nama} dari Kec. ${kec || 'Meranti'} baru saja bergabung.</span>
-        </div>
-    `;
-    container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 100);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 500);
-    }, 5000);
-}
+function updateSlide() { const slides = document.querySelectorAll('.hero-slide'); const dots = document.querySelectorAll('.dot'); slides.forEach((s, i) => { s.classList.remove('active'); dots[i].classList.remove('active'); }); slideIndex++; if (slideIndex > slides.length) slideIndex = 1; slides[slideIndex-1].classList.add('active'); dots[slideIndex-1].classList.add('active'); setTimeout(updateSlide, 4000); }
+setTimeout(updateSlide, 4000);
 
 // ==========================================
-// 5. AUTH & DATA
+// 7. AUTH STATE
 // ==========================================
 auth.onAuthStateChanged(user => {
   if(user){
-    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); loadTasks(); loadRewards(); });
-    closeAuthModal(); initMap(); loadStats(); loadAnalytics(); loadLeaderboard();
+    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); if(map) updateMyPresence(user.uid, currentUserData.nama); }, err => console.error(err));
+    closeAuthModal(); initMap(); updateMyLocation(user); listenToOtherUsers(); loadData(); loadLeaderboard(); loadTugasBulanan(user.uid); loadReward(user.uid); loadStats();
   } else {
-    document.getElementById('user').innerHTML = '';
-    if(unsubUser) unsubUser();
+    document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; } if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
   }
 });
 
+function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit Profil</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; }
+function openEditModal() { document.getElementById('editNama').value = currentUserData.nama || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nama||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
+function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+async function saveProfile() { const nama = document.getElementById('editNama').value; const hp = document.getElementById('editHp').value; if(!nama) return alert("Nama wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nama, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
+
+// ==========================================
+// 8. AUTH ACTIONS (FIXED)
+// ==========================================
 function signup(){
-  const nama = document.getElementById('regNama').value;
-  const kec = document.getElementById('regKecamatan').value;
-  const email = document.getElementById('regEmail').value;
-  const pass = document.getElementById('regPassword').value;
-  if(!nama || !email || !pass) return alert("Lengkapi data!");
+  const get = (id) => document.getElementById(id); 
+  const getVal = (id) => get(id).value; 
+  const getTxt = (id) => get(id).options[get(id).selectedIndex].getAttribute('data-name') || "";
+  const getId = (id) => get(id).value;
+
+  const data = {
+    nama: getVal('regNama'),
+    nohp: getVal('regNohp'),
+    // FIX: Save both ID and Name for kecamatan
+    provinsi: getTxt('regProvinsi'),
+    provinsi_id: getId('regProvinsi'),
+    kabupaten: getTxt('regKabupaten'),
+    kabupaten_id: getId('regKabupaten'),
+    kecamatan: getTxt('regKecamatan'), // Used for Analytics
+    kecamatan_id: getId('regKecamatan'),
+    desa: getTxt('regDesa'),
+    desa_id: getId('regDesa'),
+    jabatan: getVal('regJabatan'),
+    email: getVal('regEmail'),
+    status: 'Aktif'
+  };
+  const pass = getVal('regPassword');
+  if(!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) return alert("Lengkapi data!");
   
-  auth.createUserWithEmailAndPassword(email, pass).then(async res => {
-    await db.collection("users").doc(res.user.uid).set({
-      nama, kecamatan: kec, email, poin: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    alert("Berhasil Daftar!");
+  auth.createUserWithEmailAndPassword(data.email, pass).then(async res => {
+    await res.user.sendEmailVerification();
+    await db.collection("users").doc(res.user.uid).set({...data, poin: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
+    alert("Sukses! Cek email verifikasi."); showLog();
   }).catch(e => alert(e.message));
 }
-
-function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).catch(e => alert(e.message)); }
-function renderUserInfo() { if(!currentUserData) return; document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px;padding:15px;background:var(--bg-card);border-radius:15px;border:1px solid var(--border-color)"><div><b>${currentUserData.nama}</b><br><small>${currentUserData.poin || 0} Poin</small></div><button onclick="auth.signOut()" class="btn-logout" style="width:auto;margin-left:auto;padding:5px 15px">Keluar</button></div>`; }
-
-// ==========================================
-// 6. TASK SYSTEM
-// ==========================================
-const tasksConfig = [
-    { id: "fb", nama: "Share Facebook", poin: 50, platform: "Facebook", contoh: "Dukung PDI Perjuangan! #MerantiMaju", snk: ["Post harus Public", "Wajib Hashtag #MerantiMaju"] },
-    { id: "tt", nama: "Video TikTok", poin: 100, platform: "TikTok", contoh: "Kreasi Kader PDI! @pdimeranti #fyp", snk: ["Min 15 detik", "Akun tidak private"] }
-];
-function loadTasks() {
-    const c = document.getElementById('taskListContainer'); c.innerHTML = '';
-    tasksConfig.forEach(t => {
-        c.innerHTML += `<div class="task-card">
-            <div class="task-header"><div class="task-title">${t.nama}</div><div class="task-points">+${t.poin}</div></div>
-            <div class="task-desc">Platform: <b>${t.platform}</b></div>
-            <div class="task-example"><strong>Contoh:</strong><br>"${t.contoh}"</div>
-            <div class="task-rules"><strong>SNK:</strong><ul>${t.snk.map(r=>`<li>${r}</li>`).join('')}</ul></div>
-            <div class="input-group"><input type="text" id="link-${t.id}" placeholder="Link Post/Video"><button onclick="submitTask('${t.id}', ${t.poin})" style="margin-top:8px">Kirim Bukti</button></div>
-        </div>`;
-    });
-}
-async function submitTask(id, poin) {
-    const link = document.getElementById(`link-${id}`).value; if(!link) return alert("Link wajib diisi");
-    await db.collection("submissions").add({ userId: auth.currentUser.uid, taskId: id, link, waktu: firebase.firestore.FieldValue.serverTimestamp() });
-    await db.collection('users').doc(auth.currentUser.uid).update({ poin: firebase.firestore.FieldValue.increment(poin) });
-    alert("Tugas terkirim! +" + poin + " Poin"); document.getElementById(`link-${id}`).value = "";
-}
+function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).then(user => { if(!user.user.emailVerified) alert("Email belum verifikasi."); closeAuthModal(); showView('dashboard'); }).catch(e => alert(e.message)); }
+function resetPassword() { const email = document.getElementById('resetEmail').value; if(!email) return alert("Email?"); auth.sendPasswordResetEmail(email).then(() => alert("Link terkirim!")).catch(e => alert(e.message)); }
+function logout(){ auth.signOut(); }
 
 // ==========================================
-// 7. REWARD SYSTEM
+// 9. MAP
 // ==========================================
-const rewardsConfig = [
-    { nama: "Paket Data 10K", cost: 1000, icon: "fa-wifi" }, { nama: "Token Listrik 20K", cost: 2000, icon: "fa-bolt" },
-    { nama: "Voucher Makan 25K", cost: 2500, icon: "fa-utensils" }, { nama: "Voucher Bensin 20K", cost: 2000, icon: "fa-gas-pump" }, { nama: "Voucher Belanja 25K", cost: 2500, icon: "fa-shopping-bag" }
-];
-function loadRewards() {
-    const c = document.getElementById('rewardCatalog'); if(!currentUserData) return;
-    c.innerHTML = rewardsConfig.map(r => `<div class="reward-card"><div class="reward-icon"><i class="fas ${r.icon}"></i></div><div class="reward-info"><div class="reward-name">${r.nama}</div><div class="reward-cost">${r.cost} Poin</div></div><button class="btn-redeem" onclick="tukarReward('${r.nama}', ${r.cost})" ${(currentUserData.poin || 0) < r.cost ? 'disabled' : ''}>${(currentUserData.poin || 0) < r.cost ? 'Kurang' : 'Tukar'}</button></div>`).join('');
-}
-async function tukarReward(item, cost) {
-    if(!confirm(`Tukar ${cost} poin dengan ${item}?`)) return;
-    const ref = db.collection('users').doc(auth.currentUser.uid);
-    const snap = await ref.get(); if((snap.data().poin || 0) < cost) return alert("Poin tidak cukup.");
-    await ref.update({ poin: firebase.firestore.FieldValue.increment(-cost) });
-    await db.collection("redeems").add({ userId: auth.currentUser.uid, item, cost, waktu: firebase.firestore.FieldValue.serverTimestamp() });
-    alert("Penukaran berhasil!");
-}
+function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
+function getUserIcon(isMe) { return L.divIcon({ className: '', html: `<div style="background:${isMe ? '#E31E25' : '#10B981'}; width:20px; height:20px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [20, 20] }); }
+function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => {}, { enableHighAccuracy: true }); }
+function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama }, { merge: true }); }
+function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const d = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([d.lat, d.lng]); } else { mapMarkers[uid] = L.marker([d.lat, d.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : d.nama}</b>`); } }); }); }
 
 // ==========================================
-// 8. STORE UMKM SYSTEM (NEW)
+// 10. TASK
 // ==========================================
-function openTermsModal() { document.getElementById('termsModal').style.display = 'flex'; }
-function closeTermsModal() { document.getElementById('termsModal').style.display = 'none'; }
-function acceptTerms() { closeTermsModal(); document.getElementById('uploadTrigger').style.display = 'none'; document.getElementById('uploadFormContainer').style.display = 'block'; }
-function cancelUpload() { document.getElementById('uploadFormContainer').style.display = 'none'; document.getElementById('uploadTrigger').style.display = 'block'; clearUploadForm(); }
+async function loadTugasBulanan(userId) { const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear(); document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`; const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get(); if (cek && cek.empty) { await db.collection('tugas').doc().set({ nama: "Checkin", tipe: "checkin", poin: 10, bulan: m, tahun: y }); } db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).onSnapshot(async snap => { if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Tidak ada tugas.</p>'; return; } const done = await db.collection('task_done').where('userId', '==', userId).get(); const doneMap = {}; done.forEach(d => { const data = d.data(); if(!doneMap[data.taskId]) doneMap[data.taskId] = []; doneMap[data.taskId].push(data.waktu); }); list.innerHTML = ''; snap.forEach(doc => { const t = doc.data(); const id = doc.id; let isDone = false; if (t.tipe === 'checkin') { const ts = doneMap[id] || []; isDone = ts.some(x => x.toDate().toDateString() === new Date().toDateString()); } else { isDone = doneMap[id] && doneMap[id].length > 0; } list.innerHTML += `<div class="task-item ${isDone ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between"><b>${t.nama}</b><span class="badge badge-pending">+${t.poin}</span></div>${t.tipe === 'checkin' ? (isDone ? '<button class="btn-disabled" disabled>Selesai</button>' : '<button onclick="checkin(\''+id+'\','+t.poin+')">Checkin</button>') : (isDone ? '<span class="badge badge-done">Done</span>' : '<button onclick="submitLink(\''+id+'\','+t.poin+')">Submit</button>')}</div>`; }); }); }
+async function submitLink(id, p) { const link = prompt("Link:"); if(link) { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, bukti: link, waktu: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sukses!"); } }
+async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, lat: pos.coords.latitude, lng: pos.coords.longitude, waktu: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sukses!"); }, () => alert("GPS Error")); }
 
-function previewFile(input) {
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        if (file.size > 2097152) { alert("Ukuran file maksimal 2MB."); input.value = ''; return; }
-        document.getElementById('fileNameDisplay').innerText = file.name;
-        const reader = new FileReader();
-        reader.onload = (e) => { document.getElementById('previewImg').src = e.target.result; document.getElementById('previewImg').style.display = 'block'; };
-        reader.readAsDataURL(file);
-    }
-}
+// ==========================================
+// 11. LOADERS
+// ==========================================
+function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
+function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; document.getElementById('rewardCatalog').innerHTML = `<div class="reward-item"><div class="reward-info"><h4>Token Listrik</h4><small>1000 Poin</small></div><button style="width:auto; padding:8px 16px" ${p>=1000 ? '' : 'disabled'}>${p>=1000 ? 'Tukar' : 'Kurang'}</button></div>`; }); }
+function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li><b>#${i}</b> ${v.nama} <span style="margin-left:auto">${v.poin}</span></li>`; i++; }); document.getElementById('leaderboard').innerHTML=h||'Kosong'; let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; }); document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data'; }); }
+async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); navigator.geolocation.getCurrentPosition(async pos => { await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); }, ()=>alert("GPS error")); }
+function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); }); }
 
-function clearUploadForm() {
-    document.getElementById('prodNama').value = ''; document.getElementById('prodHarga').value = ''; document.getElementById('prodStok').value = '';
-    document.getElementById('prodDesc').value = ''; document.getElementById('prodFile').value = ''; document.getElementById('previewImg').style.display = 'none';
-    document.getElementById('fileNameDisplay').innerText = "Klik untuk pilih foto";
-}
-
-async function uploadProduct() {
-    const nama = document.getElementById('prodNama').value; const harga = parseInt(document.getElementById('prodHarga').value);
-    const stok = parseInt(document.getElementById('prodStok').value); const desc = document.getElementById('prodDesc').value;
-    const kategori = document.getElementById('prodKategori').value; const kondisi = document.getElementById('prodKondisi').value;
-    const file = document.getElementById('prodFile').files[0];
-
-    if(!nama || !harga || !stok || !desc || !file) return alert("Lengkapi semua data!");
-
-    // Upload to Cloudinary
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "partai_upload");
-    try {
-        const res = await fetch("https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload", { method: "POST", body: formData });
-        const img = await res.json();
+// ==========================================
+// 12. ANALYTICS REALTIME (FIXED)
+// ==========================================
+function initAnalytics() {
+    db.collection("users").onSnapshot(snapshot => {
+        if (!snapshot.size) return;
         
-        await db.collection("produk").add({
-            nama, harga, stok, deskripsi: desc, kategori, kondisi,
-            foto: img.secure_url,
-            userId: auth.currentUser.uid,
-            namaKader: currentUserData.nama,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        let total = 0;
+        const dist = {};
+
+        snapshot.forEach(d => {
+            const u = d.data();
+            total++;
+            
+            // FIX: Use 'kecamatan' (which saves the NAME) instead of 'kecamatan_nama'
+            // If 'kecamatan' is empty/null, show "Belum Lengkap"
+            let kecName = u.kecamatan || "Belum Lengkap";
+            
+            if (!dist[kecName]) dist[kecName] = 0;
+            dist[kecName]++;
         });
-        alert("Produk berhasil diupload!");
-        clearUploadForm();
-        cancelUpload();
-    } catch (e) { alert("Gagal upload: " + e.message); }
-}
 
-function loadStoreProducts() {
-    db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => {
-        const grid = document.getElementById('productGrid');
-        if(snap.empty) { grid.innerHTML = "<p style='text-align:center; grid-column: span 2; color:var(--text-muted)'>Belum ada produk.</p>"; return; }
-        let h = "";
-        snap.forEach(d => {
-            const p = d.data();
-            const mine = (auth.currentUser && p.userId === auth.currentUser.uid);
-            h += `<div class="product-card">
-                ${mine ? `<button class="delete-btn" onclick="deleteProduct('${d.id}')"><i class="fas fa-trash"></i></button>` : ''}
-                <img src="${p.foto}" class="product-img">
-                <div class="product-body">
-                    <div class="product-title">${p.nama}</div>
-                    <div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div>
-                    <div class="product-meta"><span>Stok: ${p.stok}</span><span>${p.kategori}</span></div>
-                </div>
-            </div>`;
-        });
-        grid.innerHTML = h;
-    });
-}
+        // Update Time
+        document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString('id-ID');
 
-async function deleteProduct(id) {
-    if(confirm("Hapus produk ini?")) {
-        await db.collection("produk").doc(id).delete();
-    }
-}
+        // Chart Data
+        const labels = Object.keys(dist);
+        const data = Object.values(dist);
+        const colors = ['#E31E25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#14B8A6', '#F97316', '#6366F1'];
 
-// ==========================================
-// 9. ANALYTICS & STATS
-// ==========================================
-function loadStats(){
-    db.collection("users").onSnapshot(s => document.getElementById('statKader').innerText = s.size);
-    db.collection("laporan").onSnapshot(s => document.getElementById('statLaporan').innerText = s.size);
-    db.collection("produk").onSnapshot(s => document.getElementById('statProduk').innerText = s.size);
-}
-function loadAnalytics() {
-    db.collection("users").onSnapshot(snap => {
-        const dist = {}; let total = 0;
-        snap.forEach(d => { const k = d.data().kecamatan || "Lainnya"; dist[k] = (dist[k] || 0) + 1; total++; });
-        const labels = Object.keys(dist); const data = Object.values(dist);
+        // Render/Update Chart
         const ctx = document.getElementById('analyticsChart').getContext('2d');
-        if(analyticsChart) analyticsChart.destroy();
-        analyticsChart = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#E31E25','#F59E0B','#10B981','#3B82F6','#8B5CF6'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-        let t = ""; labels.forEach((l,i) => { const p = ((data[i]/total)*100).toFixed(1); t += `<tr><td>${l}</td><td style="text-align:center">${data[i]}</td><td style="text-align:right">${p}%</td></tr>`; });
-        document.getElementById('analyticsTable').innerHTML = t;
+        if (analyticsChart) {
+            analyticsChart.data.labels = labels;
+            analyticsChart.data.datasets[0].data = data;
+            analyticsChart.update();
+        } else {
+            analyticsChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#64748b', usePointStyle: true, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // Render Table
+        const tbody = document.getElementById('analyticsTable');
+        let tHtml = '';
+        const sorted = Object.entries(dist).sort((a, b) => b[1] - a[1]);
+        sorted.forEach(([name, count]) => {
+            const percent = ((count / total) * 100).toFixed(1);
+            tHtml += `<tr>
+                <td>${name}</td>
+                <td style="text-align:center"><b>${count}</b></td>
+                <td style="text-align:right">
+                    ${percent}%
+                    <div class="percent-bar"><div class="percent-fill" style="width:${percent}%"></div></div>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = tHtml;
     });
 }
-function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(5).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<div class="leaderboard-item"><div class="lb-rank r${i}">${i}</div><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} Poin</div></div></div>`; i++; }); document.getElementById('topKaderList').innerHTML = h; }); }
-function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 11); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
-function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return; db.collection("usulan").add({ usulan: t, nama: n, waktu: firebase.firestore.FieldValue.serverTimestamp() }).then(() => alert("Terkirim!")); }
-async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); await db.collection("laporan").add({ userId: auth.currentUser.uid, nama: currentUserData.nama, masalah: txt, waktu: firebase.firestore.FieldValue.serverTimestamp() }); alert("Terkirim +10 Poin"); }
+
+function updateChartTheme() {
+    if(!analyticsChart) return;
+    const isDark = document.body.classList.contains('dark-mode');
+    analyticsChart.options.plugins.legend.labels.color = isDark ? '#9CA3AF' : '#64748b';
+    analyticsChart.update();
+}
+
+// ==========================================
+// 13. STORE
+// ==========================================
+function switchStoreTab(tab) { document.querySelectorAll('.store-tab').forEach((el, i) => { el.classList.remove('active'); if((tab==='list'&&i===0)||(tab==='add'&&i===1)) el.classList.add('active'); }); document.getElementById('store-list').style.display = tab==='list'?'block':'none'; document.getElementById('store-add').style.display = tab==='add'?'block':'none'; }
+function previewProductPhoto(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('previewPhotoImg').src = e.target.result; document.getElementById('previewPhotoContainer').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
+async function tambahProduk() { const nama = document.getElementById('inputNamaProduk').value; const harga = parseInt(document.getElementById('inputHargaProduk').value); const desc = document.getElementById('inputDescProduk').value; const file = document.getElementById('inputFotoProduk').files[0]; if(!nama||!harga||!desc||!file) return alert("Lengkapi data"); const formData = new FormData(); formData.append("file", file); formData.append("upload_preset", "partai_upload"); const btn = event.target; btn.innerHTML = "Uploading..."; btn.disabled = true; try { const res = await fetch("https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload", { method:"POST", body: formData }); const img = await res.json(); await db.collection("produk").add({ nome: nome, harga, deskripsi: desc, foto: img.secure_url, userId: auth.currentUser.uid, nomeKader: currentUserData.nome, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert("Sucesso!"); switchStoreTab('list'); } catch(e) { alert("Gagal"); } btn.innerHTML = "<i class='fas fa-paper-plane'></i> Upload"; btn.disabled = false; }
+function loadProduk() { db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => { const g = document.getElementById('productGrid'); if(snap.empty) { g.innerHTML = "<p style='text-align:center;grid-column:span 2'>Kosong</p>"; return; } let h=""; snap.forEach(d => { const p=d.data(); const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', {day:'numeric',month:'short'}) : '-'; h+=`<div class="product-card"><img src="${p.foto}" class="product-img"><div class="product-body"><div class="product-name">${p.nome}</div><div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div><div class="product-desc">${p.deskripsi}</div><div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${t}</div></div></div>`; }); g.innerHTML = h; }); }
 
 // ==========================================
 // INIT
 // ==========================================
-window.onload = function() { 
-    loadTheme(); 
-    initRealtimeSensor(); 
-    loadStoreProducts();
-};
+window.onload = function() { loadTheme(); loadProvinces(); loadProduk(); initAnalytics(); };
+
 </script>
 </body>
 </html>
