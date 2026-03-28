@@ -9,9 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-<!-- Firebase Messaging -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js"></script>
 
 <!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -106,70 +103,8 @@ header {
 }
 .theme-toggle:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* Notification Icon (NEW) */
-.notif-icon {
-  position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: var(--text-main);
-  font-size: 1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  transition: all 0.3s;
-}
-.notif-icon:hover { background: var(--primary); color: white; border-color: var(--primary); }
-.notif-dot {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  background: var(--primary);
-  border-radius: 50%;
-  border: 2px solid white;
-  display: none; /* Hidden by default */
-}
-.notif-dot.active { display: block; }
-
 /* CONTAINER */
 .container { max-width: 500px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 25px; }
-
-/* RUNNING TEXT (NEW) */
-.running-text-container {
-  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-  color: white;
-  padding: 10px 0;
-  overflow: hidden;
-  white-space: nowrap;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(227, 30, 37, 0.2);
-  position: relative;
-}
-.running-text-content {
-  display: inline-block;
-  padding-left: 100%;
-  animation: marquee 25s linear infinite;
-}
-.running-item {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 50px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-.running-item i { margin-right: 8px; opacity: 0.8; }
-.running-highlight { font-weight: 700; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; margin: 0 3px; }
-
-@keyframes marquee {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(-100%, 0); }
-}
 
 /* HERO BANNER */
 .hero-banner {
@@ -261,6 +196,7 @@ button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--p
 .btn-secondary { background: var(--border-color); color: var(--text-main); box-shadow: none; }
 .btn-logout { background: #FEF2F2; color: var(--primary); border: 1px solid #FECACA; box-shadow: none; margin-top: 10px; }
 .btn-link { background: none; border: none; color: var(--primary); font-size: 0.85rem; cursor: pointer; padding: 5px 0; box-shadow: none; width: auto; display: inline-block; }
+.btn-link:hover { text-decoration: underline; }
 
 /* MISC */
 .view-section { display: none; animation: fadeIn 0.4s ease; }
@@ -311,7 +247,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 
 .form-label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; margin-bottom: -5px; font-weight: 500; }
 
-/* ANALYTICS STYLES */
+/* ANALYTICS STYLES (UPDATED) */
 .analytics-section { margin-top: 25px; }
 .live-indicator { font-size: 0.7rem; color: var(--success); display: flex; align-items: center; gap: 5px; }
 .live-indicator::before { content: "🟢"; font-size: 0.6rem; }
@@ -338,11 +274,6 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       </div>
     </div>
     <div class="header-right">
-       <!-- NOTIF ICON (NEW) -->
-       <div class="notif-icon" onclick="requestNotifPermission()">
-         <i class="fas fa-bell"></i>
-         <span class="notif-dot" id="notifDot"></span>
-       </div>
        <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
          <i class="fas fa-moon"></i>
        </div>
@@ -370,13 +301,6 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       <div class="dot active" onclick="goToSlide(0)"></div>
       <div class="dot" onclick="goToSlide(1)"></div>
       <div class="dot" onclick="goToSlide(2)"></div>
-    </div>
-  </div>
-
-  <!-- RUNNING TEXT (NEW) -->
-  <div class="running-text-container">
-    <div class="running-text-content" id="runningTextContent">
-      <span class="running-item"><i class="fas fa-circle-notch fa-spin"></i> Memuat data kader terbaru...</span>
     </div>
   </div>
 
@@ -419,9 +343,11 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       <div class="chart-wrapper">
         <canvas id="analyticsChart"></canvas>
       </div>
+      
       <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align:right">
         Update terakhir: <span id="lastUpdate">-</span>
       </div>
+
       <table class="table-analytics">
         <thead>
           <tr>
@@ -436,6 +362,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       </table>
     </div>
   </div>
+  <!-- END ANALYTICS -->
 
   <!-- TOP KADER -->
   <div class="section-title" style="margin-top:25px"><span>Top 10 Kader</span></div>
@@ -457,10 +384,10 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 </div>
 
 <!-- VIEWS UMUM -->
-<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita</h3><p style="font-size:0.85rem; color:var(--text-muted)">Info terkini.</p></div></div>
-<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><ul><li><b>Rapat Rutin</b><br><small>Setiap Senin malam.</small></li></ul></div></div>
-<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan</strong></p></div></div>
-<div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
+<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:var(--text-muted)">Informasi terkini seputar kegiatan partai.</p></div></div>
+<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><ul><li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC.</small></li></ul></div></div>
+<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong></p></div></div>
+<div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
 <div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
 <div id="view-bantuan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Bantuan</h3></div></div>
 <div id="view-kontak" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3></div></div>
@@ -468,23 +395,23 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 <!-- VIEW: STORE UMKM -->
 <div id="view-store" class="view-section">
   <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-store" style="color:#14B8A6"></i> Store UMKM</h3>
+    <h3 style="margin-bottom:15px"><i class="fas fa-store" style="color:#14B8A6; margin-right:8px"></i> Store UMKM</h3>
     <div class="store-tabs">
       <div class="store-tab active" onclick="switchStoreTab('list')"><i class="fas fa-list"></i> Produk</div>
       <div class="store-tab" onclick="switchStoreTab('add')"><i class="fas fa-plus"></i> Jual</div>
     </div>
-    <div id="store-list"><div id="productGrid" class="product-grid"><p style="text-align:center; grid-column: span 2;">Memuat...</p></div></div>
+    <div id="store-list"><div id="productGrid" class="product-grid"><p style="text-align:center; grid-column: span 2;">Memuat produk...</p></div></div>
     <div id="store-add" style="display:none;">
       <input type="text" id="inputNamaProduk" placeholder="Nama Produk">
-      <input type="number" id="inputHargaProduk" placeholder="Harga">
-      <textarea id="inputDescProduk" placeholder="Deskripsi"></textarea>
+      <input type="number" id="inputHargaProduk" placeholder="Harga (Rp)">
+      <textarea id="inputDescProduk" placeholder="Deskripsi Produk"></textarea>
       <label class="file-upload-area">
         <i class="fas fa-cloud-upload-alt"></i>
-        <p>Upload foto</p>
+        <p>Klik untuk upload foto (Max 2MB)</p>
         <input type="file" id="inputFotoProduk" accept="image/*" onchange="previewProductPhoto(this)">
       </label>
-      <div class="preview-container" id="previewPhotoContainer"><img src="" class="preview-img" id="previewPhotoImg"></div>
-      <button onclick="tambahProduk()" style="margin-top:15px"><i class="fas fa-paper-plane"></i> Upload</button>
+      <div class="preview-container" id="previewPhotoContainer"><img src="" alt="Preview" class="preview-img" id="previewPhotoImg"></div>
+      <button onclick="tambahProduk()" style="margin-top:15px"><i class="fas fa-paper-plane"></i> Upload Produk</button>
     </div>
   </div>
 </div>
@@ -492,11 +419,13 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 <!-- VIEW: DASHBOARD -->
 <div id="view-dashboard" class="view-section">
   <div id="user"></div>
+
+  <!-- Edit Modal -->
   <div id="editModal" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeModal()">&times;</button>
       <h3 style="margin-bottom:20px;">Edit Profil</h3>
-      <div style="text-align:center;"><div style="width:80px; height:80px; margin:0 auto; border-radius:50%; background:var(--border-color); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem" id="previewAvatar"><span>A</span></div></div>
+      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden; background:var(--border-color); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem" id="previewAvatar"><span>A</span></div></div>
       <label class="form-label">Nama</label>
       <input type="text" id="editNama" placeholder="Nama">
       <label class="form-label">No. HP</label>
@@ -515,8 +444,8 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 
   <div id="dash-peta" class="card" style="margin-top:20px"></div>
   <div id="dash-tugas" class="card" style="display:none; margin-top:20px"><h3>Tugas & Misi</h3><p id="bulanInfo" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px"></p><div id="taskList"></div></div>
-  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim Laporan</button><ul id="data" style="margin-top:15px"></ul></div>
-  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Reward</h3><div id="rewardCatalog"></div><h3 style="margin-top:25px">Top Kader</h3><ul id="leaderboard"></ul></div>
+  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan Kader</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim Laporan</button><ul id="data" style="margin-top:15px"></ul></div>
+  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Katalog Reward</h3><div id="rewardCatalog"></div><h3 style="margin-top:25px">Top Kader</h3><ul id="leaderboard"></ul></div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -524,7 +453,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   <div class="modal-card">
     <button class="modal-close" onclick="closeAuthModal()">&times;</button>
     <div id="loginForm" class="form-section active">
-      <h3 style="margin-bottom:20px; text-align:center">Masuk</h3>
+      <h3 style="margin-bottom:20px; text-align:center">Masuk Dashboard</h3>
       <input id="loginEmail" placeholder="Email" type="email">
       <input id="loginPassword" type="password" placeholder="Password">
       <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
@@ -533,23 +462,23 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
     </div>
 
     <div id="registerForm" class="form-section">
-      <h3 style="margin-bottom:20px; text-align:center">Daftar Kader</h3>
+      <h3 style="margin-bottom:20px; text-align:center">Daftar Kader Baru</h3>
       <label class="form-label">Nama Lengkap *</label>
-      <input type="text" id="regNama" placeholder="Nama">
-      <label class="form-label">No. HP *</label>
-      <input type="text" id="regNohp" placeholder="08xx">
+      <input type="text" id="regNama" placeholder="Nama Lengkap">
+      <label class="form-label">Nomor WhatsApp *</label>
+      <input type="text" id="regNohp" placeholder="08xxxxxxxxxx">
       <label class="form-label">Provinsi *</label>
       <select id="regProvinsi" onchange="loadKabupaten(this.value)"><option value="">Memuat...</option></select>
       <label class="form-label">Kabupaten/Kota *</label>
-      <select id="regKabupaten" onchange="loadKecamatan(this.value)" disabled><option value="">Pilih</option></select>
+      <select id="regKabupaten" onchange="loadKecamatan(this.value)" disabled><option value="">Pilih Provinsi</option></select>
       <label class="form-label">Kecamatan *</label>
-      <select id="regKecamatan" onchange="loadDesa(this.value)" disabled><option value="">Pilih</option></select>
+      <select id="regKecamatan" onchange="loadDesa(this.value)" disabled><option value="">Pilih Kabupaten</option></select>
       <label class="form-label">Desa/Kelurahan *</label>
-      <select id="regDesa" disabled><option value="">Pilih</option></select>
+      <select id="regDesa" disabled><option value="">Pilih Kecamatan</option></select>
       <label class="form-label">Jabatan *</label>
       <select id="regJabatan"><option value="Kader">Kader</option><option value="Relawan">Relawan</option></select>
       <label class="form-label">Email *</label>
-      <input type="email" id="regEmail" placeholder="Email">
+      <input type="email" id="regEmail" placeholder="Email Aktif">
       <label class="form-label">Password *</label>
       <input type="password" id="regPassword" placeholder="Min. 6 karakter">
       <button onclick="signup()" style="margin-top:20px"><i class="fas fa-user-plus"></i> Daftar</button>
@@ -558,7 +487,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 
     <div id="resetForm" class="form-section">
       <h3 style="margin-bottom:20px; text-align:center">Reset Password</h3>
-      <input id="resetEmail" placeholder="Email" type="email">
+      <input id="resetEmail" placeholder="Email Akun" type="email">
       <button onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Kirim Link</button>
       <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Kembali</div>
     </div>
@@ -582,23 +511,11 @@ const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
   projectId: "partai-meranti",
-  storageBucket: "partai-meranti.appspot.com",
-  messagingSenderId: "409070967432", 
-  appId: "1:409070967432:web:abcd" 
+  storageBucket: "partai-meranti.appspot.com"
 };
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
-
-// Init Messaging with try-catch
-let messaging = null;
-try {
-  messaging = firebase.messaging();
-} catch (e) {
-  console.warn("FCM not supported or config missing", e);
-}
 
 // ==========================================
 // 2. GLOBALS
@@ -616,8 +533,8 @@ let analyticsChart = null;
 const API_WILAYAH = "https://www.emsifa.com/api-wilayah-indonesia/api";
 async function fetchWilayah(url) { try { const r = await fetch(url); return r.json(); } catch (e) { return []; } }
 async function loadProvinces() { const s = document.getElementById('regProvinsi'); s.innerHTML = '<option value="">Pilih Provinsi</option>'; (await fetchWilayah(`${API_WILAYAH}/provinces.json`)).forEach(p => s.innerHTML += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`); }
-async function loadKabupaten(pid) { const s = document.getElementById('regKabupaten'); const s2 = document.getElementById('regKecamatan'); const s3 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih</option>'; s2.disabled = true; s3.innerHTML = '<option value="">Pilih</option>'; s3.disabled = true; if (!pid) return; (await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
-async function loadKecamatan(kid) { const s = document.getElementById('regKecamatan'); const s2 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih</option>'; s2.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
+async function loadKabupaten(pid) { const s = document.getElementById('regKabupaten'); const s2 = document.getElementById('regKecamatan'); const s3 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kabupaten</option>'; s2.disabled = true; s3.innerHTML = '<option value="">Pilih Kecamatan</option>'; s3.disabled = true; if (!pid) return; (await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
+async function loadKecamatan(kid) { const s = document.getElementById('regKecamatan'); const s2 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kecamatan</option>'; s2.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
 async function loadDesa(kid) { const s = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/villages/${kid}.json`)).forEach(d => s.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`); s.disabled = false; }
 
 // ==========================================
@@ -656,13 +573,13 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; }
+function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit Profil</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; }
 function openEditModal() { document.getElementById('editNama').value = currentUserData.nama || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nama||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
 function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 async function saveProfile() { const nama = document.getElementById('editNama').value; const hp = document.getElementById('editHp').value; if(!nama) return alert("Nama wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nama, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
 
 // ==========================================
-// 8. AUTH ACTIONS
+// 8. AUTH ACTIONS (FIXED)
 // ==========================================
 function signup(){
   const get = (id) => document.getElementById(id); 
@@ -673,20 +590,26 @@ function signup(){
   const data = {
     nama: getVal('regNama'),
     nohp: getVal('regNohp'),
-    provinsi: getTxt('regProvinsi'), provinsi_id: getId('regProvinsi'),
-    kabupaten: getTxt('regKabupaten'), kabupaten_id: getId('regKabupaten'),
-    kecamatan: getTxt('regKecamatan'), kecamatan_id: getId('regKecamatan'),
-    desa: getTxt('regDesa'), desa_id: getId('regDesa'),
+    // FIX: Save both ID and Name for kecamatan
+    provinsi: getTxt('regProvinsi'),
+    provinsi_id: getId('regProvinsi'),
+    kabupaten: getTxt('regKabupaten'),
+    kabupaten_id: getId('regKabupaten'),
+    kecamatan: getTxt('regKecamatan'), // Used for Analytics
+    kecamatan_id: getId('regKecamatan'),
+    desa: getTxt('regDesa'),
+    desa_id: getId('regDesa'),
     jabatan: getVal('regJabatan'),
     email: getVal('regEmail'),
     status: 'Aktif'
   };
   const pass = getVal('regPassword');
   if(!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) return alert("Lengkapi data!");
+  
   auth.createUserWithEmailAndPassword(data.email, pass).then(async res => {
     await res.user.sendEmailVerification();
     await db.collection("users").doc(res.user.uid).set({...data, poin: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
-    alert("Sukses! Cek email."); showLog();
+    alert("Sukses! Cek email verifikasi."); showLog();
   }).catch(e => alert(e.message));
 }
 function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).then(user => { if(!user.user.emailVerified) alert("Email belum verifikasi."); closeAuthModal(); showView('dashboard'); }).catch(e => alert(e.message)); }
@@ -699,151 +622,121 @@ function logout(){ auth.signOut(); }
 function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
 function getUserIcon(isMe) { return L.divIcon({ className: '', html: `<div style="background:${isMe ? '#E31E25' : '#10B981'}; width:20px; height:20px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [20, 20] }); }
 function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => {}, { enableHighAccuracy: true }); }
-function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nome }, { merge: true }); }
-function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const d = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([d.lat, d.lng]); } else { mapMarkers[uid] = L.marker([d.lat, d.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : d.nome}</b>`); } }); }); }
+function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama }, { merge: true }); }
+function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const d = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([d.lat, d.lng]); } else { mapMarkers[uid] = L.marker([d.lat, d.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : d.nama}</b>`); } }); }); }
 
 // ==========================================
 // 10. TASK
 // ==========================================
-async function loadTugasBulanan(userId) { const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear(); document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`; const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get(); if (cek && cek.empty) { await db.collection('tugas').doc().set({ nome: "Checkin", tipe: "checkin", poin: 10, mes: m, ano: y }); } db.collection('tugas').where('mes', '==', m).where('ano', '==', y).onSnapshot(async snap => { if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Tidak ada tugas.</p>'; return; } const done = await db.collection('task_done').where('userId', '==', userId).get(); const doneMap = {}; done.forEach(d => { const data = d.data(); if(!doneMap[data.taskId]) doneMap[data.taskId] = []; doneMap[data.taskId].push(data.tempo); }); list.innerHTML = ''; snap.forEach(doc => { const t = doc.data(); const id = doc.id; let isDone = false; if (t.tipe === 'checkin') { const ts = doneMap[id] || []; isDone = ts.some(x => x.toDate().toDateString() === new Date().toDateString()); } else { isDone = doneMap[id] && doneMap[id].length > 0; } list.innerHTML += `<div class="task-item ${isDone ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between"><b>${t.nome}</b><span class="badge badge-pending">+${t.poin}</span></div>${t.tipe === 'checkin' ? (isDone ? '<button class="btn-disabled" disabled>Selesai</button>' : '<button onclick="checkin(\''+id+'\','+t.poin+')">Checkin</button>') : (isDone ? '<span class="badge badge-done">Done</span>' : '<button onclick="submitLink(\''+id+'\','+t.poin+')">Submit</button>')}</div>`; }); }); }
-async function submitLink(id, p) { const link = prompt("Link:"); if(link) { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, bukti: link, tempo: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sucesso!"); } }
-async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, lat: pos.coords.latitude, lng: pos.coords.longitude, tempo: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sucesso!"); }, () => alert("GPS Error")); }
+async function loadTugasBulanan(userId) { const list = document.getElementById('taskList'); const now = new Date(); const m = now.getMonth() + 1; const y = now.getFullYear(); document.getElementById('bulanInfo').innerText = `${now.toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`; const cek = await db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).limit(1).get(); if (cek && cek.empty) { await db.collection('tugas').doc().set({ nama: "Checkin", tipe: "checkin", poin: 10, bulan: m, tahun: y }); } db.collection('tugas').where('bulan', '==', m).where('tahun', '==', y).onSnapshot(async snap => { if (snap.empty) { list.innerHTML = '<p style="color:var(--text-muted)">Tidak ada tugas.</p>'; return; } const done = await db.collection('task_done').where('userId', '==', userId).get(); const doneMap = {}; done.forEach(d => { const data = d.data(); if(!doneMap[data.taskId]) doneMap[data.taskId] = []; doneMap[data.taskId].push(data.waktu); }); list.innerHTML = ''; snap.forEach(doc => { const t = doc.data(); const id = doc.id; let isDone = false; if (t.tipe === 'checkin') { const ts = doneMap[id] || []; isDone = ts.some(x => x.toDate().toDateString() === new Date().toDateString()); } else { isDone = doneMap[id] && doneMap[id].length > 0; } list.innerHTML += `<div class="task-item ${isDone ? 'is-done' : ''}"><div style="display:flex;justify-content:space-between"><b>${t.nama}</b><span class="badge badge-pending">+${t.poin}</span></div>${t.tipe === 'checkin' ? (isDone ? '<button class="btn-disabled" disabled>Selesai</button>' : '<button onclick="checkin(\''+id+'\','+t.poin+')">Checkin</button>') : (isDone ? '<span class="badge badge-done">Done</span>' : '<button onclick="submitLink(\''+id+'\','+t.poin+')">Submit</button>')}</div>`; }); }); }
+async function submitLink(id, p) { const link = prompt("Link:"); if(link) { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, bukti: link, waktu: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sukses!"); } }
+async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async pos => { await db.collection('task_done').add({userId: auth.currentUser.uid, taskId: id, lat: pos.coords.latitude, lng: pos.coords.longitude, waktu: new Date()}); await db.collection('users').doc(auth.currentUser.uid).update({poin: firebase.firestore.FieldValue.increment(p)}); alert("Sukses!"); }, () => alert("GPS Error")); }
 
 // ==========================================
 // 11. LOADERS
 // ==========================================
-function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produtos").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); }
-function loadData(){ db.collection("laporan").orderBy("tempo","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nome}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
+function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
 function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; document.getElementById('rewardCatalog').innerHTML = `<div class="reward-item"><div class="reward-info"><h4>Token Listrik</h4><small>1000 Poin</small></div><button style="width:auto; padding:8px 16px" ${p>=1000 ? '' : 'disabled'}>${p>=1000 ? 'Tukar' : 'Kurang'}</button></div>`; }); }
-function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li><b>#${i}</b> ${v.nome} <span style="margin-left:auto">${v.poin}</span></li>`; i++; }); document.getElementById('leaderboard').innerHTML=h||'Kosong'; let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nome}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nome}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; }); document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data'; }); }
-async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); navigator.geolocation.getCurrentPosition(async pos => { await db.collection("laporan").add({ userId:auth.currentUser.uid, nome:currentUserData.nome, masalah:txt, lat:pos.coords.latitude, lng:pos.coords.longitude, tempo:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); }, ()=>alert("GPS error")); }
-function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNome').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nome:n, tempo:new Date() }).then(() => { alert("Terkirim!"); }); }
+function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li><b>#${i}</b> ${v.nama} <span style="margin-left:auto">${v.poin}</span></li>`; i++; }); document.getElementById('leaderboard').innerHTML=h||'Kosong'; let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; }); document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data'; }); }
+async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); navigator.geolocation.getCurrentPosition(async pos => { await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); }, ()=>alert("GPS error")); }
+function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); }); }
 
 // ==========================================
-// 12. ANALYTICS
+// 12. ANALYTICS REALTIME (FIXED)
 // ==========================================
 function initAnalytics() {
     db.collection("users").onSnapshot(snapshot => {
         if (!snapshot.size) return;
+        
         let total = 0;
         const dist = {};
+
         snapshot.forEach(d => {
             const u = d.data();
             total++;
+            
+            // FIX: Use 'kecamatan' (which saves the NAME) instead of 'kecamatan_nama'
+            // If 'kecamatan' is empty/null, show "Belum Lengkap"
             let kecName = u.kecamatan || "Belum Lengkap";
+            
             if (!dist[kecName]) dist[kecName] = 0;
             dist[kecName]++;
         });
+
+        // Update Time
         document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString('id-ID');
+
+        // Chart Data
         const labels = Object.keys(dist);
         const data = Object.values(dist);
         const colors = ['#E31E25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#14B8A6', '#F97316', '#6366F1'];
+
+        // Render/Update Chart
         const ctx = document.getElementById('analyticsChart').getContext('2d');
-        if (analyticsChart) { analyticsChart.data.labels = labels; analyticsChart.data.datasets[0].data = data; analyticsChart.update(); } 
-        else {
+        if (analyticsChart) {
+            analyticsChart.data.labels = labels;
+            analyticsChart.data.datasets[0].data = data;
+            analyticsChart.update();
+        } else {
             analyticsChart = new Chart(ctx, {
                 type: 'pie',
-                data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, hoverOffset: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#64748b', usePointStyle: true, font: { size: 10 } } } }
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#64748b', usePointStyle: true, font: { size: 10 } } }
+                    }
+                }
             });
         }
+
+        // Render Table
         const tbody = document.getElementById('analyticsTable');
         let tHtml = '';
         const sorted = Object.entries(dist).sort((a, b) => b[1] - a[1]);
         sorted.forEach(([name, count]) => {
             const percent = ((count / total) * 100).toFixed(1);
-            tHtml += `<tr><td>${name}</td><td style="text-align:center"><b>${count}</b></td><td style="text-align:right">${percent}%<div class="percent-bar"><div class="percent-fill" style="width:${percent}%"></div></div></td></tr>`;
+            tHtml += `<tr>
+                <td>${name}</td>
+                <td style="text-align:center"><b>${count}</b></td>
+                <td style="text-align:right">
+                    ${percent}%
+                    <div class="percent-bar"><div class="percent-fill" style="width:${percent}%"></div></div>
+                </td>
+            </tr>`;
         });
         tbody.innerHTML = tHtml;
     });
 }
 
-function updateChartTheme() { if(!analyticsChart) return; const isDark = document.body.classList.contains("dark-mode"); analyticsChart.options.plugins.legend.labels.color = isDark ? '#9CA3AF' : '#64748b'; analyticsChart.update(); }
-
-// ==========================================
-// 13. RUNNING TEXT (NEW)
-// ==========================================
-function initRunningText() {
-    db.collection("users").orderBy("createdAt", "desc").limit(10).onSnapshot(snapshot => {
-        if (snapshot.empty) return;
-        let items = [];
-        snapshot.forEach(doc => {
-            const u = doc.data();
-            const nome = sensorNome(u.nome);
-            const kec = u.kecamatan || "Daerah";
-            items.push(`<span class="running-item"><i class="fas fa-user-check"></i> Kader baru: <span class="running-highlight">${nome}</span> dari ${kec}</span>`);
-        });
-        document.getElementById('runningTextContent').innerHTML = items.join('');
-    });
-}
-
-function sensorNome(nome) {
-    if (!nome) return "***";
-    if (nome.length <= 2) return nome[0] + "*";
-    return nome.split(' ').map(word => {
-        if (word.length <= 2) return word[0] + '*';
-        return word.substring(0, 2) + '*'.repeat(word.length - 2);
-    }).join(' ');
+function updateChartTheme() {
+    if(!analyticsChart) return;
+    const isDark = document.body.classList.contains('dark-mode');
+    analyticsChart.options.plugins.legend.labels.color = isDark ? '#9CA3AF' : '#64748b';
+    analyticsChart.update();
 }
 
 // ==========================================
-// 14. FCM NOTIFICATION (NEW)
-// ==========================================
-async function requestNotifPermission() {
-    if (!messaging) {
-        alert("Notifikasi tidak didukung browser ini.");
-        return;
-    }
-
-    try {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-            const token = await messaging.getToken({ vapidKey: "YOUR_VAPID_KEY_HERE" }); 
-            if (token) {
-                console.log("FCM Token:", token);
-                alert("Notifikasi diaktifkan!");
-                document.getElementById('notifDot').classList.remove('active');
-            }
-        } else {
-            alert("Izin notifikasi ditolak.");
-        }
-    } catch (error) {
-        console.log("Error FCM:", error);
-        alert("Gagal mengaktifkan notifikasi. Coba refresh halaman.");
-    }
-}
-
-function initFCM() {
-    if (!messaging) return;
-    
-    messaging.onMessage((payload) => {
-        console.log('Message received.', payload);
-        const title = payload.notification.title;
-        const options = { body: payload.notification.body, icon: '/logo-pdi.png' };
-        new Notification(title, options);
-        document.getElementById('notifDot').classList.add('active');
-    });
-}
-
-// ==========================================
-// 15. STORE
+// 13. STORE
 // ==========================================
 function switchStoreTab(tab) { document.querySelectorAll('.store-tab').forEach((el, i) => { el.classList.remove('active'); if((tab==='list'&&i===0)||(tab==='add'&&i===1)) el.classList.add('active'); }); document.getElementById('store-list').style.display = tab==='list'?'block':'none'; document.getElementById('store-add').style.display = tab==='add'?'block':'none'; }
 function previewProductPhoto(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('previewPhotoImg').src = e.target.result; document.getElementById('previewPhotoContainer').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
-async function tambahProduk() { const nome = document.getElementById('inputNomeProduto').value; const preco = parseInt(document.getElementById('inputPrecoProduto').value); const desc = document.getElementById('inputDescProduto').value; const file = document.getElementById('inputFotoProduto').files[0]; if(!nome||!preco||!desc||!file) return alert("Lengkapi data"); const formData = new FormData(); formData.append("file", file); formData.append("upload_preset", "partai_upload"); const btn = event.target; btn.innerHTML = "Uploading..."; btn.disabled = true; try { const res = await fetch("https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload", { method:"POST", body: formData }); const img = await res.json(); await db.collection("produtos").add({ nome, preco, descricao: desc, foto: img.secure_url, userId: auth.currentUser.uid, nomeKader: currentUserData.nome, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert("Sucesso!"); switchStoreTab('list'); } catch(e) { alert("Gagal"); } btn.innerHTML = "<i class='fas fa-paper-plane'></i> Upload"; btn.disabled = false; }
-function loadProduk() { db.collection("produtos").orderBy("createdAt", "desc").onSnapshot(snap => { const g = document.getElementById('productGrid'); if(snap.empty) { g.innerHTML = "<p style='text-align:center;grid-column:span 2'>Kosong</p>"; return; } let h=""; snap.forEach(d => { const p=d.data(); const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', {day:'numeric',month:'short'}) : '-'; h+=`<div class="product-card"><img src="${p.foto}" class="product-img"><div class="product-body"><div class="product-name">${p.nome}</div><div class="product-price">Rp ${p.preco.toLocaleString('id-ID')}</div><div class="product-desc">${p.descricao}</div><div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${t}</div></div></div>`; }); g.innerHTML = h; }); }
+async function tambahProduk() { const nama = document.getElementById('inputNamaProduk').value; const harga = parseInt(document.getElementById('inputHargaProduk').value); const desc = document.getElementById('inputDescProduk').value; const file = document.getElementById('inputFotoProduk').files[0]; if(!nama||!harga||!desc||!file) return alert("Lengkapi data"); const formData = new FormData(); formData.append("file", file); formData.append("upload_preset", "partai_upload"); const btn = event.target; btn.innerHTML = "Uploading..."; btn.disabled = true; try { const res = await fetch("https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload", { method:"POST", body: formData }); const img = await res.json(); await db.collection("produk").add({ nome: nome, harga, deskripsi: desc, foto: img.secure_url, userId: auth.currentUser.uid, nomeKader: currentUserData.nome, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert("Sucesso!"); switchStoreTab('list'); } catch(e) { alert("Gagal"); } btn.innerHTML = "<i class='fas fa-paper-plane'></i> Upload"; btn.disabled = false; }
+function loadProduk() { db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => { const g = document.getElementById('productGrid'); if(snap.empty) { g.innerHTML = "<p style='text-align:center;grid-column:span 2'>Kosong</p>"; return; } let h=""; snap.forEach(d => { const p=d.data(); const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', {day:'numeric',month:'short'}) : '-'; h+=`<div class="product-card"><img src="${p.foto}" class="product-img"><div class="product-body"><div class="product-name">${p.nome}</div><div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div><div class="product-desc">${p.deskripsi}</div><div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${t}</div></div></div>`; }); g.innerHTML = h; }); }
 
 // ==========================================
 // INIT
 // ==========================================
-window.onload = function() { 
-    loadTheme(); 
-    loadProvinces(); 
-    loadProduk(); 
-    initAnalytics(); 
-    initRunningText();
-    initFCM();
-};
+window.onload = function() { loadTheme(); loadProvinces(); loadProduk(); initAnalytics(); };
 
 </script>
 </body>
