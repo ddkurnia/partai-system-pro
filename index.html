@@ -2518,7 +2518,7 @@ function renderTugasSummary(snap) {
   if (el('tsSumPoin')) el('tsSumPoin').textContent = totalPoin;
 }
 
-// Checkin state
+// Checkin state — listener Firestore, cek data hari ini
 function renderTugasCheckinState(snap) {
   const btn = document.getElementById('tsCheckinBtn');
   if (!btn) return;
@@ -2537,29 +2537,27 @@ function renderTugasCheckinState(snap) {
     btn.removeAttribute('onclick');
     btn.disabled = true;
   } else {
-    // Data sudah load, aktifkan tombol jika belum done
-    btn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Checkin Sekarang';
+    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
     btn.classList.remove('done');
     btn.disabled = false;
   }
 }
 
-// Do checkin — ALWAYS verify database first before submitting
+// Do checkin — tanpa GPS, langsung tambah poin, cek db dulu
 async function tsDoCheckin() {
   const btn = document.getElementById('tsCheckinBtn');
   if (btn.classList.contains('done') || btn.disabled) return;
 
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
   btn.disabled = true;
 
   try {
-    // ===== CEK DATABASE: apakah sudah checkin hari ini? =====
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const todayEnd = new Date(todayStart);
     todayEnd.setDate(todayEnd.getDate() + 1);
 
-    const existingSnap = await db.collection('tugas_submit')
+    const existing = await db.collection('tugas_submit')
       .where('userId', '==', auth.currentUser.uid)
       .where('tipe', '==', 'checkin')
       .where('waktu', '>=', todayStart)
@@ -2568,27 +2566,18 @@ async function tsDoCheckin() {
       .limit(1)
       .get();
 
-    if (!existingSnap.empty) {
-      // Sudah checkin hari ini, blokir
+    if (!existing.empty) {
       btn.classList.add('done');
       btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
       btn.removeAttribute('onclick');
+      btn.disabled = true;
       return;
     }
-
-    // ===== BELUM CHECKIN — lanjut ambil GPS =====
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengambil lokasi GPS...';
-
-    const pos = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, () => reject('GPS'), { timeout: 15000, enableHighAccuracy: true });
-    });
 
     await db.collection('tugas_submit').add({
       userId: auth.currentUser.uid,
       tipe: 'checkin',
       poin: 10,
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude,
       waktu: new Date(),
       status: 'pending'
     });
@@ -2603,10 +2592,9 @@ async function tsDoCheckin() {
 
   } catch (e) {
     if (btn.classList.contains('done')) return;
-    btn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Checkin Sekarang';
+    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
     btn.disabled = false;
-    if (e === 'GPS') alert('Aktifkan GPS untuk checkin.');
-    else alert('Gagal checkin. Coba lagi.');
+    alert('Gagal checkin. Coba lagi.');
   }
 }
 
