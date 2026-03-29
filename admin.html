@@ -72,6 +72,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:h
 .login-btn.loading{pointer-events:none;opacity:.7}
 .login-footer{text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
 .login-footer p{font-size:.72rem;color:rgba(255,255,255,.25);line-height:1.6}
+.login-error{display:none;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:.85rem;color:#FCA5A5;text-align:center}
+.login-error.show{display:block}
 
 /* ======================== LAYOUT ======================== */
 #app{display:none;height:100vh;overflow:hidden}
@@ -309,6 +311,7 @@ table.data-table tbody tr:last-child td{border-bottom:none}
       <p>PDI Perjuangan - Kab. Kepulauan Meranti</p>
     </div>
     <div style="display:flex;justify-content:center"><div class="login-badge"><i class="fas fa-shield-alt"></i> Akses Terbatas - Admin Only</div></div>
+    <div class="login-error" id="loginError"></div>
     <div class="login-input-group">
       <input type="email" class="login-input" id="adminEmail" placeholder="Email Admin" value="">
       <i class="fas fa-envelope icon"></i>
@@ -767,7 +770,6 @@ let allBerita = [];
 let allPengumuman = [];
 let unsubscribers = [];
 let charts = {};
-const ADMIN_UIDS = []; // Kosongkan jika ingin semua user bisa akses, atau isi UID admin
 
 // ==========================================
 // TOAST
@@ -795,34 +797,120 @@ function showConfirm(title, msg, callback) {
 }
 
 // ==========================================
-// AUTH
+// LOGIN ERROR DISPLAY
 // ==========================================
-auth.onAuthStateChanged(user => {
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideLoginError() {
+  document.getElementById('loginError').classList.remove('show');
+}
+
+// ==========================================
+// AUTH — PROTEKSI ADMIN KETAT
+// ==========================================
+// Guard: hanya boleh proses onAuthStateChanged sekali per sesi
+let _authChecked = false;
+
+auth.onAuthStateChanged(async (user) => {
   if (user) {
-    document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    loadAdminData(user);
-    initAllListeners();
+    // 🛡️ ANTI DOUBLE FIRE
+    if (_authChecked) return;
+
+    // Tampilkan loading di tombol
+    const btn = document.getElementById('loginBtn');
+    if (btn) {
+      btn.classList.add('loading');
+      btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Memverifikasi akses...';
+    }
+
+    try {
+      // 🔑 AMBIL DATA USER DARI FIRESTORE
+      const doc = await db.collection('users').doc(user.uid).get();
+
+      if (!doc.exists) {
+        console.warn('[AUTH] Doc user tidak ditemukan:', user.uid);
+        await auth.signOut();
+        _authChecked = false;
+        resetLoginBtn();
+        showLoginError('Data user tidak ditemukan di sistem.');
+        return;
+      }
+
+      const data = doc.data();
+      const role = String(data.role || '').trim().toLowerCase();
+
+      console.log('[AUTH] Role check → uid:', user.uid, 'role:', role);
+
+      // 🚫 BUKAN ADMIN → KICK OUT
+      if (role !== 'admin') {
+        console.warn('[AUTH] BUKAN ADMIN, kick out. Role:', role);
+        await auth.signOut();
+        _authChecked = false;
+        resetLoginBtn();
+        showLoginError('Akses ditolak! Hanya admin yang boleh masuk ke panel ini.');
+        return;
+      }
+
+      // ✅ ADMIN TERVERIFIKASI
+      _authChecked = true;
+      adminData = data;
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      document.getElementById('sidebarName').textContent = data.nama || user.email;
+      document.getElementById('sidebarAvatar').textContent = (data.nama || 'A').charAt(0).toUpperCase();
+      document.getElementById('settingNama').value = data.nama || '';
+      document.getElementById('settingEmail').value = user.email;
+      hideLoginError();
+      resetLoginBtn();
+      initAllListeners();
+
+    } catch (err) {
+      console.error('[AUTH] Error verifikasi:', err);
+      _authChecked = false;
+      try { await auth.signOut(); } catch(e) {}
+      resetLoginBtn();
+      showLoginError('Terjadi kesalahan saat verifikasi. Coba lagi.');
+    }
   } else {
+    // 🔓 BELUM LOGIN → TAMPILKAN LOGIN PAGE
+    _authChecked = false;
+    adminData = null;
     document.getElementById('loginPage').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
     cleanupListeners();
+    hideLoginError();
   }
 });
+
+function resetLoginBtn() {
+  const btn = document.getElementById('loginBtn');
+  if (btn) {
+    btn.classList.remove('loading');
+    btn.innerHTML = '<span>Masuk ke Dashboard</span><i class="fas fa-arrow-right"></i>';
+  }
+}
 
 function handleAdminLogin() {
   const email = document.getElementById('adminEmail').value.trim();
   const pass = document.getElementById('adminPassword').value;
   if (!email || !pass) return toast('Email dan password wajib diisi', 'warning');
+  hideLoginError();
+  _authChecked = false; // Reset guard agar onAuthStateChanged bisa diproses ulang
+
   const btn = document.getElementById('loginBtn');
   btn.classList.add('loading');
   btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px"></div> Memproses...';
+
   auth.signInWithEmailAndPassword(email, pass).then(() => {
-    toast('Login berhasil! Selamat datang, Admin.');
+    // JANGAN langsung show app di sini!
+    // Biarkan onAuthStateChanged yang handle verifikasi role + show app
+    // Pesan sukses akan muncul setelah onAuthStateChanged selesai
   }).catch(e => {
-    btn.classList.remove('loading');
-    btn.innerHTML = '<span>Masuk ke Dashboard</span><i class="fas fa-arrow-right"></i>';
-    toast(e.message, 'error');
+    resetLoginBtn();
+    showLoginError(e.message);
   });
 }
 
@@ -830,17 +918,6 @@ function handleLogout() {
   showConfirm('Keluar', 'Yakin ingin keluar dari panel admin?', () => {
     auth.signOut();
     toast('Berhasil keluar.', 'info');
-  });
-}
-
-function loadAdminData(user) {
-  db.collection('users').doc(user.uid).get().then(doc => {
-    adminData = doc.data();
-    const nama = adminData?.nama || user.email;
-    document.getElementById('sidebarName').textContent = nama;
-    document.getElementById('sidebarAvatar').textContent = nama.charAt(0).toUpperCase();
-    document.getElementById('settingNama').value = nama;
-    document.getElementById('settingEmail').value = user.email;
   });
 }
 
@@ -871,7 +948,6 @@ function navigate(page) {
   const t = pageTitles[page] || ['', ''];
   document.getElementById('pageTitle').textContent = t[0];
   document.getElementById('pageSubtitle').textContent = t[1];
-  // Close sidebar on mobile
   document.getElementById('sidebar').classList.remove('open');
 }
 
@@ -887,7 +963,6 @@ function toggleDarkMode() {
   updateChartsTheme();
 }
 
-// Responsive check
 function checkResponsive() {
   const btn = document.getElementById('menuBtn');
   if (window.innerWidth <= 768) {
@@ -905,7 +980,6 @@ window.addEventListener('resize', checkResponsive);
 function initAllListeners() {
   cleanupListeners();
 
-  // Users
   unsubscribers.push(db.collection('users').onSnapshot(snap => {
     allKaders = [];
     snap.forEach(d => allKaders.push({ id: d.id, ...d.data() }));
@@ -914,7 +988,6 @@ function initAllListeners() {
     updateCharts();
   }, err => console.error('users listener:', err)));
 
-  // Tugas Submit
   unsubscribers.push(db.collection('tugas_submit').orderBy('waktu', 'desc').onSnapshot(snap => {
     allMisi = [];
     snap.forEach(d => allMisi.push({ id: d.id, ...d.data() }));
@@ -922,7 +995,6 @@ function initAllListeners() {
     updateDashboardStats();
   }, err => console.error('tugas_submit listener:', err)));
 
-  // Reward Exchange
   unsubscribers.push(db.collection('reward_exchange').orderBy('waktu', 'desc').onSnapshot(snap => {
     allRewards = [];
     snap.forEach(d => allRewards.push({ id: d.id, ...d.data() }));
@@ -930,7 +1002,6 @@ function initAllListeners() {
     updateDashboardStats();
   }, err => console.error('reward_exchange listener:', err)));
 
-  // Produk
   unsubscribers.push(db.collection('produk').orderBy('createdAt', 'desc').onSnapshot(snap => {
     allProduk = [];
     snap.forEach(d => allProduk.push({ id: d.id, ...d.data() }));
@@ -938,7 +1009,6 @@ function initAllListeners() {
     updateDashboardStats();
   }, err => console.error('produk listener:', err)));
 
-  // Laporan
   unsubscribers.push(db.collection('laporan').orderBy('waktu', 'desc').onSnapshot(snap => {
     allLaporan = [];
     snap.forEach(d => allLaporan.push({ id: d.id, ...d.data() }));
@@ -946,21 +1016,18 @@ function initAllListeners() {
     updateDashboardStats();
   }, err => console.error('laporan listener:', err)));
 
-  // Usulan
   unsubscribers.push(db.collection('usulan').orderBy('tempo', 'desc').onSnapshot(snap => {
     allUsulan = [];
     snap.forEach(d => allUsulan.push({ id: d.id, ...d.data() }));
     renderUsulanTable();
   }, err => console.error('usulan listener:', err)));
 
-  // Berita
   unsubscribers.push(db.collection('berita').orderBy('createdAt', 'desc').onSnapshot(snap => {
     allBerita = [];
     snap.forEach(d => allBerita.push({ id: d.id, ...d.data() }));
     renderBeritaList();
   }, err => console.error('berita listener:', err)));
 
-  // Pengumuman
   unsubscribers.push(db.collection('pengumuman').orderBy('createdAt', 'desc').onSnapshot(snap => {
     allPengumuman = [];
     snap.forEach(d => allPengumuman.push({ id: d.id, ...d.data() }));
@@ -995,7 +1062,6 @@ function updateDashboardStats() {
   const pendingReward = allRewards.filter(r => r.status === 'menunggu').length;
   el('statPendingReward').textContent = pendingReward;
 
-  // Badges
   const totalPending = pendingMisi + pendingReward;
   const notifBadge = el('badgeNotif');
   if (totalPending > 0) { notifBadge.style.display = ''; notifBadge.textContent = totalPending; } else { notifBadge.style.display = 'none'; }
@@ -1006,13 +1072,11 @@ function updateDashboardStats() {
   const rewardBadge = el('badgeReward');
   if (pendingReward > 0) { rewardBadge.style.display = ''; rewardBadge.textContent = pendingReward; } else { rewardBadge.style.display = 'none'; }
 
-  // Misi pending count
   const mpc = el('misiPendingCount');
   if (mpc) mpc.textContent = pendingMisi;
   const rpc = el('rewardPendingCount');
   if (rpc) rpc.textContent = pendingReward;
 
-  // Dashboard widgets
   renderDashPendingMisi();
   renderDashRecentKaders();
 }
@@ -1085,7 +1149,6 @@ function renderKadersTable() {
 
   document.getElementById('kaderCountInfo').textContent = 'Menampilkan ' + (start + 1) + '-' + Math.min(start + KADER_PER_PAGE, total) + ' dari ' + total + ' kader';
 
-  // Pagination
   let pagHtml = '';
   if (totalPages > 1) {
     pagHtml += '<button class="btn btn-xs btn-ghost" ' + (kaderPage <= 1 ? 'disabled' : '') + ' onclick="kaderPage--;renderKadersTable()"><i class="fas fa-chevron-left"></i></button>';
@@ -1135,13 +1198,10 @@ function showKaderDetail(uid) {
   const avatar = k.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(k.nama || 'K');
   const created = k.createdAt?.toDate ? k.createdAt.toDate().toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
 
-  // Count misi
   const kaderMisi = allMisi.filter(m => m.userId === uid);
   const misiVerified = kaderMisi.filter(m => m.status === 'verified').length;
   const misiPending = kaderMisi.filter(m => m.status === 'pending').length;
   const misiRejected = kaderMisi.filter(m => m.status === 'rejected').length;
-
-  // Reward history
   const kaderRewards = allRewards.filter(r => r.userId === uid);
 
   let html = '<div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px">';
@@ -1293,7 +1353,6 @@ function renderMisiTable() {
 async function approveMisi(id) {
   const m = allMisi.find(x => x.id === id);
   if (!m || m.status !== 'pending') return;
-
   showConfirm('Verifikasi Misi', 'Verifikasi misi ini? Poin +' + (m.poin || 0) + ' akan diberikan ke kader.', async () => {
     try {
       await db.collection('tugas_submit').doc(id).update({ status: 'verified', verifiedAt: new Date(), verifiedBy: auth.currentUser.uid });
@@ -1306,7 +1365,6 @@ async function approveMisi(id) {
 async function rejectMisi(id) {
   const m = allMisi.find(x => x.id === id);
   if (!m || m.status !== 'pending') return;
-
   showConfirm('Tolak Misi', 'Tolak misi ini? Poin akan dikembalikan (dikurangi) dari kader.', async () => {
     try {
       await db.collection('tugas_submit').doc(id).update({ status: 'rejected', rejectedAt: new Date(), rejectedBy: auth.currentUser.uid });
@@ -1455,11 +1513,10 @@ function renderProdukTable() {
   filtered.forEach(p => {
     const waktu = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
     const kader = allKaders.find(k => k.id === p.userId);
-    const avatar = p.avatarKader || (kader?.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.namaKader || 'K'));
 
     html += '<tr>';
     html += '<td><div style="display:flex;align-items:center;gap:12px"><img src="' + (p.foto || '') + '" style="width:50px;height:50px;border-radius:10px;object-fit:cover;border:1px solid var(--border)" onerror="this.src=\'https://placehold.co/50x50/f1f5f9/94a3b8?text=?\'"><div><div style="font-weight:700;font-size:.85rem">' + (p.nama || '-') + '</div><div style="font-size:.72rem;color:var(--text2);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (p.deskripsi || '') + '</div></div></div></td>';
-    html += '<td><div class="user-cell"><img src="' + avatar + '" class="avatar-sm" onerror="this.src=\'https://ui-avatars.com/api/?name=K\'"><div class="user-cell-info"><h5>' + (p.namaKader || '-') + '</h5></div></div></td>';
+    html += '<td><div class="user-cell"><img src="' + (kader?.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.namaKader || 'K')) + '" class="avatar-sm" onerror="this.src=\'https://ui-avatars.com/api/?name=K\'"><div class="user-cell-info"><h5>' + (p.namaKader || '-') + '</h5></div></div></td>';
     html += '<td style="font-weight:700;color:var(--primary)">Rp ' + (p.harga || 0).toLocaleString('id-ID') + '</td>';
     html += '<td><span class="badge badge-gray">' + (p.kategori || '-') + '</span></td>';
     html += '<td style="font-size:.82rem">' + waktu + '</td>';
@@ -1768,7 +1825,6 @@ function updateStatKecChart() {
   const labels = sorted.map(s => s[0]);
   const data = sorted.map(s => s[1]);
 
-  // Table
   const tbody = document.getElementById('statKecTable');
   if (tbody) {
     let html = '';
@@ -1895,7 +1951,6 @@ window.onload = function() {
   }
   checkResponsive();
 
-  // Enter key on login
   document.getElementById('adminPassword').addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
   document.getElementById('adminEmail').addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('adminPassword').focus(); });
 };
