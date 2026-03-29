@@ -282,10 +282,10 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+  background-image: url('https://partai.kedaimedia.com/bg-login.png');
   background-size: cover;
   background-position: center;
-  filter: brightness(0.7);
+  filter: brightness(0.6);
   z-index: 1;
 }
 
@@ -297,10 +297,10 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, 
-    rgba(227, 30, 37, 0.85) 0%, 
-    rgba(139, 0, 0, 0.9) 50%,
-    rgba(15, 23, 42, 0.95) 100%);
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 40%,
+    rgba(0, 0, 0, 0.7) 100%);
   z-index: 2;
 }
 
@@ -319,15 +319,15 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .auth-particle {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   animation: float 15s infinite ease-in-out;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-  25% { transform: translateY(-30px) translateX(15px); opacity: 0.6; }
-  50% { transform: translateY(-15px) translateX(-10px); opacity: 0.4; }
-  75% { transform: translateY(-40px) translateX(20px); opacity: 0.5; }
+  25% { transform: translateY(-30px) translateX(15px); opacity: 0.5; }
+  50% { transform: translateY(-15px) translateX(-10px); opacity: 0.3; }
+  75% { transform: translateY(-40px) translateX(20px); opacity: 0.4; }
 }
 
 /* Main Container */
@@ -336,17 +336,17 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   z-index: 10;
   width: 90%;
   max-width: 400px;
-  background: rgba(26, 26, 26, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-radius: 24px;
   padding: 40px 30px;
   text-align: center;
   color: white;
-  box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   animation: slideUp 0.6s ease-out;
 }
 
@@ -376,20 +376,20 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 3px solid var(--primary);
+  border: 3px solid rgba(255, 255, 255, 0.3);
   object-fit: cover;
   background: white;
-  box-shadow: 
-    0 8px 25px rgba(227, 30, 37, 0.4),
-    0 0 0 4px rgba(227, 30, 37, 0.2);
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.4),
+    0 0 0 4px rgba(227, 30, 37, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .auth-logo:hover {
   transform: scale(1.05);
-  box-shadow: 
-    0 12px 35px rgba(227, 30, 37, 0.5),
-    0 0 0 6px rgba(227, 30, 37, 0.3);
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.5),
+    0 0 0 6px rgba(227, 30, 37, 0.25);
 }
 
 /* Decorative Ring */
@@ -400,7 +400,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   left: -8px;
   right: -8px;
   bottom: -8px;
-  border: 2px dashed rgba(227, 30, 37, 0.4);
+  border: 2px dashed rgba(255, 255, 255, 0.12);
   border-radius: 50%;
   animation: rotate 20s linear infinite;
 }
@@ -411,18 +411,18 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 }
 
 .auth-header h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   margin-bottom: 5px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  letter-spacing: -0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.3px;
 }
 
 .auth-header .auth-subtitle {
   font-size: 1rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   margin-bottom: 8px;
 }
 
@@ -449,26 +449,27 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   padding: 16px 20px;
   padding-left: 50px;
   border-radius: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  margin-top: 0;
 }
 
 .auth-container input:focus {
   outline: none;
-  border-color: var(--primary);
-  background: rgba(40, 40, 40, 0.9);
-  box-shadow: 
-    inset 0 2px 4px rgba(0, 0, 0, 0.2),
-    0 0 0 4px rgba(227, 30, 37, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.15),
+    0 0 0 3px rgba(255, 255, 255, 0.06);
 }
 
 .auth-container input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 /* Input Icons */
@@ -477,13 +478,13 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   left: 18px;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.35);
   font-size: 1rem;
   transition: color 0.3s ease;
 }
 
 .auth-input-group:focus-within .auth-input-icon {
-  color: var(--primary);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Password Toggle */
@@ -521,9 +522,9 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   align-items: center;
   justify-content: center;
   gap: 10px;
-  box-shadow: 
-    0 4px 15px rgba(227, 30, 37, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 4px 20px rgba(227, 30, 37, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -542,9 +543,9 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 
 .auth-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 25px rgba(227, 30, 37, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 8px 30px rgba(227, 30, 37, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .auth-btn-primary:hover::before {
@@ -553,9 +554,9 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 
 .auth-btn-primary:active {
   transform: translateY(0);
-  box-shadow: 
+  box-shadow:
     0 2px 10px rgba(227, 30, 37, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Links Section */
@@ -585,7 +586,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--primary);
+  background: rgba(255, 255, 255, 0.5);
   transition: width 0.3s ease;
 }
 
@@ -607,7 +608,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   content: "";
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
 }
 
 .auth-divider::before {
@@ -628,7 +629,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   padding: 14px;
   background: transparent;
   color: rgba(255, 255, 255, 0.7);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   font-weight: 600;
   font-size: 0.9rem;
@@ -642,8 +643,8 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 }
 
 .auth-btn-guest:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.3);
   color: white;
   transform: translateY(-1px);
 }
@@ -654,7 +655,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   overflow-y: auto;
   padding-right: 5px;
   scrollbar-width: thin;
-  scrollbar-color: var(--primary) rgba(255, 255, 255, 0.1);
+  scrollbar-color: rgba(255,255,255,0.2) rgba(255, 255, 255, 0.05);
 }
 
 .auth-full-register::-webkit-scrollbar {
@@ -662,12 +663,12 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 }
 
 .auth-full-register::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 2px;
 }
 
 .auth-full-register::-webkit-scrollbar-thumb {
-  background: var(--primary);
+  background: rgba(255,255,255,0.2);
   border-radius: 2px;
 }
 
@@ -686,8 +687,8 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   padding: 14px 18px;
   padding-left: 50px;
   border-radius: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   color: white;
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
@@ -697,12 +698,13 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
+  margin-top: 0;
 }
 
 .auth-full-register select:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(227, 30, 37, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
 }
 
 .auth-full-register select:disabled {
@@ -765,21 +767,21 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
     margin: 15px;
     width: calc(100% - 30px);
   }
-  
+
   .auth-logo {
     width: 70px;
     height: 70px;
   }
-  
+
   .auth-header h2 {
     font-size: 1.3rem;
   }
-  
+
   .auth-container input {
     padding: 14px 16px;
     padding-left: 45px;
   }
-  
+
   .auth-btn-primary {
     padding: 14px;
   }
@@ -822,7 +824,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
         <i class="fas fa-envelope auth-input-icon"></i>
         <input type="email" id="authLoginEmail" placeholder="Alamat Email">
       </div>
-      
+
       <div class="auth-input-group">
         <i class="fas fa-lock auth-input-icon"></i>
         <input type="password" id="authLoginPassword" placeholder="Password">
@@ -856,13 +858,13 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
           <i class="fas fa-user auth-input-icon"></i>
           <input type="text" id="authRegNama" placeholder="Nama Lengkap">
         </div>
-        
+
         <label class="form-label">Nomor WhatsApp *</label>
         <div class="auth-input-group">
           <i class="fab fa-whatsapp auth-input-icon"></i>
           <input type="text" id="authRegNohp" placeholder="08xxxxxxxxxx">
         </div>
-        
+
         <label class="form-label">Provinsi *</label>
         <div class="auth-input-group">
           <i class="fas fa-map auth-input-icon"></i>
@@ -870,7 +872,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
             <option value="">Memuat provinsi...</option>
           </select>
         </div>
-        
+
         <label class="form-label">Kabupaten/Kota *</label>
         <div class="auth-input-group">
           <i class="fas fa-city auth-input-icon"></i>
@@ -878,7 +880,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
             <option value="">Pilih Provinsi dulu</option>
           </select>
         </div>
-        
+
         <label class="form-label">Kecamatan *</label>
         <div class="auth-input-group">
           <i class="fas fa-map-marker-alt auth-input-icon"></i>
@@ -886,7 +888,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
             <option value="">Pilih Kabupaten dulu</option>
           </select>
         </div>
-        
+
         <label class="form-label">Desa/Kelurahan *</label>
         <div class="auth-input-group">
           <i class="fas fa-home auth-input-icon"></i>
@@ -894,7 +896,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
             <option value="">Pilih Kecamatan dulu</option>
           </select>
         </div>
-        
+
         <label class="form-label">Jabatan *</label>
         <div class="auth-input-group">
           <i class="fas fa-id-badge auth-input-icon"></i>
@@ -903,13 +905,13 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
             <option value="Relawan">Relawan</option>
           </select>
         </div>
-        
+
         <label class="form-label">Email *</label>
         <div class="auth-input-group">
           <i class="fas fa-envelope auth-input-icon"></i>
           <input type="email" id="authRegEmail" placeholder="Email Aktif">
         </div>
-        
+
         <label class="form-label">Password *</label>
         <div class="auth-input-group">
           <i class="fas fa-lock auth-input-icon"></i>
@@ -934,7 +936,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
         <i class="fas fa-envelope auth-input-icon"></i>
         <input type="email" id="authResetEmail" placeholder="Email Akun">
       </div>
-      
+
       <button class="auth-btn-primary" onclick="handleResetPassword()">
         <span>Kirim Link Reset</span>
         <i class="fas fa-paper-plane"></i>
@@ -985,13 +987,13 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
     <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
     <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
     <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1540910419892-4a36d2c3268c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
-    
+
     <div class="hero-overlay">
       <span class="hero-tag">Portal Resmi</span>
       <h2 class="hero-title">Satukan Langkah<br>Majukan Meranti</h2>
       <p class="hero-desc">Platform digital untuk kader PDI Perjuangan.</p>
     </div>
-    
+
     <div class="hero-dots">
       <div class="dot active" onclick="goToSlide(0)"></div>
       <div class="dot" onclick="goToSlide(1)"></div>
@@ -1038,7 +1040,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       <div class="chart-wrapper">
         <canvas id="analyticsChart"></canvas>
       </div>
-      
+
       <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align:right">
         Update terakhir: <span id="lastUpdate">-</span>
       </div>
@@ -1216,11 +1218,11 @@ const db = firebase.firestore();
 // 2. GLOBALS
 // ==========================================
 let currentUserData = null;
-let unsubUser = null; 
-let mapMarkers = {}; 
-let map = null; 
+let unsubUser = null;
+let mapMarkers = {};
+let map = null;
 let slideIndex = 0;
-let analyticsChart = null; 
+let analyticsChart = null;
 let isGuestMode = false;
 
 // ==========================================
@@ -1280,8 +1282,8 @@ async function saveProfile() { const nama = document.getElementById('editNama').
 // 8. AUTH ACTIONS
 // ==========================================
 function signup(){
-  const get = (id) => document.getElementById(id); 
-  const getVal = (id) => get(id).value; 
+  const get = (id) => document.getElementById(id);
+  const getVal = (id) => get(id).value;
   const getTxt = (id) => get(id).options[get(id).selectedIndex].getAttribute('data-name') || "";
   const getId = (id) => get(id).value;
 
@@ -1302,7 +1304,7 @@ function signup(){
   };
   const pass = getVal('regPassword');
   if(!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) return alert("Lengkapi data!");
-  
+
   auth.createUserWithEmailAndPassword(data.email, pass).then(async res => {
     await res.user.sendEmailVerification();
     await db.collection("users").doc(res.user.uid).set({...data, poin: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
@@ -1345,7 +1347,7 @@ function kirimUsulan(){ const t = document.getElementById('usulanText').value; c
 function initAnalytics() {
     db.collection("users").onSnapshot(snapshot => {
         if (!snapshot.size) return;
-        
+
         let total = 0;
         const dist = {};
 
@@ -1469,14 +1471,14 @@ function showAuthLoading() {
 function handleLogin() {
   const email = document.getElementById('authLoginEmail').value;
   const password = document.getElementById('authLoginPassword').value;
-  
+
   if (!email || !password) {
     alert("Email dan password wajib diisi!");
     return;
   }
-  
+
   showAuthLoading();
-  
+
   auth.signInWithEmailAndPassword(email, password)
     .then(user => {
       if (!user.user.emailVerified) {
@@ -1490,8 +1492,8 @@ function handleLogin() {
 }
 
 function handleSignup() {
-  const get = (id) => document.getElementById(id); 
-  const getVal = (id) => get(id).value; 
+  const get = (id) => document.getElementById(id);
+  const getVal = (id) => get(id).value;
   const getTxt = (id) => {
     const sel = get(id);
     if (sel && sel.selectedIndex >= 0 && sel.options[sel.selectedIndex]) {
@@ -1516,27 +1518,27 @@ function handleSignup() {
     email: getVal('authRegEmail'),
     status: 'Aktif'
   };
-  
+
   const pass = getVal('authRegPassword');
-  
+
   if (!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) {
     alert("Lengkapi semua data wajib!");
     return;
   }
-  
+
   if (pass.length < 6) {
     alert("Password minimal 6 karakter!");
     return;
   }
-  
+
   showAuthLoading();
-  
+
   auth.createUserWithEmailAndPassword(data.email, pass)
     .then(async res => {
       await res.user.sendEmailVerification();
       await db.collection("users").doc(res.user.uid).set({
-        ...data, 
-        poin: 0, 
+        ...data,
+        poin: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       alert("Pendaftaran berhasil! Cek email untuk verifikasi.");
@@ -1549,14 +1551,14 @@ function handleSignup() {
 
 function handleResetPassword() {
   const email = document.getElementById('authResetEmail').value;
-  
+
   if (!email) {
     alert("Masukkan email akun Anda!");
     return;
   }
-  
+
   showAuthLoading();
-  
+
   auth.sendPasswordResetEmail(email)
     .then(() => {
       alert("Link reset password telah dikirim ke email Anda!");
@@ -1587,16 +1589,16 @@ async function loadAuthKabupaten(pid) {
   const s = document.getElementById('authRegKabupaten');
   const s2 = document.getElementById('authRegKecamatan');
   const s3 = document.getElementById('authRegDesa');
-  
+
   s.innerHTML = '<option value="">Memuat...</option>';
   s.disabled = true;
   s2.innerHTML = '<option value="">Pilih Kabupaten</option>';
   s2.disabled = true;
   s3.innerHTML = '<option value="">Pilih Kecamatan</option>';
   s3.disabled = true;
-  
+
   if (!pid) return;
-  
+
   const kabupatens = await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`);
   s.innerHTML = '<option value="">Pilih Kabupaten</option>';
   kabupatens.forEach(k => {
@@ -1608,14 +1610,14 @@ async function loadAuthKabupaten(pid) {
 async function loadAuthKecamatan(kid) {
   const s = document.getElementById('authRegKecamatan');
   const s2 = document.getElementById('authRegDesa');
-  
+
   s.innerHTML = '<option value="">Memuat...</option>';
   s.disabled = true;
   s2.innerHTML = '<option value="">Pilih Kecamatan</option>';
   s2.disabled = true;
-  
+
   if (!kid) return;
-  
+
   const kecamatans = await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`);
   s.innerHTML = '<option value="">Pilih Kecamatan</option>';
   kecamatans.forEach(k => {
@@ -1628,9 +1630,9 @@ async function loadAuthDesa(kid) {
   const s = document.getElementById('authRegDesa');
   s.innerHTML = '<option value="">Memuat...</option>';
   s.disabled = true;
-  
+
   if (!kid) return;
-  
+
   const desas = await fetchWilayah(`${API_WILAYAH}/villages/${kid}.json`);
   s.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
   desas.forEach(d => {
@@ -1642,13 +1644,13 @@ async function loadAuthDesa(kid) {
 // ==========================================
 // INIT
 // ==========================================
-window.onload = function() { 
-  loadTheme(); 
-  loadProvinces(); 
-  loadProduk(); 
-  initAnalytics(); 
+window.onload = function() {
+  loadTheme();
+  loadProvinces();
+  loadProduk();
+  initAnalytics();
 };
 
 </script>
 </body>
-</html>
+  </html>
