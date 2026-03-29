@@ -809,7 +809,347 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   .auth-btn-primary {
     padding: 14px;
   }
+}
 
+/* ==========================================
+   MISI & REWARD STYLES (REDESIGNED V2)
+   ========================================== */
+.mr-hero {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  padding: 22px 20px;
+  color: white;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #E31E25 0%, #B91C1C 40%, #7F1D1D 100%);
+}
+.mr-hero::after {
+  content: '';
+  position: absolute;
+  top: -25px; right: -25px;
+  width: 100px; height: 100px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 50%;
+}
+.mr-hero h2 { font-size: 1.15rem; font-weight: 900; margin-bottom: 4px; position: relative; z-index: 1; }
+.mr-hero p { font-size: 0.78rem; opacity: 0.9; line-height: 1.5; position: relative; z-index: 1; }
+.mr-hero-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(4px);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.68rem; font-weight: 700;
+  margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+
+/* Period info bar */
+.mr-period-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+  border: 1px solid #BFDBFE;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 0.75rem; color: #1E40AF; font-weight: 600;
+}
+body.dark-mode .mr-period-bar {
+  background: rgba(37,99,235,0.1);
+  border-color: rgba(59,130,246,0.2);
+  color: #93C5FD;
+}
+.mr-period-bar i { font-size: 0.85rem; }
+
+/* TAB NAV */
+.mr-tabs {
+  display: flex; gap: 4px;
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.mr-tabs::-webkit-scrollbar { display: none; }
+.mr-tab {
+  flex: 1;
+  min-width: max-content;
+  padding: 9px 8px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all 0.25s;
+  white-space: nowrap;
+  border: none; background: none;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  box-shadow: none; width: auto;
+}
+.mr-tab.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(227,30,37,0.3);
+}
+.mr-tab:not(.active):hover {
+  background: var(--border-color);
+  color: var(--text-main);
+}
+
+/* TAB PANELS */
+.mr-panel { display: none; animation: mrFade 0.3s ease; }
+.mr-panel.active { display: block; }
+@keyframes mrFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== ACCORDION (Expand/Collapse) ===== */
+.mr-accordion {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.mr-accordion:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.mr-acc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.mr-acc-header:hover {
+  background: var(--bg-body);
+}
+.mr-acc-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; color: white; flex-shrink: 0;
+}
+.mr-acc-title {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+.mr-acc-subtitle {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 1px;
+}
+.mr-acc-toggle {
+  width: 24px; height: 24px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-body);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, background 0.2s;
+}
+.mr-accordion.open .mr-acc-toggle {
+  transform: rotate(180deg);
+  background: rgba(227,30,37,0.1);
+  color: var(--primary);
+}
+.mr-acc-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.mr-accordion.open .mr-acc-body {
+  max-height: 2000px;
+}
+.mr-acc-content {
+  padding: 0 14px 14px;
+}
+
+/* Section header inside panels */
+.mr-hdr {
+  font-size: 0.88rem; font-weight: 800; color: var(--text-main);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--border-color);
+  display: flex; align-items: center; gap: 8px;
+}
+.mr-hdr i { font-size: 0.95rem; }
+
+/* Rules table */
+.mr-rules-table { width: 100%; border-collapse: collapse; }
+.mr-rules-table tr { border-bottom: 1px solid var(--border-color); }
+.mr-rules-table tr:last-child { border-bottom: none; }
+.mr-rules-table td { padding: 10px 6px; vertical-align: top; font-size: 0.78rem; line-height: 1.5; }
+.mr-rules-table td:first-child { width: 28px; text-align: center; padding-top: 14px; }
+.mr-rules-table .mr-ru-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 6px;
+  font-size: 0.65rem; font-weight: 800; color: white;
+}
+.mr-rules-table .mr-ru-title { font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+.mr-rules-table .mr-ru-desc { color: var(--text-muted); }
+
+/* Reward table */
+.mr-rew-table { width: 100%; border-collapse: collapse; }
+.mr-rew-table th {
+  font-size: 0.7rem; color: var(--text-muted); font-weight: 700;
+  text-align: left; padding: 8px 6px; border-bottom: 2px solid var(--border-color);
+}
+.mr-rew-table td { padding: 10px 6px; border-bottom: 1px solid var(--border-color); font-size: 0.78rem; vertical-align: middle; }
+.mr-rew-table .rew-icon-cell { width: 36px; text-align: center; }
+.mr-rew-table .rew-icon { width: 34px; height: 34px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; color: white; }
+.mr-rew-table .rew-name { font-weight: 700; color: var(--text-main); }
+.mr-rew-table .rew-sub { font-size: 0.68rem; color: var(--text-muted); }
+.mr-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700; white-space: nowrap;
+}
+
+/* Mission table inside accordion */
+.mr-misi-table { width: 100%; border-collapse: collapse; }
+.mr-misi-table tr { border-bottom: 1px solid var(--border-color); }
+.mr-misi-table tr:last-child { border-bottom: none; }
+.mr-misi-table td { padding: 7px 4px; font-size: 0.76rem; vertical-align: top; }
+.mr-misi-table td:last-child { text-align: right; white-space: nowrap; }
+.mr-misi-table .pts { font-weight: 800; color: var(--primary); font-size: 0.78rem; }
+
+/* Notice */
+.mr-notice {
+  background: linear-gradient(135deg, #FFF7ED, #FEF3C7);
+  border: 1px solid #FDE68A;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.74rem;
+  color: #92400E;
+  line-height: 1.5;
+  display: flex; gap: 8px; align-items: flex-start;
+  margin-top: 10px;
+}
+body.dark-mode .mr-notice {
+  background: rgba(245,158,11,0.1);
+  border-color: rgba(245,158,11,0.2);
+  color: #FDE68A;
+}
+.mr-notice i { color: #D97706; font-size: 0.95rem; margin-top: 1px; flex-shrink: 0; }
+
+/* Social / Template cards */
+.mr-tmpl-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.mr-tmpl-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.mr-tmpl-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; color: white; flex-shrink: 0;
+}
+.mr-tmpl-head h4 { font-size: 0.82rem; font-weight: 700; color: var(--text-main); flex: 1; }
+.mr-tmpl-head small { font-size: 0.65rem; color: var(--text-muted); }
+.mr-tmpl-box {
+  background: var(--bg-body);
+  border: 1px dashed var(--border-color);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.75rem;
+  color: var(--text-main);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.mr-copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 6px;
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  color: var(--text-main); font-size: 0.7rem; font-weight: 600;
+  cursor: pointer; margin-top: 8px;
+  width: auto; box-shadow: none;
+}
+.mr-copy-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* ===== LEADERBOARD TABLE ===== */
+.mr-lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.mr-lb-table thead th {
+  background: var(--bg-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 10px 8px;
+  border-bottom: 2px solid var(--border-color);
+  text-align: center;
+  white-space: nowrap;
+}
+.mr-lb-table thead th:first-child { width: 38px; }
+.mr-lb-table thead th:nth-child(2) { text-align: left; }
+.mr-lb-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.15s;
+}
+.mr-lb-table tbody tr:last-child { border-bottom: none; }
+.mr-lb-table tbody tr:hover { background: var(--bg-body); }
+.mr-lb-table tbody td {
+  padding: 9px 8px;
+  font-size: 0.76rem;
+  vertical-align: middle;
+  border: 1px solid var(--border-color);
+}
+.mr-lb-table .lb-rank-cell {
+  text-align: center;
+  width: 38px;
+  border-left: 1px solid var(--border-color);
+}
+.mr-lb-table .lb-rank-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 6px;
+  font-size: 0.68rem; font-weight: 900; color: white;
+}
+.mr-lb-table .lb-name-cell { font-weight: 700; color: var(--text-main); white-space: nowrap; }
+.mr-lb-table .lb-wilayah-cell { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+.mr-lb-table .lb-poin-cell {
+  text-align: right;
+  font-weight: 900;
+  color: var(--gold);
+  white-space: nowrap;
+  border-right: 1px solid var(--border-color);
+}
+.mr-lb-table .lb-avatar-sm {
+  width: 28px; height: 28px; border-radius: 50%;
+  object-fit: cover; vertical-align: middle;
+  margin-right: 6px; border: 2px solid var(--bg-card);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: var(--border-color);
+}
+.mr-lb-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  padding: 30px 0;
+}
+/* Podium highlights */
+.mr-lb-table tbody tr.lb-podium-1 { background: linear-gradient(90deg, rgba(255,215,0,0.08), transparent); }
+.mr-lb-table tbody tr.lb-podium-2 { background: linear-gradient(90deg, rgba(192,192,192,0.06), transparent); }
+.mr-lb-table tbody tr.lb-podium-3 { background: linear-gradient(90deg, rgba(205,127,50,0.06), transparent); }
+body.dark-mode .mr-lb-table tbody tr.lb-podium-1 { background: linear-gradient(90deg, rgba(255,215,0,0.05), transparent); }
+body.dark-mode .mr-lb-table tbody tr.lb-podium-2 { background: linear-gradient(90deg, rgba(192,192,192,0.03), transparent); }
+body.dark-mode .mr-lb-table tbody tr.lb-podium-3 { background: linear-gradient(90deg, rgba(205,127,50,0.03), transparent); }
 </style>
 </head>
 <body>
@@ -1051,6 +1391,7 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
     <div class="menu-item" onclick="showView('galeri')"><div class="menu-icon c-pink"><i class="fas fa-images"></i></div><span class="menu-text">Galeri</span></div>
     <div class="menu-item" onclick="showView('kontak')"><div class="menu-icon c-gray"><i class="fas fa-phone-alt"></i></div><span class="menu-text">Kontak</span></div>
     <div class="menu-item" onclick="showView('statistik')"><div class="menu-icon c-yellow"><i class="fas fa-chart-pie"></i></div><span class="menu-text">Statistik</span></div>
+    <div class="menu-item" onclick="showView('misi-reward')"><div class="menu-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><i class="fas fa-trophy"></i></div><span class="menu-text">Misi & Reward</span></div>
     <div class="menu-item" onclick="navigateToDashboard()"><div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div><span class="menu-text">Dashboard</span></div>
   </div>
 
@@ -1081,6 +1422,381 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 <div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
 <div id="view-bantuan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Bantuan</h3></div></div>
 <div id="view-kontak" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3></div></div>
+
+<!-- VIEW: MISI & REWARD -->
+<div id="view-misi-reward" class="view-section">
+
+  <!-- HERO -->
+  <div class="mr-hero">
+    <div class="mr-hero-tag"><i class="fas fa-star"></i> Event 3 Bulanan</div>
+    <h2><i class="fas fa-trophy"></i> Misi & Reward Kader</h2>
+    <p>Kumpulkan poin dari setiap misi yang kamu selesaikan. Tukarkan dengan hadiah eksklusif PDI Perjuangan Kab. Kepulauan Meranti!</p>
+  </div>
+
+  <!-- PERIODE INFO -->
+  <div class="mr-period-bar">
+    <i class="fas fa-calendar-alt"></i>
+    <span>Periode: <b>Januari - Maret 2026</b> &middot; Poin diakumulasi 3 bulan &middot; Reset tiap kuartal</span>
+  </div>
+
+  <!-- TAB NAVIGATION -->
+  <div class="mr-tabs">
+    <button class="mr-tab active" onclick="switchMrTab('rules')"><i class="fas fa-gavel"></i> Aturan</button>
+    <button class="mr-tab" onclick="switchMrTab('reward')"><i class="fas fa-gift"></i> Reward</button>
+    <button class="mr-tab" onclick="switchMrTab('misi')"><i class="fas fa-bullseye"></i> Misi</button>
+    <button class="mr-tab" onclick="switchMrTab('sosmed')"><i class="fas fa-share-alt"></i> Sosmed</button>
+    <button class="mr-tab" onclick="switchMrTab('leaderboard')"><i class="fas fa-medal"></i> Top 10</button>
+  </div>
+
+  <!-- ===================== TAB 1: ATURAN ===================== -->
+  <div id="mrPanel-rules" class="mr-panel active">
+
+    <!-- Accordion: Kualifikasi Peserta -->
+    <div class="mr-accordion open" id="acc-rule1">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule1')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626)"><span style="font-size:0.65rem;font-weight:900">1</span></div>
+        <div><div class="mr-acc-title">Kualifikasi Peserta</div><div class="mr-acc-subtitle">Siapa yang bisa mengikuti program ini</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Seluruh kader dan relawan PDI Perjuangan terdaftar di Portal Kader Kab. Kepulauan Meranti. Status akun harus <b>Aktif</b> dan email terverifikasi. Akun tamu tidak dapat mengikuti program.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Periode Event -->
+    <div class="mr-accordion" id="acc-rule2">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule2')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><span style="font-size:0.65rem;font-weight:900">2</span></div>
+        <div><div class="mr-acc-title">Periode Event</div><div class="mr-acc-subtitle">Jadwal dan siklus program</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Berlangsung setiap <b>3 bulan</b> (Q1: Jan-Mar, Q2: Apr-Jun, Q3: Jul-Sep, Q4: Okt-Des). Poin <b>tidak dapat dipindahkan</b> ke periode berikutnya. Reset otomatis tiap kuartal baru.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Sistem Poin -->
+    <div class="mr-accordion" id="acc-rule3">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule3')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#3B82F6,#2563EB)"><span style="font-size:0.65rem;font-weight:900">3</span></div>
+        <div><div class="mr-acc-title">Sistem Poin</div><div class="mr-acc-subtitle">Cara poin diberikan dan digunakan</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Poin diberikan setelah misi <b>diverifikasi admin</b>. Bersifat kumulatif dan langsung dapat ditukarkan selama stok tersedia. Penukaran via Dashboard &gt; Reward atau hub admin DPC.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Verifikasi Misi -->
+    <div class="mr-accordion" id="acc-rule4">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule4')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)"><span style="font-size:0.65rem;font-weight:900">4</span></div>
+        <div><div class="mr-acc-title">Verifikasi Misi</div><div class="mr-acc-subtitle">Proses pengecekan misi oleh admin</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Setiap misi melewati proses verifikasi admin DPC. Misi yang <b>tidak memenuhi syarat akan ditolak</b> dan poin tidak diberikan. Keputusan admin bersifat final.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Kedisiplinan -->
+    <div class="mr-accordion" id="acc-rule5">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule5')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><span style="font-size:0.65rem;font-weight:900">5</span></div>
+        <div><div class="mr-acc-title">Kedisiplinan & Anti Kecurangan</div><div class="mr-acc-subtitle">Sanksi pelanggaran</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Dilarang keras: fake akun, spam, bot, manipulasi data. Pelanggaran dikenakan <b>sanksi pengurangan poin 100%</b> atau <b>penonaktifan akun permanen</b>.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Pengambilan Reward -->
+    <div class="mr-accordion" id="acc-rule6">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule6')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#EC4899,#DB2777)"><span style="font-size:0.65rem;font-weight:900">6</span></div>
+        <div><div class="mr-acc-title">Pengambilan Reward</div><div class="mr-acc-subtitle">Cara mengambil hadiah</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Ambil di <b>Sekretariat DPC</b> setelah disetujui. Kader luar kota bisa dikirim via cargo (biaya penerima). Konfirmasi maksimal <b>30 hari</b> setelah persetujuan.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Perubahan Ketentuan -->
+    <div class="mr-accordion" id="acc-rule7">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule7')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#06B6D4,#0891B2)"><span style="font-size:0.65rem;font-weight:900">7</span></div>
+        <div><div class="mr-acc-title">Perubahan Ketentuan</div><div class="mr-acc-subtitle">Hak DPC mengubah aturan</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">DPC berhak mengubah syarat dan nilai poin sewaktu-waktu. Perubahan diinformasikan via portal dan grup WhatsApp resmi. Kehadiran dalam kegiatan partai juga menjadi penilaian.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 2: REWARD ===================== -->
+  <div id="mrPanel-reward" class="mr-panel">
+
+    <!-- Accordion: Daftar Reward -->
+    <div class="mr-accordion open" id="acc-rew-list">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rew-list')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark))"><i class="fas fa-gift" style="font-size:0.85rem"></i></div>
+        <div><div class="mr-acc-title">Katalog Reward & Konversi Poin</div><div class="mr-acc-subtitle">5 hadiah eksklusif untuk kader</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content" style="overflow-x:auto">
+        <table class="mr-rew-table">
+          <thead>
+            <tr>
+              <th style="width:36px"></th>
+              <th>Reward</th>
+              <th style="text-align:center">Poin</th>
+              <th style="text-align:center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626)"><i class="fas fa-tshirt"></i></span></td>
+              <td><div class="rew-name">Kaos Partai</div><div class="rew-sub">Kaos official PDI Perjuangan &middot; Katun combed 30s &middot; M, L, XL</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#FEE2E2;color:#DC2626">500</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)"><i class="fas fa-mug-hot"></i></span></td>
+              <td><div class="rew-name">Mug Partai</div><div class="rew-sub">Mug keramik logo PDI &middot; 350ml &middot; Microwave safe</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#EDE9FE;color:#7C3AED">400</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)"><i class="fas fa-vest-patches"></i></span></td>
+              <td><div class="rew-name">Jaket Partai</div><div class="rew-sub">Jaket official PDI Perjuangan &middot; Parasut waterproof</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#DBEAFE;color:#2563EB">1000</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#F97316,#EA580C)"><i class="fas fa-utensils"></i></span></td>
+              <td><div class="rew-name">Voucher Makan 2 Orang</div><div class="rew-sub">Restoran mitra DPC &middot; Berlaku 30 hari</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#FFF7ED;color:#EA580C">750</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#EAB308,#CA8A04)"><i class="fas fa-bolt"></i></span></td>
+              <td><div class="rew-name">Token Listrik Rp 100.000</div><div class="rew-sub">Kode voucher dikirim via WhatsApp</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#FEF3C7;color:#B45309">600</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:8px;text-align:center">*Stok reward terbatas. Penukaran berdasarkan urutan permintaan.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Cara Penukaran -->
+    <div class="mr-accordion" id="acc-rew-cara">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rew-cara')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#3B82F6,#2563EB)"><i class="fas fa-exchange-alt" style="font-size:0.85rem"></i></div>
+        <div><div class="mr-acc-title">Cara Penukaran Reward</div><div class="mr-acc-subtitle">Langkah-langkah menukar poin</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">1</span></td><td>Kumpulkan poin dari misi yang telah diverifikasi admin</td></tr>
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">2</span></td><td>Pastikan poin mencukupi untuk reward yang diinginkan</td></tr>
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">3</span></td><td>Hubungi admin DPC via WhatsApp atau Dashboard &gt; Reward</td></tr>
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">4</span></td><td>Ambil reward di Sekretariat DPC dalam 30 hari setelah disetujui</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 3: MISI ===================== -->
+  <div id="mrPanel-misi" class="mr-panel">
+
+    <!-- Accordion: Misi 1 Rekrutmen -->
+    <div class="mr-accordion open" id="acc-misi1">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-misi1')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><i class="fas fa-user-plus"></i></div>
+        <div><div class="mr-acc-title">Misi 1: Rekruitmen Anggota</div><div class="mr-acc-subtitle">Berlaku sepanjang periode &middot; Verifikasi 3 hari kerja</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td colspan="2" style="padding-bottom:4px;font-weight:700;font-size:0.74rem;color:var(--text-muted);border-bottom:2px solid var(--border-color)">SKEMA POIN REKRUITMEN</td></tr>
+          <tr><td>Anggota baru mendaftar &amp; akun aktif</td><td class="pts">+20 poin</td></tr>
+          <tr><td>Anggota baru verifikasi email dalam 24 jam</td><td class="pts">+10 poin</td></tr>
+          <tr><td>Profil lengkap (provinsi-kecamatan-desa)</td><td class="pts">+15 poin</td></tr>
+          <tr><td>Bonus rekrut 5+ anggota aktif dalam 1 bulan</td><td class="pts">+50 poin</td></tr>
+          <tr><td colspan="2" style="padding-bottom:4px;font-weight:700;font-size:0.74rem;color:var(--text-muted);border-bottom:2px solid var(--border-color)">KETENTUAN</td></tr>
+          <tr><td colspan="2" style="border-bottom:none"><span style="color:var(--text-main)">1.</span> Wajib mendaftar melalui Portal Kader (bukan akun palsu)<br><span style="color:var(--text-main)">2.</span> Hanya berlaku untuk anggota beralamat di <b>Kab. Kepulauan Meranti</b><br><span style="color:var(--text-main)">3.</span> Verifikasi dilakukan admin DPC maksimal 3 hari kerja</td></tr>
+        </table>
+        <div class="mr-notice">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div><b>Penting:</b> Akun duplikat, data palsu, atau manipulasi akan mengakibatkan pembatalan poin dan sanksi untuk kreator referral.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Misi 2 Sosmed - Facebook -->
+    <div class="mr-accordion" id="acc-misi2-fb">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-misi2-fb')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+        <div><div class="mr-acc-title">Misi 2: Sosmed - Facebook</div><div class="mr-acc-subtitle">+30 poin/posting &middot; Maks 5/minggu</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td>Postingan bersifat positif &amp; membangun</td><td class="pts">Wajib</td></tr>
+          <tr><td>Minimal 1 foto (kegiatan/kader/desain resmi)</td><td class="pts">Wajib</td></tr>
+          <tr><td>Hashtag: <b>#PDIPerjuangan #PDIMeranti #KepulauanMeranti</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Status postingan <b>PUBLIC (Publik)</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Tidak mengandung SARA / ujaran kebencian</td><td class="pts">Wajib</td></tr>
+          <tr><td>Kirim screenshot + link URL ke admin</td><td class="pts">Wajib</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Misi 2 Sosmed - TikTok -->
+    <div class="mr-accordion" id="acc-misi2-tt">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-misi2-tt')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+        <div><div class="mr-acc-title">Misi 2: Sosmed - TikTok</div><div class="mr-acc-subtitle">+50 poin/video &middot; Maks 3/minggu</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td>Durasi video <b>minimal 1 menit</b>, maks 3 menit</td><td class="pts">Wajib</td></tr>
+          <tr><td>Konten relevan PDI Perjuangan Kep. Meranti</td><td class="pts">Wajib</td></tr>
+          <tr><td>Video berstatus <b>PUBLIC (Publik)</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Hashtag: <b>#PDIPerjuangan #PDIMeranti #KepulauanMeranti #KaderPDI</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Tidak mengandung konten negatif / melanggar hukum</td><td class="pts">Wajib</td></tr>
+          <tr><td>Kirim link TikTok ke admin sebagai bukti</td><td class="pts">Wajib</td></tr>
+          <tr><td>Bonus 500+ views dalam 7 hari pertama</td><td class="pts" style="color:#10B981">+20</td></tr>
+        </table>
+        <div class="mr-notice">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div><b>Syarat Konten:</b> Harus orisinal (bukan repost), tidak melanggar hak cipta, mencerminkan nilai PDI Perjuangan. Admin berhak menolak konten yang tidak memenuhi syarat.</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 4: SOSMED TEMPLATE ===================== -->
+  <div id="mrPanel-sosmed" class="mr-panel">
+
+    <!-- Accordion: Template Facebook -->
+    <div class="mr-accordion open" id="acc-sosmed-fb">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-sosmed-fb')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+        <div><div class="mr-acc-title">Template Posting Facebook</div><div class="mr-acc-subtitle">2 contoh caption siap pakai</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+            <h4>Postingan Umum</h4>
+          </div>
+          <div class="mr-tmpl-box" id="fbPost1">PDI Perjuangan - Satukan Langkah untuk Kepulauan Meranti!
+
+Bersama PDI Perjuangan, kita wujudkan perubahan nyata untuk Kabupaten Kepulauan Meranti. Dari Tebing Tinggi hingga Rangsang, dari Merbau hingga Tasik Putri Puyu, semangat kader kami tak pernah padam!
+
+Mari bergabung bersama kami membangun Meranti yang lebih sejahtera, berkeadilan, dan bermartabat. Kader PDI Perjuangan siap melayani rakyat dengan sepenuh hati!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #SatukanLangkah #KaderPDI #MerantiBangkit #RakyatBerdaulat</div>
+          <button class="mr-copy-btn" onclick="copyText('fbPost1')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+            <h4>Postingan Kegiatan</h4>
+          </div>
+          <div class="mr-tmpl-box" id="fbPost2">Alhamdulillah, kegiatan [NAMA KEGIATAN] PDI Perjuangan DPC Kabupaten Kepulauan Meranti berjalan dengan lancar dan penuh semangat!
+
+Kegiatan ini dihadiri oleh kader-kader dari berbagai kecamatan di Kepulauan Meranti. Terima kasih atas partisipasi seluruh kader yang telah hadir dan berkontribusi. Mari terus bekerja keras untuk masyarakat!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #KaderMilitan #PDISatuUntukSemua</div>
+          <button class="mr-copy-btn" onclick="copyText('fbPost2')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+      </div></div>
+    </div>
+
+    <!-- Accordion: Template TikTok -->
+    <div class="mr-accordion" id="acc-sosmed-tt">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-sosmed-tt')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+        <div><div class="mr-acc-title">Template Caption TikTok</div><div class="mr-acc-subtitle">3 contoh caption &middot; Min. 1 menit</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+            <h4>Video Persatuan Kader</h4>
+            <small>+1 min</small>
+          </div>
+          <div class="mr-tmpl-box" id="ttPost1">Kader PDI Perjuangan dari seluruh Kepulauan Meranti bersatu! Ini bukti nyata bahwa kami siap melayani rakyat dengan sepenuh hati. Dari Tebing Tinggi hingga Sungai Batang, PDI Perjuangan selalu hadir untuk rakyat!
+
+Buat kalian yang ingin bergabung dan berkontribusi untuk Kepulauan Meranti yang lebih baik, tunggu apa lagi? Jadilah bagian dari keluarga besar PDI Perjuangan!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #KaderPDI #MerantiBangkit #RakyatBerdaulat #PDISatuUntukSemua</div>
+          <button class="mr-copy-btn" onclick="copyText('ttPost1')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+            <h4>Video Potensi Meranti</h4>
+            <small>+1 min</small>
+          </div>
+          <div class="mr-tmpl-box" id="ttPost2">Kepulauan Meranti punya potensi luar biasa! Sumber daya alam yang kaya, budaya Melayu yang unik, dan masyarakat yang ramah. PDI Perjuangan berkomitmen penuh untuk memajukan daerah ini!
+
+Di video ini, kita lihat keindahan dan potensi Kepulauan Meranti. Yuk dukung pembangunan Meranti bersama PDI Perjuangan!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #PotensiMeranti #BangunMeranti #KaderPDI</div>
+          <button class="mr-copy-btn" onclick="copyText('ttPost2')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+            <h4>Video Ajakan Rekrutmen</h4>
+            <small>+1 min</small>
+          </div>
+          <div class="mr-tmpl-box" id="ttPost3">Mau jadi bagian dari perubahan nyata di Kepulauan Meranti? Bergabunglah bersama PDI Perjuangan! Kami butuh kader-kader muda yang berdedikasi tinggi untuk membangun Meranti yang lebih baik.
+
+Caranya gampang, daftar langsung di Portal Kader PDI Perjuangan Kab. Kepulauan Meranti. Setelah terdaftar, kamu bisa ikut berbagai kegiatan partai, kumpulkan poin, dan tukarkan dengan reward menarik!
+
+Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #GabungPDI #KaderMudaPDI #MerantiBangkit</div>
+          <button class="mr-copy-btn" onclick="copyText('ttPost3')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 5: LEADERBOARD ===================== -->
+  <div id="mrPanel-leaderboard" class="mr-panel">
+    <div class="mr-hdr">
+      <span><i class="fas fa-medal" style="color:var(--gold)"></i> Leaderboard Top 10 Kader</span>
+      <span style="margin-left:auto;font-size:0.68rem;color:var(--success);font-weight:700;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span> Realtime</span>
+    </div>
+    <div id="mrLeaderboard"><p class="mr-lb-empty">Memuat data...</p></div>
+  </div>
+
+</div>
+<!-- END VIEW: MISI & REWARD -->
 
 <!-- VIEW: STATISTIK (Peta Kekuatan Kader) -->
 <div id="view-statistik" class="view-section">
@@ -1484,7 +2200,7 @@ async function checkin(id, p) { navigator.geolocation.getCurrentPosition(async p
 // ==========================================
 // 11. LOADERS
 // ==========================================
-function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); }
+function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); loadMrLeaderboard(); }
 function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
 function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; document.getElementById('rewardCatalog').innerHTML = `<div class="reward-item"><div class="reward-info"><h4>Token Listrik</h4><small>1000 Poin</small></div><button style="width:auto; padding:8px 16px" ${p>=1000 ? '' : 'disabled'}>${p>=1000 ? 'Tukar' : 'Kurang'}</button></div>`; }); }
 function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li><b>#${i}</b> ${v.nama} <span style="margin-left:auto">${v.poin}</span></li>`; i++; }); document.getElementById('leaderboard').innerHTML=h||'Kosong'; let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; }); document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data'; }); }
@@ -1851,6 +2567,85 @@ async function tambahProduk() { const nama = document.getElementById('inputNamaP
 function loadProduk() { db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => { const g = document.getElementById('productGrid'); if(snap.empty) { g.innerHTML = "<p style='text-align:center;grid-column:span 2'>Kosong</p>"; return; } let h=""; snap.forEach(d => { const p=d.data(); const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', {day:'numeric',month:'short'}) : '-'; h+=`<div class="product-card"><img src="${p.foto}" class="product-img"><div class="product-body"><div class="product-name">${p.nome}</div><div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div><div class="product-desc">${p.deskripsi}</div><div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${t}</div></div></div>`; }); g.innerHTML = h; }); }
 
 // ==========================================
+// MISI & REWARD - TAB SWITCH, ACCORDION, LEADERBOARD & COPY
+// ==========================================
+function switchMrTab(tabName) {
+  document.querySelectorAll('.mr-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mr-tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('mrPanel-' + tabName);
+  if (panel) panel.classList.add('active');
+  const tabs = document.querySelectorAll('.mr-tab');
+  const tabMap = ['rules','reward','misi','sosmed','leaderboard'];
+  const idx = tabMap.indexOf(tabName);
+  if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+}
+
+function toggleAccordion(id) {
+  const acc = document.getElementById(id);
+  if (!acc) return;
+  acc.classList.toggle('open');
+}
+
+function loadMrLeaderboard() {
+  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(snap => {
+    const el = document.getElementById('mrLeaderboard');
+    if (!el) return;
+    if (snap.empty) { el.innerHTML = '<p class="mr-lb-empty">Belum ada data kader</p>'; return; }
+    let html = '<div style="overflow-x:auto"><table class="mr-lb-table"><thead><tr>';
+    html += '<th>#</th><th>Kader</th><th>Wilayah</th><th>Poin</th>';
+    html += '</tr></thead><tbody>';
+    let i = 1;
+    snap.forEach(d => {
+      const v = d.data();
+      const avatar = v.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(v.nama || 'Kader');
+      const rankBg = i === 1 ? 'linear-gradient(135deg,#FFD700,#FFA500)' : (i === 2 ? 'linear-gradient(135deg,#C0C0C0,#A9A9A9)' : (i === 3 ? 'linear-gradient(135deg,#CD7F32,#8B4513)' : 'linear-gradient(135deg,#94a3b8,#64748b)'));
+      const podiumClass = i <= 3 ? ' lb-podium-' + i : '';
+      const kec = v.kecamatan || '-';
+      const desa = v.desa || '';
+      const wilayah = desa ? desa + ', ' + kec : kec;
+      html += `<tr class="${podiumClass}">`;
+      html += `<td class="lb-rank-cell"><span class="lb-rank-badge" style="background:${rankBg}">${i}</span></td>`;
+      html += `<td class="lb-name-cell"><img src="${avatar}" class="lb-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(v.nama||'K')}'">${v.nama || '-'}</td>`;
+      html += `<td class="lb-wilayah-cell"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:4px;font-size:0.65rem"></i>${wilayah}</td>`;
+      html += `<td class="lb-poin-cell"><i class="fas fa-coins" style="font-size:0.7rem;margin-right:3px"></i>${v.poin || 0}</td>`;
+      html += '</tr>';
+      i++;
+    });
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
+  });
+}
+
+function copyText(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.parentElement.querySelector('.mr-copy-btn');
+      if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Teks'; }, 2000); }
+    }).catch(() => { fallbackCopy(text, el); });
+  } else {
+    fallbackCopy(text, el);
+  }
+}
+
+function fallbackCopy(text, el) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    const btn = el.parentElement.querySelector('.mr-copy-btn');
+    if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Teks'; }, 2000); }
+  } catch(e) { alert('Gagal menyalin. Silakan salin manual.'); }
+  document.body.removeChild(ta);
+}
+
+// ==========================================
 // AUTH SCREEN FUNCTIONS
 // ==========================================
 
@@ -2079,4 +2874,4 @@ window.onload = function() {
 
 </script>
 </body>
-  </html>
+</html>
