@@ -229,14 +229,89 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .store-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
 .store-tab { flex: 1; padding: 12px; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: all 0.2s; }
 .store-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-.product-card { background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-.product-img { width: 100%; height: 140px; object-fit: cover; background: var(--bg-body); }
-.product-body { padding: 12px; }
-.product-name { font-weight: 700; font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.product-price { color: var(--primary); font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; }
-.product-desc { font-size: 0.75rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; }
-.product-seller { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.product-card { background: var(--bg-card); border-radius: 14px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 2px 10px rgba(0,0,0,0.03); transition: transform 0.2s, box-shadow 0.2s; }
+.product-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+.product-img { width: 100%; height: 150px; object-fit: cover; background: var(--bg-body); }
+.product-body { padding: 10px 12px 12px; }
+.product-name { font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.product-price { color: var(--primary); font-weight: 800; font-size: 0.92rem; margin-bottom: 4px; }
+.product-weight { font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px; }
+.product-desc { font-size: 0.72rem; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 8px; line-height: 1.4; }
+.product-seller { font-size: 0.68rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+.product-seller img { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; }
+.product-wa-btn {
+  width: 100%; padding: 8px; border-radius: 8px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white; border: none; font-size: 0.72rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(37,211,102,0.3);
+}
+.product-wa-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(37,211,102,0.4); }
+
+/* Rules Modal */
+.st-rules-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px); z-index: 3000;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.st-rules-overlay.show { display: flex; }
+.st-rules-box {
+  background: var(--bg-card); width: 100%; max-width: 420px;
+  border-radius: 20px; padding: 0; overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+  max-height: 85vh; display: flex; flex-direction: column;
+}
+.st-rules-header {
+  background: linear-gradient(135deg, #14B8A6, #0D9488);
+  color: white; padding: 18px 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.st-rules-header i { font-size: 1.2rem; }
+.st-rules-header div h4 { font-size: 0.95rem; font-weight: 800; }
+.st-rules-header div small { font-size: 0.7rem; opacity: 0.85; }
+.st-rules-body {
+  padding: 16px 20px; overflow-y: auto; flex: 1;
+  scrollbar-width: thin;
+}
+.st-rules-body::-webkit-scrollbar { width: 4px; }
+.st-rules-body::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+.st-rule-item {
+  display: flex; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.78rem; line-height: 1.5; color: var(--text-main);
+}
+.st-rule-item:last-child { border-bottom: none; }
+.st-rule-num {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 900; color: white;
+  background: linear-gradient(135deg, #14B8A6, #0D9488);
+}
+.st-rule-item b { color: var(--text-main); }
+.st-rules-footer { padding: 12px 20px 18px; }
+.st-rules-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px;
+  cursor: pointer; user-select: none;
+}
+.st-rules-check input { accent-color: #14B8A6; width: 16px; height: 16px; cursor: pointer; }
+.st-rules-accept {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #14B8A6, #0D9488);
+  color: white; border: none; border-radius: 12px;
+  font-size: 0.9rem; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 3px 12px rgba(20,184,166,0.3);
+  transition: all 0.2s; opacity: 0.5; pointer-events: none;
+}
+.st-rules-accept.enabled { opacity: 1; pointer-events: auto; }
+.st-rules-accept.enabled:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(20,184,166,0.4); }
+
+/* Product form improvements */
+.st-form-group { margin-bottom: 2px; }
+.st-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .file-upload-area { border: 2px dashed var(--border-color); border-radius: 12px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s; margin-top: 12px; background: var(--bg-body); }
 .file-upload-area i { font-size: 2rem; color: var(--text-muted); margin-bottom: 10px; display: block; }
@@ -2103,23 +2178,94 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
 <!-- VIEW: STORE UMKM -->
 <div id="view-store" class="view-section">
   <div class="card">
-    <h3 style="margin-bottom:15px"><i class="fas fa-store" style="color:#14B8A6; margin-right:8px"></i> Store UMKM</h3>
+    <h3 style="margin-bottom:15px"><i class="fas fa-store" style="color:#14B8A6; margin-right:8px"></i> Store UMKM Kader</h3>
     <div class="store-tabs">
-      <div class="store-tab active" onclick="switchStoreTab('list')"><i class="fas fa-list"></i> Produk</div>
-      <div class="store-tab" onclick="switchStoreTab('add')"><i class="fas fa-plus"></i> Jual</div>
+      <div class="store-tab active" onclick="switchStoreTab('list')"><i class="fas fa-th-large"></i> Etalase</div>
+      <div class="store-tab" onclick="switchStoreTab('add')"><i class="fas fa-plus-circle"></i> Jual Produk</div>
     </div>
-    <div id="store-list"><div id="productGrid" class="product-grid"><p style="text-align:center; grid-column: span 2;">Memuat produk...</p></div></div>
+    <div id="store-list">
+      <div id="productGrid" class="product-grid"><p style="text-align:center; grid-column: span 2; color:var(--text-muted); font-size:0.82rem; padding:30px 0">Memuat produk...</p></div>
+    </div>
     <div id="store-add" style="display:none;">
-      <input type="text" id="inputNamaProduk" placeholder="Nama Produk">
-      <input type="number" id="inputHargaProduk" placeholder="Harga (Rp)">
-      <textarea id="inputDescProduk" placeholder="Deskripsi Produk"></textarea>
-      <label class="file-upload-area">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <p>Klik untuk upload foto (Max 2MB)</p>
-        <input type="file" id="inputFotoProduk" accept="image/*" onchange="previewProductPhoto(this)">
+      <div class="st-form-group">
+        <label class="form-label">Nama Produk *</label>
+        <input type="text" id="inputNamaProduk" placeholder="Contoh: Keripik Singkong Emping">
+      </div>
+      <div class="st-form-row">
+        <div class="st-form-group">
+          <label class="form-label">Harga (Rp) *</label>
+          <input type="number" id="inputHargaProduk" placeholder="15000">
+        </div>
+        <div class="st-form-group">
+          <label class="form-label">Berat (gram)</label>
+          <input type="number" id="inputBeratProduk" placeholder="250">
+        </div>
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Kategori</label>
+        <select id="inputKategoriProduk">
+          <option value="">Pilih Kategori</option>
+          <option value="Makanan & Minuman">Makanan & Minuman</option>
+          <option value="Kerajinan Tangan">Kerajinan Tangan</option>
+          <option value="Pakaian & Aksesoris">Pakaian & Aksesoris</option>
+          <option value="Pertanian & Perkebunan">Pertanian & Perkebunan</option>
+          <option value="Perikanan & Kelautan">Perikanan & Kelautan</option>
+          <option value="Jasa">Jasa</option>
+          <option value="Elektronik">Elektronik</option>
+          <option value="Kesehatan & Kecantikan">Kesehatan & Kecantikan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Deskripsi Produk *</label>
+        <textarea id="inputDescProduk" rows="3" placeholder="Jelaskan produk Anda secara detail (min. 20 karakter)..."></textarea>
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Nomor WhatsApp *</label>
+        <input type="text" id="inputWaProduk" placeholder="08xxxxxxxxxx">
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Foto Produk * <small style="color:var(--text-muted)">(Maks 2MB)</small></label>
+        <label class="file-upload-area" id="stUploadArea">
+          <i class="fas fa-camera"></i>
+          <p id="stUploadText">Tap untuk pilih foto produk</p>
+          <input type="file" id="inputFotoProduk" accept="image/*" onchange="previewProductPhoto(this)">
+        </label>
+        <div class="preview-container" id="previewPhotoContainer"><img src="" alt="Preview" class="preview-img" id="previewPhotoImg"></div>
+      </div>
+      <button onclick="tambahProduk()" id="btnUploadProduk" style="margin-top:15px"><i class="fas fa-paper-plane"></i> Upload Produk</button>
+    </div>
+  </div>
+</div>
+
+<!-- RULES MODAL FOR STORE -->
+<div id="stRulesModal" class="st-rules-overlay">
+  <div class="st-rules-box">
+    <div class="st-rules-header">
+      <i class="fas fa-gavel"></i>
+      <div>
+        <h4>Syarat & Ketentuan Jual Produk</h4>
+        <small>Wajib dibaca sebelum upload produk UMKM</small>
+      </div>
+    </div>
+    <div class="st-rules-body">
+      <div class="st-rule-item"><span class="st-rule-num">1</span><div><b>Produk Legal & Halal</b><br>Produk yang dijual harus legal sesuai hukum Republik Indonesia. Produk makanan/minuman wajib memiliki izin BPOM/PIRT atau sertifikasi halal dari MUI.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">2</span><div><b>Data Produk Akurat</b><br>Informasi nama, harga, berat, deskripsi, dan kategori produk harus sesuai dengan kondisi asli. Dilarang menyesatkan pembeli.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">3</span><div><b>Foto Produk Asli</b><br>Foto yang diupload harus foto asli produk, bukan gambar dari internet atau milik orang lain. Tidak boleh mengandung watermark pihak lain.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">4</span><div><b>Nomor WhatsApp Aktif</b><br>Nomor WhatsApp yang didaftarkan harus aktif dan dapat dihubungi oleh calon pembeli untuk transaksi.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">5</span><div><b>Tanggung Jawab Penjual</b><br>Penjual bertanggung jawab penuh atas kualitas, pengiriman, dan layanan produk yang dijual. Platform tidak bertanggung jawab atas sengketa transaksi.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">6</span><div><b>Larangan Konten</b><br>Dilarang menjual produk ilegal, barang bajakan, SARA, pornografi, obat terlarang, senjata, atau produk yang melanggar hukum Indonesia.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">7</span><div><b>Sanksi Pelanggaran</b><br>Pelanggaran terhadap aturan ini dapat mengakibatkan penghapusan produk dan/atau penonaktifan akun penjual secara permanen.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">8</span><div><b>Perubahan Aturan</b><br>Pengelola platform berhak mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diinformasikan melalui portal.</div></div>
+    </div>
+    <div class="st-rules-footer">
+      <label class="st-rules-check">
+        <input type="checkbox" id="stRulesCheck" onchange="document.getElementById('stRulesAccept').classList.toggle('enabled', this.checked)">
+        <span>Saya telah membaca dan menyetujui seluruh syarat & ketentuan di atas</span>
       </label>
-      <div class="preview-container" id="previewPhotoContainer"><img src="" alt="Preview" class="preview-img" id="previewPhotoImg"></div>
-      <button onclick="tambahProduk()" style="margin-top:15px"><i class="fas fa-paper-plane"></i> Upload Produk</button>
+      <button id="stRulesAccept" class="st-rules-accept" onclick="stAcceptRules()">
+        <i class="fas fa-check-circle"></i> Lanjut Upload Produk
+      </button>
     </div>
   </div>
 </div>
@@ -3176,10 +3322,145 @@ function updateChartTheme() {
 // ==========================================
 // 13. STORE
 // ==========================================
-function switchStoreTab(tab) { document.querySelectorAll('.store-tab').forEach((el, i) => { el.classList.remove('active'); if((tab==='list'&&i===0)||(tab==='add'&&i===1)) el.classList.add('active'); }); document.getElementById('store-list').style.display = tab==='list'?'block':'none'; document.getElementById('store-add').style.display = tab==='add'?'block':'none'; }
-function previewProductPhoto(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = (e) => { document.getElementById('previewPhotoImg').src = e.target.result; document.getElementById('previewPhotoContainer').style.display = 'block'; }; reader.readAsDataURL(input.files[0]); } }
-async function tambahProduk() { const nama = document.getElementById('inputNamaProduk').value; const harga = parseInt(document.getElementById('inputHargaProduk').value); const desc = document.getElementById('inputDescProduk').value; const file = document.getElementById('inputFotoProduk').files[0]; if(!nama||!harga||!desc||!file) return alert("Lengkapi data"); const formData = new FormData(); formData.append("file", file); formData.append("upload_preset", "partai_upload"); const btn = event.target; btn.innerHTML = "Uploading..."; btn.disabled = true; try { const res = await fetch("https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload", { method:"POST", body: formData }); const img = await res.json(); await db.collection("produk").add({ nome: nome, harga, deskripsi: desc, foto: img.secure_url, userId: auth.currentUser.uid, nomeKader: currentUserData.nome, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); alert("Sucesso!"); switchStoreTab('list'); } catch(e) { alert("Gagal"); } btn.innerHTML = "<i class='fas fa-paper-plane'></i> Upload"; btn.disabled = false; }
-function loadProduk() { db.collection("produk").orderBy("createdAt", "desc").onSnapshot(snap => { const g = document.getElementById('productGrid'); if(snap.empty) { g.innerHTML = "<p style='text-align:center;grid-column:span 2'>Kosong</p>"; return; } let h=""; snap.forEach(d => { const p=d.data(); const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', {day:'numeric',month:'short'}) : '-'; h+=`<div class="product-card"><img src="${p.foto}" class="product-img"><div class="product-body"><div class="product-name">${p.nome}</div><div class="product-price">Rp ${p.harga.toLocaleString('id-ID')}</div><div class="product-desc">${p.deskripsi}</div><div class="product-seller"><i class="fas fa-user"></i> ${p.nomeKader} • ${t}</div></div></div>`; }); g.innerHTML = h; }); }
+function switchStoreTab(tab) {
+  document.querySelectorAll('.store-tab').forEach((el, i) => { el.classList.remove('active'); if((tab==='list'&&i===0)||(tab==='add'&&i===1)) el.classList.add('active'); });
+  document.getElementById('store-list').style.display = tab==='list'?'block':'none';
+  document.getElementById('store-add').style.display = tab==='add'?'block':'none';
+  if (tab === 'add') {
+    // Show rules popup if not yet accepted
+    const accepted = localStorage.getItem('st_rules_accepted');
+    if (!accepted) {
+      document.getElementById('stRulesModal').classList.add('show');
+      document.getElementById('stRulesCheck').checked = false;
+      document.getElementById('stRulesAccept').classList.remove('enabled');
+    }
+  }
+}
+
+function stAcceptRules() {
+  const chk = document.getElementById('stRulesCheck');
+  if (!chk.checked) return;
+  localStorage.setItem('st_rules_accepted', '1');
+  document.getElementById('stRulesModal').classList.remove('show');
+}
+
+function previewProductPhoto(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (file.size > 2 * 1024 * 1024) { alert('Ukuran foto maksimal 2MB'); input.value = ''; return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('previewPhotoImg').src = e.target.result;
+      document.getElementById('previewPhotoContainer').style.display = 'block';
+      document.getElementById('stUploadText').textContent = file.name;
+      document.getElementById('stUploadArea').style.borderColor = '#10B981';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function tambahProduk() {
+  const nama = document.getElementById('inputNamaProduk').value.trim();
+  const harga = parseInt(document.getElementById('inputHargaProduk').value);
+  const berat = parseInt(document.getElementById('inputBeratProduk').value) || 0;
+  const kategori = document.getElementById('inputKategoriProduk').value;
+  const desc = document.getElementById('inputDescProduk').value.trim();
+  const wa = document.getElementById('inputWaProduk').value.trim();
+  const file = document.getElementById('inputFotoProduk').files[0];
+  const btn = document.getElementById('btnUploadProduk');
+
+  // Validasi
+  if (!nama) { alert('Masukkan nama produk'); return; }
+  if (!harga || harga <= 0) { alert('Masukkan harga produk yang valid'); return; }
+  if (!desc || desc.length < 20) { alert('Deskripsi produk minimal 20 karakter'); return; }
+  if (!wa || !/^0\d{8,13}$/.test(wa)) { alert('Masukkan nomor WhatsApp yang valid (contoh: 08xxxxxxxxxx)'); return; }
+  if (!file) { alert('Upload foto produk'); return; }
+  if (file.size > 2 * 1024 * 1024) { alert('Ukuran foto maksimal 2MB'); return; }
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
+  btn.disabled = true;
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'partai_upload');
+    const res = await fetch('https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload', { method: 'POST', body: formData });
+    const img = await res.json();
+
+    await db.collection('produk').add({
+      nama: nama,
+      harga: harga,
+      berat: berat,
+      kategori: kategori || '-',
+      deskripsi: desc,
+      whatsapp: wa,
+      foto: img.secure_url,
+      userId: auth.currentUser.uid,
+      namaKader: currentUserData.nama || currentUserData.nome || 'Kader',
+      avatarKader: currentUserData.photoURL || '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Reset form
+    document.getElementById('inputNamaProduk').value = '';
+    document.getElementById('inputHargaProduk').value = '';
+    document.getElementById('inputBeratProduk').value = '';
+    document.getElementById('inputKategoriProduk').value = '';
+    document.getElementById('inputDescProduk').value = '';
+    document.getElementById('inputWaProduk').value = '';
+    document.getElementById('inputFotoProduk').value = '';
+    document.getElementById('previewPhotoContainer').style.display = 'none';
+    document.getElementById('stUploadText').textContent = 'Tap untuk pilih foto produk';
+    document.getElementById('stUploadArea').style.borderColor = '';
+
+    btn.innerHTML = '<i class="fas fa-check"></i> Berhasil Diupload!';
+    setTimeout(() => {
+      switchStoreTab('list');
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Upload Produk';
+      btn.disabled = false;
+    }, 1200);
+  } catch (e) {
+    alert('Gagal upload produk. Coba lagi.');
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Upload Produk';
+    btn.disabled = false;
+  }
+}
+
+function loadProduk() {
+  db.collection('produk').onSnapshot(snap => {
+    const g = document.getElementById('productGrid');
+    if (!g) return;
+    if (snap.empty) {
+      g.innerHTML = '<p style="text-align:center;grid-column:span 2;color:var(--text-muted);font-size:0.82rem;padding:30px 0"><i class="fas fa-box-open" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada produk UMKM</p>';
+      return;
+    }
+    let h = '';
+    snap.forEach(d => {
+      const p = d.data();
+      const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+      const avatar = p.avatarKader || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.namaKader || 'K');
+      const wa = p.whatsapp || '';
+      const waClean = wa.replace(/^0/, '62');
+      const waMsg = encodeURIComponent('Halo, saya tertarik dengan produk "' + (p.nama || '') + '" yang dijual di Store UMKM PDI Perjuangan Kep. Meranti. Apakah masih tersedia?');
+      const waLink = 'https://wa.me/' + waClean + '?text=' + waMsg;
+      const kategori = p.kategori && p.kategori !== '-' ? '<span style="display:inline-block;background:rgba(20,184,166,0.1);color:#0D9488;padding:2px 8px;border-radius:10px;font-size:0.6rem;font-weight:600;margin-bottom:4px">' + p.kategori + '</span>' : '';
+      const berat = p.berat ? '<div class="product-weight"><i class="fas fa-weight-hanging" style="margin-right:3px"></i>' + p.berat + ' gram</div>' : '';
+
+      h += '<div class="product-card">' +
+        '<img src="' + p.foto + '" class="product-img" onerror="this.src=\'https://placehold.co/300x200/f1f5f9/94a3b8?text=Foto+Produk\'">' +
+        '<div class="product-body">' +
+          kategori +
+          '<div class="product-name">' + p.nama + '</div>' +
+          '<div class="product-price">Rp ' + p.harga.toLocaleString('id-ID') + '</div>' +
+          berat +
+          '<div class="product-desc">' + p.deskripsi + '</div>' +
+          '<div class="product-seller"><img src="' + avatar + '" onerror="this.src=\'https://ui-avatars.com/api/?name=K\'"><span>' + p.namaKader + '</span> &middot; ' + t + '</div>' +
+          (wa ? '<button class="product-wa-btn" onclick="window.open(\'' + waLink + '\',\'_blank\')"><i class="fab fa-whatsapp"></i> Hubungi via WhatsApp</button>' : '') +
+        '</div></div>';
+    });
+    g.innerHTML = h;
+  });
+}
 
 // ==========================================
 // MISI & REWARD - TAB SWITCH, ACCORDION, LEADERBOARD & COPY
