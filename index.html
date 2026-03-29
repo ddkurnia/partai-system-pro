@@ -2186,8 +2186,8 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
         <span class="ts-card-badge" style="background:#D1FAE5;color:#065F46">+10</span>
       </div>
       <div class="ts-card-body">
-        <button id="tsCheckinBtn" class="ts-btn-checkin" onclick="tsDoCheckin()">
-          <i class="fas fa-map-marker-alt"></i> Checkin Sekarang
+        <button id="tsCheckinBtn" class="ts-btn-checkin" onclick="tsDoCheckin()" disabled>
+          <i class="fas fa-spinner fa-spin"></i> Memuat...
         </button>
         <div id="tsCheckinHist" class="ts-history"></div>
       </div>
@@ -2534,20 +2534,55 @@ function renderTugasCheckinState(snap) {
   if (alreadyDone) {
     btn.classList.add('done');
     btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
-    btn.onclick = null;
+    btn.removeAttribute('onclick');
+    btn.disabled = true;
+  } else {
+    // Data sudah load, aktifkan tombol jika belum done
+    btn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Checkin Sekarang';
+    btn.classList.remove('done');
+    btn.disabled = false;
   }
 }
 
-// Do checkin
+// Do checkin — ALWAYS verify database first before submitting
 async function tsDoCheckin() {
   const btn = document.getElementById('tsCheckinBtn');
-  if (btn.classList.contains('done')) return;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+  if (btn.classList.contains('done') || btn.disabled) return;
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
   btn.disabled = true;
+
   try {
+    // ===== CEK DATABASE: apakah sudah checkin hari ini? =====
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const existingSnap = await db.collection('tugas_submit')
+      .where('userId', '==', auth.currentUser.uid)
+      .where('tipe', '==', 'checkin')
+      .where('waktu', '>=', todayStart)
+      .where('waktu', '<', todayEnd)
+      .where('status', '!=', 'rejected')
+      .limit(1)
+      .get();
+
+    if (!existingSnap.empty) {
+      // Sudah checkin hari ini, blokir
+      btn.classList.add('done');
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
+      btn.removeAttribute('onclick');
+      return;
+    }
+
+    // ===== BELUM CHECKIN — lanjut ambil GPS =====
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengambil lokasi GPS...';
+
     const pos = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, () => reject('GPS'), { timeout: 10000 });
+      navigator.geolocation.getCurrentPosition(resolve, () => reject('GPS'), { timeout: 15000, enableHighAccuracy: true });
     });
+
     await db.collection('tugas_submit').add({
       userId: auth.currentUser.uid,
       tipe: 'checkin',
@@ -2560,11 +2595,14 @@ async function tsDoCheckin() {
     await db.collection('users').doc(auth.currentUser.uid).update({
       poin: firebase.firestore.FieldValue.increment(10)
     });
+
     btn.classList.add('done');
     btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
-    btn.onclick = null;
-    btn.disabled = false;
+    btn.removeAttribute('onclick');
+    btn.disabled = true;
+
   } catch (e) {
+    if (btn.classList.contains('done')) return;
     btn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Checkin Sekarang';
     btn.disabled = false;
     if (e === 'GPS') alert('Aktifkan GPS untuk checkin.');
