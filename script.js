@@ -395,14 +395,74 @@ const Auth = {
   },
 
   listenAuthState: function() {
-    try {
-      const auth = App.safeRun('Firebase', 'getAuth');
-      const db = App.safeRun('Firebase', 'getDb');
+  try {
+    const auth = App.safeRun('Firebase', 'getAuth');
+    const db = App.safeRun('Firebase', 'getDb');
 
-      auth.onAuthStateChanged(user => {
-        if (user) {
-          const unsub = db.collection("users").doc(user.uid).onSnapshot(doc => {
-            App.safeRun('Globals', 'set', 'currentUserData', doc.data());
+    auth.onAuthStateChanged(async (user) => {
+
+      if (!user) {
+        console.log("Belum login");
+        return;
+      }
+
+      try {
+        const doc = await db.collection("users").doc(user.uid).get();
+        const data = doc.data();
+
+        console.log("LOGIN DATA:", data);
+
+        // 🔥 ADMIN LANGSUNG PINDAH
+        if (data && data.role === "admin") {
+          window.location.href = "admin.html";
+          return;
+        }
+
+        // 👤 USER NORMAL
+        App.safeRun('Globals', 'set', 'currentUserData', data);
+        App.safeRun('Auth', 'renderUserInfo');
+
+        App.safeRun('Navigation', 'closeAuthModal');
+        App.safeRun('Map', 'initMap');
+        App.safeRun('Map', 'updateMyLocation', user);
+        App.safeRun('Map', 'listenToOtherUsers');
+        App.safeRun('Auth', 'loadData');
+        App.safeRun('Auth', 'loadLeaderboard');
+        App.safeRun('Dashboard', 'loadTugasBulanan', user.uid);
+        App.safeRun('Auth', 'loadReward', user.uid);
+        App.safeRun('Auth', 'loadStats');
+
+      } catch (err) {
+        console.error("ERROR GET DATA:", err);
+      }
+
+    });
+
+  } catch (err) {
+    console.error("AUTH ERROR:", err);
+  }
+}
+});
+
+  } else {
+    document.getElementById('user').innerHTML = '';
+    App.safeRun('Globals', 'set', 'currentUserData', null);
+
+    const unsubUser = App.safeRun('Globals', 'get', 'unsubUser');
+    if (unsubUser) unsubUser();
+
+    const mapMarkers = App.safeRun('Globals', 'get', 'mapMarkers');
+    const map = App.safeRun('Globals', 'get', 'map');
+    if (mapMarkers && map) {
+      Object.values(mapMarkers).forEach(m => map.removeLayer(m));
+      App.safeRun('Globals', 'set', 'mapMarkers', {});
+    }
+
+    if (document.getElementById('view-dashboard').classList.contains('active')) {
+      App.safeRun('Navigation', 'showView', 'beranda');
+    }
+  }
+});
             App.safeRun('Auth', 'renderUserInfo');
 
             const map = App.safeRun('Globals', 'get', 'map');
