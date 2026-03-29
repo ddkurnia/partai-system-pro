@@ -1349,26 +1349,37 @@ let analyticsChart = null;
 let distribusiChart = null;
 let weakPointChart = null;
 let isGuestMode = false;
-
-// Data referensi semua kecamatan di Kab. Kepulauan Meranti
-const KECAMATAN_MERANTI = [
-  "Tebing Tinggi",
-  "Tebing Tinggi Timur",
-  "Tebing Tinggi Barat",
-  "Rangsang",
-  "Rangsang Barat",
-  "Merbau",
-  "Pulau Merbau",
-  "Tasik Putri Puyu",
-  "Bantan",
-  "Sungai Batang"
-];
+let kecamatanRefList = []; // Akan diisi otomatis dari API Wilayah
 
 // ==========================================
 // 3. API WILAYAH
 // ==========================================
 const API_WILAYAH = "https://www.emsifa.com/api-wilayah-indonesia/api";
 async function fetchWilayah(url) { try { const r = await fetch(url); return r.json(); } catch (e) { return []; } }
+
+// ==========================================
+// Fetch semua kecamatan dari API Wilayah
+// (sumber yang SAMA dengan form registrasi)
+// ==========================================
+async function fetchKecamatanMeranti() {
+  try {
+    // Cari kabupaten "Kepulauan Meranti" dari API
+    // Provinsi Riau = id "14"
+    const regencies = await fetchWilayah(`${API_WILAYAH}/regencies/14.json`);
+    const meranti = regencies.find(r => r.name.includes('Kepulauan Meranti'));
+    if (!meranti) {
+      console.warn('Kabupaten Kepulauan Meranti tidak ditemukan di API');
+      return [];
+    }
+    // Fetch semua kecamatan di bawah kabupaten tersebut
+    const kecamatan = await fetchWilayah(`${API_WILAYAH}/districts/${meranti.id}.json`);
+    console.log('✅ Kecamatan dari API:', kecamatan.map(k => k.name));
+    return kecamatan.map(k => k.name);
+  } catch (e) {
+    console.error('Gagal fetch kecamatan:', e);
+    return [];
+  }
+}
 async function loadProvinces() { const s = document.getElementById('regProvinsi'); s.innerHTML = '<option value="">Pilih Provinsi</option>'; (await fetchWilayah(`${API_WILAYAH}/provinces.json`)).forEach(p => s.innerHTML += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`); }
 async function loadKabupaten(pid) { const s = document.getElementById('regKabupaten'); const s2 = document.getElementById('regKecamatan'); const s3 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kabupaten</option>'; s2.disabled = true; s3.innerHTML = '<option value="">Pilih Kecamatan</option>'; s3.disabled = true; if (!pid) return; (await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
 async function loadKecamatan(kid) { const s = document.getElementById('regKecamatan'); const s2 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kecamatan</option>'; s2.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
@@ -1483,7 +1494,13 @@ function kirimUsulan(){ const t = document.getElementById('usulanText').value; c
 // ==========================================
 // 12. ANALYTICS REALTIME (EXTENDED)
 // ==========================================
-function initAnalytics() {
+async function initAnalytics() {
+    // STEP 1: Fetch daftar kecamatan dari API Wilayah (sumber sama dengan form registrasi)
+    // Ini menjamin nama kecamatan 100% cocok dengan data di Firestore
+    kecamatanRefList = await fetchKecamatanMeranti();
+    console.log('📊 Referensi kecamatan:', kecamatanRefList);
+
+    // STEP 2: Dengarkan perubahan data secara realtime dari Firestore
     db.collection("users").onSnapshot(snapshot => {
         let total = 0;
         const dist = {};
@@ -1643,10 +1660,33 @@ function initAnalytics() {
         // ==========================================
         // TITIK LEMAH PENYEBARAN KADER PDI
         // ==========================================
-        const weakLabels = KECAMATAN_MERANTI;
-        const weakData = weakLabels.map(k => dist[k] || 0);
+        // Gunakan kecamatanRefList dari API (nama pasti sama dengan data user)
+        // Fallback: jika API gagal, gunakan nama unik dari data user yang sudah ada
+        const weakLabels = kecamatanRefList.length > 0
+          ? kecamatanRefList
+          : [...new Set(Object.keys(dist))];
+
+        // Log untuk debugging sinkronisasi data
+        console.log('📊 Data kader dari Firestore:', dist);
+        console.log('📊 Referensi kecamatan (API):', weakLabels);
+
+        // Mapping: cocokkan nama kecamatan (case-insensitive & trim)
+        const normalize = (str) => (str || '').toLowerCase().trim();
+        const distNormalized = {};
+        Object.keys(dist).forEach(key => {
+          distNormalized[normalize(key)] = dist[key];
+        });
+
+        const weakData = weakLabels.map(kec => {
+          // Cari kecocokan: exact match dulu, lalu normalized
+          if (dist[kec] !== undefined) return dist[kec];
+          const norm = normalize(kec);
+          if (distNormalized[norm] !== undefined) return distNormalized[norm];
+          return 0;
+        });
+
         const weakMaxCount = Math.max(...weakData, 1);
-        const avgPerKec = total / KECAMATAN_MERANTI.length;
+        const avgPerKec = weakLabels.length > 0 ? total / weakLabels.length : 0;
 
         // Color coding based on cadre count
         const weakColors = weakData.map(count => {
@@ -2034,7 +2074,7 @@ window.onload = function() {
   loadTheme();
   loadProvinces();
   loadProduk();
-  initAnalytics();
+  initAnalytics(); // Sekarang async - akan fetch API dulu baru listen Firestore
 };
 
 </script>
