@@ -1135,7 +1135,7 @@ function previewProductPhoto(input) { App.safeRun('Store', 'previewProductPhoto'
 function tambahProduk() { App.safeRun('Store', 'tambahProduk'); }
 
 function kirimKeSheet(type, payload) {
-  fetch("https://script.google.com/macros/s/AKfycbxgSF91hW5d2E-hY8DrBw-AEvl66OWXztW8YF_ioORdtnbIOnL31jysLL6Gya_aw6n7/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbx5pk1UiCAl6cszjUhPOYKuIp7HRtih9wXD5gYPwZ0Y7Rc0mOhSdPEYFZ3EgTJ6f3bP/exec", {
     method: "POST",
     body: JSON.stringify({
       type: type,
