@@ -389,7 +389,8 @@ const Hero = {
 // AUTH MODULE
 // ==========================================
 const Auth = {
-  _roleChecked: false,
+  _lastUid: null,
+  _processing: false,
 
   init: function() {
     this.listenAuthState();
@@ -403,8 +404,9 @@ const Auth = {
 
       auth.onAuthStateChanged(async (user) => {
         if (!user) {
-          // 🔓 USER BELUM LOGIN → CLEANUP & RESET GUARD
-          self._roleChecked = false;
+          // 🔓 USER BELUM LOGIN → RESET STATE
+          self._lastUid = null;
+          self._processing = false;
 
           const userEl = document.getElementById('user');
           if (userEl) userEl.innerHTML = '';
@@ -427,11 +429,13 @@ const Auth = {
           return;
         }
 
-        // 🛡️ ANTI DOUBLE FIRE — hanya proses sekali per login session
-        if (self._roleChecked) return;
-        self._roleChecked = true;
+        // 🛡️ ANTI DOUBLE FIRE
+        if (self._processing) return;
+        if (user.uid === self._lastUid) return;
 
         // ✅ USER SUDAH LOGIN → CEK ROLE DARI FIRESTORE
+        self._processing = true;
+
         try {
           const doc = await db.collection("users").doc(user.uid).get();
           if (!doc.exists) {
@@ -444,12 +448,14 @@ const Auth = {
 
           console.log("AUTH CHECK → uid:", user.uid, "role:", role);
 
+          // 🔥 ADMIN → REDIRECT KE ADMIN.HTML
           if (role === 'admin') {
             window.location.href = "admin.html";
             return;
           }
 
           // 👤 USER BIASA → TETAP DI HALAMAN UTAMA
+          self._lastUid = user.uid;
           App.safeRun('Globals', 'set', 'currentUserData', data);
           App.safeRun('Auth', 'renderUserInfo');
 
@@ -466,6 +472,8 @@ const Auth = {
 
         } catch (err) {
           console.error("ERROR GET DATA:", err);
+        } finally {
+          self._processing = false;
         }
       });
     } catch (error) {
