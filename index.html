@@ -259,6 +259,30 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
 .percent-fill { height: 100%; background: var(--primary); border-radius: 2px; }
 
 /* ========================================== */
+/* WEAK POINT & DISTRIBUSI STYLES            */
+/* ========================================== */
+.badge-kritis { background: #FEE2E2; color: #DC2626; font-weight: 700; }
+.badge-lemah { background: #FFF7ED; color: #EA580C; font-weight: 700; }
+.badge-cukup { background: #FEF3C7; color: #B45309; font-weight: 700; }
+.badge-kuat { background: #D1FAE5; color: #059669; font-weight: 700; }
+.mini-stat-card {
+  flex: 1;
+  min-width: 70px;
+  border-radius: 14px;
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+.mini-stat-card:hover { transform: translateY(-2px); }
+.mini-stat-value { font-size: 1.15rem; font-weight: 900; line-height: 1.2; }
+.mini-stat-label { font-size: 0.65rem; margin-top: 2px; font-weight: 600; }
+.strength-bar { height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 4px; }
+.strength-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+.chart-wrapper-lg { position: relative; height: 320px; width: 100%; margin-bottom: 20px; }
+
+/* ========================================== */
 /* MODERN AUTH SCREEN - REDESIGNED UI ONLY   */
 /* ========================================== */
 .auth-screen {
@@ -1088,6 +1112,104 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
       </table>
     </div>
   </div>
+
+  <!-- ========================================== -->
+  <!-- TITIK PENYEBARAN KADER PARTAI              -->
+  <!-- ========================================== -->
+  <div class="analytics-section">
+    <div class="section-title">
+      <span><i class="fas fa-map-marker-alt" style="color:#3B82F6; margin-right:8px"></i> Titik Penyebaran Kader Partai</span>
+      <div class="live-indicator">Data Live</div>
+    </div>
+    <div class="card">
+      <!-- Summary Cards -->
+      <div style="display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;">
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);">
+          <div class="mini-stat-value" style="color:#2563EB;" id="distKecamatan">-</div>
+          <div class="mini-stat-label" style="color:#1E40AF;">Kecamatan</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">
+          <div class="mini-stat-value" style="color:#16A34A;" id="distTotal">-</div>
+          <div class="mini-stat-label" style="color:#166534;">Total Kader</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">
+          <div class="mini-stat-value" style="color:#EA580C;" id="distAvg">-</div>
+          <div class="mini-stat-label" style="color:#9A3412;">Rata-rata</div>
+        </div>
+      </div>
+
+      <!-- Horizontal Bar Chart -->
+      <div class="chart-wrapper-lg">
+        <canvas id="distribusiChart"></canvas>
+      </div>
+
+      <!-- Table -->
+      <table class="table-analytics">
+        <thead>
+          <tr>
+            <th style="width:28px">#</th>
+            <th>Kecamatan</th>
+            <th style="text-align:center">Kader</th>
+            <th style="text-align:right; width:30%">Persentase</th>
+          </tr>
+        </thead>
+        <tbody id="distribusiTable">
+          <tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TITIK LEMAH PENYEBARAN KADER PDI          -->
+  <!-- ========================================== -->
+  <div class="analytics-section">
+    <div class="section-title">
+      <span><i class="fas fa-exclamation-triangle" style="color:#EF4444; margin-right:8px"></i> Titik Lemah Penyebaran Kader PDI</span>
+      <div class="live-indicator">Data Live</div>
+    </div>
+    <div class="card">
+      <!-- Status Summary Cards -->
+      <div style="display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;" id="weakStatCards">
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FEF2F2,#FECACA);">
+          <div class="mini-stat-value" style="color:#DC2626;" id="statKritis">0</div>
+          <div class="mini-stat-label" style="color:#991B1B;">Kritis (0)</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">
+          <div class="mini-stat-value" style="color:#EA580C;" id="statLemah">0</div>
+          <div class="mini-stat-label" style="color:#9A3412;">Lemah (1-2)</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);">
+          <div class="mini-stat-value" style="color:#D97706;" id="statCukup">0</div>
+          <div class="mini-stat-label" style="color:#92400E;">Cukup (3-5)</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">
+          <div class="mini-stat-value" style="color:#16A34A;" id="statKuat">0</div>
+          <div class="mini-stat-label" style="color:#166534;">Kuat (6+)</div>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div class="chart-wrapper-lg">
+        <canvas id="weakChart"></canvas>
+      </div>
+
+      <!-- Detail Table -->
+      <table class="table-analytics">
+        <thead>
+          <tr>
+            <th>Kecamatan</th>
+            <th style="text-align:center">Status</th>
+            <th style="text-align:center">Kader</th>
+            <th style="text-align:right; width:25%">Kekuatan</th>
+          </tr>
+        </thead>
+        <tbody id="weakTable">
+          <tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- VIEW: STORE UMKM -->
@@ -1224,7 +1346,23 @@ let mapMarkers = {};
 let map = null;
 let slideIndex = 0;
 let analyticsChart = null;
+let distribusiChart = null;
+let weakPointChart = null;
 let isGuestMode = false;
+
+// Data referensi semua kecamatan di Kab. Kepulauan Meranti
+const KECAMATAN_MERANTI = [
+  "Tebing Tinggi",
+  "Tebing Tinggi Timur",
+  "Tebing Tinggi Barat",
+  "Rangsang",
+  "Rangsang Barat",
+  "Merbau",
+  "Pulau Merbau",
+  "Tasik Putri Puyu",
+  "Bantan",
+  "Sungai Batang"
+];
 
 // ==========================================
 // 3. API WILAYAH
@@ -1343,12 +1481,10 @@ async function kirimLaporan(){ const txt = document.getElementById('masalah').va
 function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); }); }
 
 // ==========================================
-// 12. ANALYTICS REALTIME
+// 12. ANALYTICS REALTIME (EXTENDED)
 // ==========================================
 function initAnalytics() {
     db.collection("users").onSnapshot(snapshot => {
-        if (!snapshot.size) return;
-
         let total = 0;
         const dist = {};
 
@@ -1366,6 +1502,7 @@ function initAnalytics() {
         const data = Object.values(dist);
         const colors = ['#E31E25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#14B8A6', '#F97316', '#6366F1'];
 
+        // --- PIE CHART (existing) ---
         const ctx = document.getElementById('analyticsChart').getContext('2d');
         if (analyticsChart) {
             analyticsChart.data.labels = labels;
@@ -1406,15 +1543,263 @@ function initAnalytics() {
                 </td>
             </tr>`;
         });
-        tbody.innerHTML = tHtml;
+        tbody.innerHTML = tHtml || '<tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Belum ada data</td></tr>';
+
+        // ==========================================
+        // TITIK PENYEBARAN KADER PARTAI
+        // ==========================================
+        const sortedLabels = [...labels].sort((a, b) => dist[b] - dist[a]);
+        const sortedData = sortedLabels.map(l => dist[l]);
+        const maxCount = Math.max(...sortedData, 1);
+
+        // Generate gradient colors based on rank (red for lowest, green for highest)
+        const barColors = sortedData.map((_, i) => {
+            const ratio = sortedLabels.length > 1 ? i / (sortedLabels.length - 1) : 1;
+            const r = Math.round(239 - (ratio * 209));
+            const g = Math.round(68 + (ratio * 89));
+            const b = Math.round(68 + (ratio * 57));
+            return `rgb(${r}, ${g}, ${b})`;
+        });
+
+        // Summary stats
+        document.getElementById('distKecamatan').innerText = labels.length;
+        document.getElementById('distTotal').innerText = total;
+        document.getElementById('distAvg').innerText = labels.length > 0 ? (total / labels.length).toFixed(1) : '0';
+
+        // Horizontal bar chart
+        const distCtx = document.getElementById('distribusiChart').getContext('2d');
+        if (distribusiChart) {
+            distribusiChart.data.labels = sortedLabels;
+            distribusiChart.data.datasets[0].data = sortedData;
+            distribusiChart.data.datasets[0].backgroundColor = barColors;
+            distribusiChart.update();
+        } else {
+            distribusiChart = new Chart(distCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedLabels,
+                    datasets: [{
+                        label: 'Jumlah Kader',
+                        data: sortedData,
+                        backgroundColor: barColors,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 18
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { weight: 'bold' },
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                label: function(ctx) {
+                                    const pct = total > 0 ? ((ctx.parsed.x / total) * 100).toFixed(1) : 0;
+                                    return `${ctx.parsed.x} Kader (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, color: '#64748b', font: { size: 11 } },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 10, weight: '600' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Table distribusi
+        const distTbody = document.getElementById('distribusiTable');
+        let dHtml = '';
+        sortedLabels.forEach((name, i) => {
+            const count = dist[name];
+            const percent = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+            const rankColor = i === 0 ? '#2563EB' : (i === 1 ? '#7C3AED' : (i === 2 ? '#EA580C' : 'var(--text-muted)'));
+            dHtml += `<tr>
+                <td style="font-weight:800; color:${rankColor}; font-size:0.8rem">${i + 1}</td>
+                <td style="font-size:0.85rem">${name}</td>
+                <td style="text-align:center"><b style="font-size:0.95rem">${count}</b></td>
+                <td style="text-align:right">
+                    <span style="font-size:0.8rem">${percent}%</span>
+                    <div class="percent-bar"><div class="percent-fill" style="width:${percent}%; background:${barColors[i]}"></div></div>
+                </td>
+            </tr>`;
+        });
+        distTbody.innerHTML = dHtml || '<tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Belum ada data</td></tr>';
+
+        // ==========================================
+        // TITIK LEMAH PENYEBARAN KADER PDI
+        // ==========================================
+        const weakLabels = KECAMATAN_MERANTI;
+        const weakData = weakLabels.map(k => dist[k] || 0);
+        const weakMaxCount = Math.max(...weakData, 1);
+        const avgPerKec = total / KECAMATAN_MERANTI.length;
+
+        // Color coding based on cadre count
+        const weakColors = weakData.map(count => {
+            if (count === 0) return '#EF4444';
+            if (count <= 2) return '#F97316';
+            if (count <= 5) return '#EAB308';
+            return '#22C55E';
+        });
+
+        const weakBorderColors = weakData.map(count => {
+            if (count === 0) return '#B91C1C';
+            if (count <= 2) return '#C2410C';
+            if (count <= 5) return '#A16207';
+            return '#15803D';
+        });
+
+        // Count statuses
+        let kritis = 0, lemah = 0, cukup = 0, kuat = 0;
+        weakData.forEach(count => {
+            if (count === 0) kritis++;
+            else if (count <= 2) lemah++;
+            else if (count <= 5) cukup++;
+            else kuat++;
+        });
+        document.getElementById('statKritis').innerText = kritis;
+        document.getElementById('statLemah').innerText = lemah;
+        document.getElementById('statCukup').innerText = cukup;
+        document.getElementById('statKuat').innerText = kuat;
+
+        // Weak points bar chart
+        const weakCtx = document.getElementById('weakChart').getContext('2d');
+        if (weakPointChart) {
+            weakPointChart.data.datasets[0].data = weakData;
+            weakPointChart.data.datasets[0].backgroundColor = weakColors;
+            weakPointChart.data.datasets[0].borderColor = weakBorderColors;
+            weakPointChart.update();
+        } else {
+            weakPointChart = new Chart(weakCtx, {
+                type: 'bar',
+                data: {
+                    labels: weakLabels,
+                    datasets: [{
+                        label: 'Jumlah Kader',
+                        data: weakData,
+                        backgroundColor: weakColors,
+                        borderColor: weakBorderColors,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 18
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { weight: 'bold' },
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                afterLabel: function(ctx) {
+                                    const val = ctx.parsed.x;
+                                    let status = '';
+                                    if (val === 0) status = '⚠️ KRITIS - Tidak ada kader';
+                                    else if (val <= 2) status = '🟠 LEMAH - Perlu penguatan';
+                                    else if (val <= 5) status = '🟡 CUKUP - Perlu penambahan';
+                                    else status = '🟢 KUAT - Terjaga';
+                                    return status;
+                                },
+                                label: function(ctx) {
+                                    return `${ctx.parsed.x} Kader`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, color: '#64748b', font: { size: 11 } },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 9, weight: '600' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Weak points table
+        const weakTbody = document.getElementById('weakTable');
+        let wHtml = '';
+
+        // Sort by count ascending (most critical first)
+        const weakSorted = weakLabels.map((kec, idx) => ({ kec, count: weakData[idx] }))
+            .sort((a, b) => a.count - b.count);
+
+        weakSorted.forEach(({ kec, count }) => {
+            let status, badgeClass, strengthPercent, barColor;
+
+            if (count === 0) {
+                status = 'Kritis'; badgeClass = 'badge-kritis'; strengthPercent = 0; barColor = '#EF4444';
+            } else if (count <= 2) {
+                status = 'Lemah'; badgeClass = 'badge-lemah'; strengthPercent = Math.min((count / 6) * 100, 35); barColor = '#F97316';
+            } else if (count <= 5) {
+                status = 'Cukup'; badgeClass = 'badge-cukup'; strengthPercent = Math.min((count / weakMaxCount) * 100, 70); barColor = '#EAB308';
+            } else {
+                status = 'Kuat'; badgeClass = 'badge-kuat'; strengthPercent = (count / weakMaxCount) * 100; barColor = '#22C55E';
+            }
+
+            const statusIcon = count === 0 ? '🔴' : (count <= 2 ? '🟠' : (count <= 5 ? '🟡' : '🟢'));
+
+            wHtml += `<tr>
+                <td style="font-size:0.82rem; font-weight:500">${kec}</td>
+                <td style="text-align:center"><span class="badge ${badgeClass}">${statusIcon} ${status}</span></td>
+                <td style="text-align:center; font-weight:800; font-size:0.95rem; color:${barColor}">${count}</td>
+                <td style="text-align:right; width:25%">
+                    <div class="strength-bar">
+                        <div class="strength-fill" style="width:${strengthPercent}%; background:${barColor}"></div>
+                    </div>
+                </td>
+            </tr>`;
+        });
+        weakTbody.innerHTML = wHtml;
     });
 }
 
 function updateChartTheme() {
-    if(!analyticsChart) return;
     const isDark = document.body.classList.contains('dark-mode');
-    analyticsChart.options.plugins.legend.labels.color = isDark ? '#9CA3AF' : '#64748b';
-    analyticsChart.update();
+    const tickColor = isDark ? '#9CA3AF' : '#64748b';
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+
+    if (analyticsChart) {
+        analyticsChart.options.plugins.legend.labels.color = tickColor;
+        analyticsChart.update();
+    }
+    if (distribusiChart) {
+        distribusiChart.options.scales.x.ticks.color = tickColor;
+        distribusiChart.options.scales.x.grid.color = gridColor;
+        distribusiChart.options.scales.y.ticks.color = tickColor;
+        distribusiChart.update();
+    }
+    if (weakPointChart) {
+        weakPointChart.options.scales.x.ticks.color = tickColor;
+        weakPointChart.options.scales.x.grid.color = gridColor;
+        weakPointChart.options.scales.y.ticks.color = tickColor;
+        weakPointChart.update();
+    }
 }
 
 // ==========================================
@@ -1654,4 +2039,4 @@ window.onload = function() {
 
 </script>
 </body>
-        </html>
+  </html>
