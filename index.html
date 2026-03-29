@@ -2490,13 +2490,21 @@ function initTugasDashboard(userId) {
   if (periodeEl) {
     periodeEl.textContent = now.toLocaleString('id-ID', { month: 'long', year: 'numeric' }) + ' \u00b7 Misi sesuai layanan Misi & Reward';
   }
-  // Listen for user's task submissions
-  db.collection('tugas_submit').where('userId', '==', userId).orderBy('waktu', 'desc').onSnapshot(snap => {
+  // Listen for user's task submissions (tanpa orderBy supaya tidak perlu composite index)
+  db.collection('tugas_submit').where('userId', '==', userId).onSnapshot(snap => {
     renderTugasSummary(snap);
     renderTugasCheckinState(snap);
     renderTugasSosmedState(snap, 'facebook', 'tsFbCooldown', 'tsFbTimer', 'tsFbForm', 'tsFbBtn');
     renderTugasSosmedState(snap, 'tiktok', 'tsTtCooldown', 'tsTtTimer', 'tsTtForm', 'tsTtBtn');
     renderTugasHistory(snap);
+  }, err => {
+    console.error('tugas_submit listener error:', err);
+    // Jika query gagal, aktifkan tombol checkin (tsDoCheckin tetap aman karena cek db sendiri)
+    const btn = document.getElementById('tsCheckinBtn');
+    if (btn && !btn.classList.contains('done')) {
+      btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
+      btn.disabled = false;
+    }
   });
 }
 
