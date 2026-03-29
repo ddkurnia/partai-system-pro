@@ -390,7 +390,6 @@ const Hero = {
 // ==========================================
 const Auth = {
   _lastUid: null,
-  _processing: false,
 
   init: function() {
     this.listenAuthState();
@@ -403,10 +402,9 @@ const Auth = {
       const self = this;
 
       auth.onAuthStateChanged(async (user) => {
+        // === USER BELUM LOGIN → RESET STATE ===
         if (!user) {
-          // 🔓 USER BELUM LOGIN → RESET STATE
           self._lastUid = null;
-          self._processing = false;
 
           const userEl = document.getElementById('user');
           if (userEl) userEl.innerHTML = '';
@@ -429,12 +427,11 @@ const Auth = {
           return;
         }
 
-        // 🛡️ ANTI DOUBLE FIRE
-        if (self._processing) return;
+        // === ANTI DOUBLE FIRE: skip kalau user ini sudah diproses ===
         if (user.uid === self._lastUid) return;
 
-        // ✅ USER SUDAH LOGIN → CEK ROLE DARI FIRESTORE
-        self._processing = true;
+        // SET UID SEKARANG sebelum async, agar tidak double-process
+        self._lastUid = user.uid;
 
         try {
           const doc = await db.collection("users").doc(user.uid).get();
@@ -448,17 +445,23 @@ const Auth = {
 
           console.log("AUTH CHECK → uid:", user.uid, "role:", role);
 
-          // 🔥 ADMIN → REDIRECT KE ADMIN.HTML
+          // ADMIN → REDIRECT KE ADMIN.HTML
           if (role === 'admin') {
             window.location.href = "admin.html";
             return;
           }
 
-          // 👤 USER BIASA → TETAP DI HALAMAN UTAMA
-          self._lastUid = user.uid;
+          // CEK EMAIL VERIFIED
+          if (!user.emailVerified) {
+            alert("Silakan verifikasi email terlebih dahulu.");
+            self._lastUid = null;
+            await auth.signOut();
+            return;
+          }
+
+          // USER BIASA (KADER) → TETAP DI HALAMAN UTAMA
           App.safeRun('Globals', 'set', 'currentUserData', data);
           App.safeRun('Auth', 'renderUserInfo');
-
           App.safeRun('Navigation', 'closeAuthModal');
           App.safeRun('Navigation', 'showView', 'dashboard');
           App.safeRun('Map', 'initMap');
@@ -472,8 +475,6 @@ const Auth = {
 
         } catch (err) {
           console.error("ERROR GET DATA:", err);
-        } finally {
-          self._processing = false;
         }
       });
     } catch (error) {
@@ -553,20 +554,14 @@ const Auth = {
     try {
       const auth = App.safeRun('Firebase', 'getAuth');
 
-      const cred = await auth.signInWithEmailAndPassword(
+      await auth.signInWithEmailAndPassword(
         document.getElementById('loginEmail').value,
         document.getElementById('loginPassword').value
       );
 
-      if (!cred.user.emailVerified) {
-        alert("Email belum verifikasi.");
-        await auth.signOut();
-        return;
-      }
-
-      // ✅ LOGIN BERHASIL — biarkan onAuthStateChanged yang handle role & redirect
-      // Jangan navigasi di sini karena akan konflik dengan listener
-      App.safeRun('Navigation', 'closeAuthModal');
+      // Login berhasil — onAuthStateChanged yang handle semuanya:
+      // cek email verified, cek role dari Firestore, render dashboard, dll.
+      // Jangan tambahkan logic apapun di sini.
 
     } catch (e) {
       console.error('[Auth] login error:', e);
