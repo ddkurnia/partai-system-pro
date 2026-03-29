@@ -1,4 +1,3 @@
-```javascript
 // ==========================================
 // CORE APP CONTROLLER
 // ==========================================
@@ -395,93 +394,15 @@ const Auth = {
   },
 
   listenAuthState: function() {
-  try {
-    const auth = App.safeRun('Firebase', 'getAuth');
-    const db = App.safeRun('Firebase', 'getDb');
+    try {
+      const auth = App.safeRun('Firebase', 'getAuth');
+      const db = App.safeRun('Firebase', 'getDb');
 
-    auth.onAuthStateChanged(async (user) => {
-
-      if (!user) {
-        console.log("Belum login");
-        return;
-      }
-
-      try {
-        const doc = await db.collection("users").doc(user.uid).get();
-        const data = doc.data();
-
-        console.log("LOGIN DATA:", data);
-
-        // 🔥 ADMIN LANGSUNG PINDAH
-        if (data && data.role === "admin") {
-          window.location.href = "admin.html";
-          return;
-        }
-
-        // 👤 USER NORMAL
-        App.safeRun('Globals', 'set', 'currentUserData', data);
-        App.safeRun('Auth', 'renderUserInfo');
-
-        App.safeRun('Navigation', 'closeAuthModal');
-        App.safeRun('Map', 'initMap');
-        App.safeRun('Map', 'updateMyLocation', user);
-        App.safeRun('Map', 'listenToOtherUsers');
-        App.safeRun('Auth', 'loadData');
-        App.safeRun('Auth', 'loadLeaderboard');
-        App.safeRun('Dashboard', 'loadTugasBulanan', user.uid);
-        App.safeRun('Auth', 'loadReward', user.uid);
-        App.safeRun('Auth', 'loadStats');
-
-      } catch (err) {
-        console.error("ERROR GET DATA:", err);
-      }
-
-    });
-
-  } catch (err) {
-    console.error("AUTH ERROR:", err);
-  }
-}
-});
-
-  } else {
-    document.getElementById('user').innerHTML = '';
-    App.safeRun('Globals', 'set', 'currentUserData', null);
-
-    const unsubUser = App.safeRun('Globals', 'get', 'unsubUser');
-    if (unsubUser) unsubUser();
-
-    const mapMarkers = App.safeRun('Globals', 'get', 'mapMarkers');
-    const map = App.safeRun('Globals', 'get', 'map');
-    if (mapMarkers && map) {
-      Object.values(mapMarkers).forEach(m => map.removeLayer(m));
-      App.safeRun('Globals', 'set', 'mapMarkers', {});
-    }
-
-    if (document.getElementById('view-dashboard').classList.contains('active')) {
-      App.safeRun('Navigation', 'showView', 'beranda');
-    }
-  }
-});
-            App.safeRun('Auth', 'renderUserInfo');
-
-            const map = App.safeRun('Globals', 'get', 'map');
-            const userData = App.safeRun('Globals', 'get', 'currentUserData');
-            if (map) App.safeRun('Map', 'updateMyPresence', user.uid, userData?.nama);
-          }, err => console.error(err));
-
-          App.safeRun('Globals', 'set', 'unsubUser', unsub);
-          App.safeRun('Navigation', 'closeAuthModal');
-          App.safeRun('Map', 'initMap');
-          App.safeRun('Map', 'updateMyLocation', user);
-          App.safeRun('Map', 'listenToOtherUsers');
-          App.safeRun('Auth', 'loadData');
-          App.safeRun('Auth', 'loadLeaderboard');
-          App.safeRun('Dashboard', 'loadTugasBulanan', user.uid);
-          App.safeRun('Auth', 'loadReward', user.uid);
-          App.safeRun('Auth', 'loadStats');
-        } else {
-          document.getElementById('user').innerHTML = '';
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          // 🔓 USER BELUM LOGIN → CLEANUP
+          const userEl = document.getElementById('user');
+          if (userEl) userEl.innerHTML = '';
           App.safeRun('Globals', 'set', 'currentUserData', null);
 
           const unsubUser = App.safeRun('Globals', 'get', 'unsubUser');
@@ -494,9 +415,42 @@ const Auth = {
             App.safeRun('Globals', 'set', 'mapMarkers', {});
           }
 
-          if (document.getElementById('view-dashboard').classList.contains('active')) {
+          const viewDashboard = document.getElementById('view-dashboard');
+          if (viewDashboard && viewDashboard.classList.contains('active')) {
             App.safeRun('Navigation', 'showView', 'beranda');
           }
+          return;
+        }
+
+        // ✅ USER SUDAH LOGIN → CEK ROLE DARI FIRESTORE
+        try {
+          const doc = await db.collection("users").doc(user.uid).get();
+          const data = doc.data();
+
+          console.log("LOGIN DATA:", data);
+
+          // 🔥 ADMIN → REDIRECT KE ADMIN.HTML
+          if (data && data.role === "admin") {
+            window.location.href = "admin.html";
+            return;
+          }
+
+          // 👤 USER BIASA → TETAP DI HALAMAN UTAMA
+          App.safeRun('Globals', 'set', 'currentUserData', data);
+          App.safeRun('Auth', 'renderUserInfo');
+
+          App.safeRun('Navigation', 'closeAuthModal');
+          App.safeRun('Map', 'initMap');
+          App.safeRun('Map', 'updateMyLocation', user);
+          App.safeRun('Map', 'listenToOtherUsers');
+          App.safeRun('Auth', 'loadData');
+          App.safeRun('Auth', 'loadLeaderboard');
+          App.safeRun('Dashboard', 'loadTugasBulanan', user.uid);
+          App.safeRun('Auth', 'loadReward', user.uid);
+          App.safeRun('Auth', 'loadStats');
+
+        } catch (err) {
+          console.error("ERROR GET DATA:", err);
         }
       });
     } catch (error) {
@@ -1230,4 +1184,3 @@ window.onload = function() {
   App.init();
   App.safeRun('Wilayah', 'loadProvinces');
 };
-```
