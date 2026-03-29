@@ -390,92 +390,120 @@ const Hero = {
 // ==========================================
 const Auth = {
   _lastUid: null,
+  _signOutRequested: false,
 
   init: function() {
     this.listenAuthState();
   },
 
+  // Fungsi render dashboard kader (dipakai login + session restore)
+  _renderKaderDashboard: function(data, user) {
+    App.safeRun('Globals', 'set', 'currentUserData', data);
+    App.safeRun('Auth', 'renderUserInfo');
+    App.safeRun('Navigation', 'closeAuthModal');
+    App.safeRun('Navigation', 'showView', 'dashboard');
+    App.safeRun('Map', 'initMap');
+    App.safeRun('Map', 'updateMyLocation', user);
+    App.safeRun('Map', 'listenToOtherUsers');
+    App.safeRun('Auth', 'loadData');
+    App.safeRun('Auth', 'loadLeaderboard');
+    App.safeRun('Dashboard', 'loadTugasBulanan', user.uid);
+    App.safeRun('Auth', 'loadReward', user.uid);
+    App.safeRun('Auth', 'loadStats');
+  },
+
+  // Fungsi reset state saat logout
+  _resetState: function() {
+    var userEl = document.getElementById('user');
+    if (userEl) userEl.innerHTML = '';
+    App.safeRun('Globals', 'set', 'currentUserData', null);
+
+    var unsubUser = App.safeRun('Globals', 'get', 'unsubUser');
+    if (unsubUser) unsubUser();
+
+    var mapMarkers = App.safeRun('Globals', 'get', 'mapMarkers');
+    var map = App.safeRun('Globals', 'get', 'map');
+    if (mapMarkers && map) {
+      Object.values(mapMarkers).forEach(function(m) { map.removeLayer(m); });
+      App.safeRun('Globals', 'set', 'mapMarkers', {});
+    }
+
+    var viewDashboard = document.getElementById('view-dashboard');
+    if (viewDashboard && viewDashboard.classList.contains('active')) {
+      App.safeRun('Navigation', 'showView', 'beranda');
+    }
+  },
+
   listenAuthState: function() {
     try {
-      const auth = App.safeRun('Firebase', 'getAuth');
-      const db = App.safeRun('Firebase', 'getDb');
-      const self = this;
+      var auth = App.safeRun('Firebase', 'getAuth');
+      var db = App.safeRun('Firebase', 'getDb');
+      var self = this;
+      var _debounce = null;
 
-      auth.onAuthStateChanged(async (user) => {
-        // === USER BELUM LOGIN → RESET STATE ===
-        if (!user) {
-          self._lastUid = null;
+      // === DEBOUNCE 300ms: mencegah Firebase onAuthStateChanged
+      //     yang fire user→null→user saat token refresh ===
+      auth.onAuthStateChanged(function(user) {
+        if (_debounce) clearTimeout(_debounce);
 
-          const userEl = document.getElementById('user');
-          if (userEl) userEl.innerHTML = '';
-          App.safeRun('Globals', 'set', 'currentUserData', null);
+        // Simpan user terakhir di closure agar timer pakai value final
+        var capturedUser = user;
 
-          const unsubUser = App.safeRun('Globals', 'get', 'unsubUser');
-          if (unsubUser) unsubUser();
+        _debounce = setTimeout(function() {
+          _debounce = null;
 
-          const mapMarkers = App.safeRun('Globals', 'get', 'mapMarkers');
-          const map = App.safeRun('Globals', 'get', 'map');
-          if (mapMarkers && map) {
-            Object.values(mapMarkers).forEach(m => map.removeLayer(m));
-            App.safeRun('Globals', 'set', 'mapMarkers', {});
-          }
-
-          const viewDashboard = document.getElementById('view-dashboard');
-          if (viewDashboard && viewDashboard.classList.contains('active')) {
-            App.safeRun('Navigation', 'showView', 'beranda');
-          }
-          return;
-        }
-
-        // === ANTI DOUBLE FIRE: skip kalau user ini sudah diproses ===
-        if (user.uid === self._lastUid) return;
-
-        // SET UID SEKARANG sebelum async, agar tidak double-process
-        self._lastUid = user.uid;
-
-        try {
-          const doc = await db.collection("users").doc(user.uid).get();
-          if (!doc.exists) {
-            console.error("DOC NOT FOUND for uid:", user.uid);
-            return;
-          }
-
-          const data = doc.data();
-          const role = String(data.role || '').trim().toLowerCase();
-
-          console.log("AUTH CHECK → uid:", user.uid, "role:", role);
-
-          // ADMIN → REDIRECT KE ADMIN.HTML
-          if (role === 'admin') {
-            window.location.href = "admin.html";
-            return;
-          }
-
-          // CEK EMAIL VERIFIED
-          if (!user.emailVerified) {
-            alert("Silakan verifikasi email terlebih dahulu.");
+          // === NULL: USER SIGNED OUT ===
+          if (!capturedUser) {
+            // Jika user sudah null sebelumnya, skip
+            if (self._lastUid === null) return;
             self._lastUid = null;
-            await auth.signOut();
+            self._signOutRequested = false;
+            self._resetState();
             return;
           }
 
-          // USER BIASA (KADER) → TETAP DI HALAMAN UTAMA
-          App.safeRun('Globals', 'set', 'currentUserData', data);
-          App.safeRun('Auth', 'renderUserInfo');
-          App.safeRun('Navigation', 'closeAuthModal');
-          App.safeRun('Navigation', 'showView', 'dashboard');
-          App.safeRun('Map', 'initMap');
-          App.safeRun('Map', 'updateMyLocation', user);
-          App.safeRun('Map', 'listenToOtherUsers');
-          App.safeRun('Auth', 'loadData');
-          App.safeRun('Auth', 'loadLeaderboard');
-          App.safeRun('Dashboard', 'loadTugasBulanan', user.uid);
-          App.safeRun('Auth', 'loadReward', user.uid);
-          App.safeRun('Auth', 'loadStats');
+          // === SUDAH DIPROSES: skip ===
+          if (capturedUser.uid === self._lastUid) return;
 
-        } catch (err) {
-          console.error("ERROR GET DATA:", err);
-        }
+          // SET UID SEKARANG
+          self._lastUid = capturedUser.uid;
+
+          // Fetch Firestore untuk cek role
+          db.collection("users").doc(capturedUser.uid).get().then(function(doc) {
+            if (!doc.exists) {
+              console.error("DOC NOT FOUND for uid:", capturedUser.uid);
+              return;
+            }
+
+            var data = doc.data();
+            var role = String(data.role || '').trim().toLowerCase();
+
+            console.log("AUTH CHECK → uid:", capturedUser.uid, "role:", role);
+
+            // ADMIN → redirect ke admin.html
+            if (role === 'admin') {
+              window.location.href = "admin.html";
+              return;
+            }
+
+            // EMAIL BELUM VERIFIKASI → sign out
+            if (!capturedUser.emailVerified) {
+              alert("Silakan verifikasi email terlebih dahulu.");
+              self._lastUid = null;
+              self._signOutRequested = true;
+              auth.signOut();
+              return;
+            }
+
+            // KADER → render dashboard
+            self._renderKaderDashboard(data, capturedUser);
+
+          }).catch(function(err) {
+            console.error("ERROR GET DATA:", err);
+            // Jika Firestore gagal, reset guard agar bisa retry
+            self._lastUid = null;
+          });
+        }, 300);
       });
     } catch (error) {
       console.error('[Auth] listenAuthState error:', error);
@@ -552,16 +580,43 @@ const Auth = {
 
   login: async function() {
     try {
-      const auth = App.safeRun('Firebase', 'getAuth');
+      var auth = App.safeRun('Firebase', 'getAuth');
+      var db = App.safeRun('Firebase', 'getDb');
 
-      await auth.signInWithEmailAndPassword(
+      var cred = await auth.signInWithEmailAndPassword(
         document.getElementById('loginEmail').value,
         document.getElementById('loginPassword').value
       );
 
-      // Login berhasil — onAuthStateChanged yang handle semuanya:
-      // cek email verified, cek role dari Firestore, render dashboard, dll.
-      // Jangan tambahkan logic apapun di sini.
+      // CEK EMAIL VERIFIED
+      if (!cred.user.emailVerified) {
+        alert("Email belum verifikasi. Silakan cek inbox email Anda.");
+        this._signOutRequested = true;
+        await auth.signOut();
+        return;
+      }
+
+      // CEK ROLE DARI FIRESTORE
+      var doc = await db.collection("users").doc(cred.user.uid).get();
+      if (!doc.exists) {
+        alert("Data user tidak ditemukan.");
+        this._signOutRequested = true;
+        await auth.signOut();
+        return;
+      }
+
+      var data = doc.data();
+      var role = String(data.role || '').trim().toLowerCase();
+
+      // ADMIN → redirect ke admin.html
+      if (role === 'admin') {
+        window.location.href = "admin.html";
+        return;
+      }
+
+      // KADER → login berhasil, render dashboard
+      this._lastUid = cred.user.uid;
+      this._renderKaderDashboard(data, cred.user);
 
     } catch (e) {
       console.error('[Auth] login error:', e);
@@ -584,7 +639,8 @@ const Auth = {
 
   logout: function() {
     try {
-      const auth = App.safeRun('Firebase', 'getAuth');
+      var auth = App.safeRun('Firebase', 'getAuth');
+      this._signOutRequested = true;
       auth.signOut();
     } catch (error) {
       console.error('[Auth] logout error:', error);
