@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PDI Perjuangan Meranti - Portal Kader</title>
 
 <!-- Firebase -->
@@ -785,6 +785,42 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   .auth-btn-primary {
     padding: 14px;
   }
+
+  /* ===== FINAL FIX LOGIN FULLSCREEN ===== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* LOGIN FULLSCREEN LAYER */
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: url('bg-login.png') center/cover no-repeat;
+  
+  overflow: hidden;
+}
+
+/* FORM LOGIN */
+.auth-container {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* LOCK SCROLL SAAT LOGIN */
+body.auth-active {
+  overflow: hidden;
 }
 
 </style>
