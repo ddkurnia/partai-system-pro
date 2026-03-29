@@ -389,6 +389,8 @@ const Hero = {
 // AUTH MODULE
 // ==========================================
 const Auth = {
+  _roleChecked: false,
+
   init: function() {
     this.listenAuthState();
   },
@@ -397,10 +399,13 @@ const Auth = {
     try {
       const auth = App.safeRun('Firebase', 'getAuth');
       const db = App.safeRun('Firebase', 'getDb');
+      const self = this;
 
       auth.onAuthStateChanged(async (user) => {
         if (!user) {
-          // 🔓 USER BELUM LOGIN → CLEANUP
+          // 🔓 USER BELUM LOGIN → CLEANUP & RESET GUARD
+          self._roleChecked = false;
+
           const userEl = document.getElementById('user');
           if (userEl) userEl.innerHTML = '';
           App.safeRun('Globals', 'set', 'currentUserData', null);
@@ -422,15 +427,24 @@ const Auth = {
           return;
         }
 
+        // 🛡️ ANTI DOUBLE FIRE — hanya proses sekali per login session
+        if (self._roleChecked) return;
+        self._roleChecked = true;
+
         // ✅ USER SUDAH LOGIN → CEK ROLE DARI FIRESTORE
         try {
           const doc = await db.collection("users").doc(user.uid).get();
+          if (!doc.exists) {
+            console.error("DOC NOT FOUND for uid:", user.uid);
+            return;
+          }
+
           const data = doc.data();
+          const role = String(data.role || '').trim().toLowerCase();
 
-          console.log("LOGIN DATA:", data);
+          console.log("AUTH CHECK → uid:", user.uid, "role:", role);
 
-          // 🔥 ADMIN → REDIRECT KE ADMIN.HTML
-          if (data && String(data.role).toLowerCase() === "admin") {
+          if (role === 'admin') {
             window.location.href = "admin.html";
             return;
           }
@@ -440,6 +454,7 @@ const Auth = {
           App.safeRun('Auth', 'renderUserInfo');
 
           App.safeRun('Navigation', 'closeAuthModal');
+          App.safeRun('Navigation', 'showView', 'dashboard');
           App.safeRun('Map', 'initMap');
           App.safeRun('Map', 'updateMyLocation', user);
           App.safeRun('Map', 'listenToOtherUsers');
@@ -529,7 +544,6 @@ const Auth = {
   login: async function() {
     try {
       const auth = App.safeRun('Firebase', 'getAuth');
-      const db = App.safeRun('Firebase', 'getDb');
 
       const cred = await auth.signInWithEmailAndPassword(
         document.getElementById('loginEmail').value,
@@ -542,24 +556,10 @@ const Auth = {
         return;
       }
 
-      // 🔑 CEK ROLE DARI FIRESTORE SEBELUM NAVIGASI
-      const doc = await db.collection("users").doc(cred.user.uid).get();
-      const data = doc.data();
-
-      if (!data) {
-        alert("Data user tidak ditemukan.");
-        await auth.signOut();
-        return;
-      }
-
-      if (data.role === "admin") {
-        window.location.href = "admin.html";
-        return;
-      }
-
-      // 👤 USER BIASA → TETAP DI HALAMAN UTAMA
+      // ✅ LOGIN BERHASIL — biarkan onAuthStateChanged yang handle role & redirect
+      // Jangan navigasi di sini karena akan konflik dengan listener
       App.safeRun('Navigation', 'closeAuthModal');
-      App.safeRun('Navigation', 'showView', 'dashboard');
+
     } catch (e) {
       console.error('[Auth] login error:', e);
       alert(e.message);
