@@ -1397,6 +1397,107 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 
 /* Separator */
 .ts-sep { border: none; border-top: 1px dashed var(--border-color); margin: 12px 0; }
+
+/* ==========================================
+   DASHBOARD REWARD - REDESIGNED
+   ========================================== */
+.rw-summary-card {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: 16px; padding: 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  color: white; margin-bottom: 16px;
+  box-shadow: 0 4px 18px rgba(227,30,37,0.3);
+}
+.rw-summary-left { display: flex; align-items: center; gap: 12px; }
+.rw-summary-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: white;
+}
+.rw-summary-title { font-size: 0.82rem; font-weight: 700; }
+.rw-summary-sub { font-size: 0.68rem; opacity: 0.8; }
+.rw-summary-right { text-align: right; }
+.rw-summary-value { font-size: 1.8rem; font-weight: 900; line-height: 1; }
+.rw-summary-label { font-size: 0.65rem; opacity: 0.7; font-weight: 600; }
+
+.rw-section-hdr {
+  font-size: 0.85rem; font-weight: 800; color: var(--text-main);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.rw-section-hdr i { color: var(--primary); font-size: 0.9rem; }
+
+.rw-catalog-list { display: flex; flex-direction: column; gap: 10px; }
+
+.rw-reward-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex; gap: 12px; align-items: center;
+  transition: box-shadow 0.2s;
+}
+.rw-reward-card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.06); }
+.rw-reward-icon {
+  width: 50px; height: 50px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: white; flex-shrink: 0;
+}
+.rw-reward-info { flex: 1; min-width: 0; }
+.rw-reward-name { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+.rw-reward-desc { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
+.rw-reward-right { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.rw-reward-poin {
+  font-size: 0.82rem; font-weight: 900; color: var(--gold);
+  display: flex; align-items: center; gap: 4px;
+}
+.rw-reward-status {
+  font-size: 0.62rem; font-weight: 600; padding: 2px 8px;
+  border-radius: 10px;
+}
+.rw-reward-status.can { background: #D1FAE5; color: #065F46; }
+.rw-reward-status.not { background: #F1F5F9; color: #94A3B8; }
+.rw-btn-tukar {
+  padding: 7px 16px; border-radius: 8px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white; border: none; font-size: 0.72rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: all 0.2s; box-shadow: 0 2px 8px rgba(245,158,11,0.3);
+  white-space: nowrap;
+}
+.rw-btn-tukar:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(245,158,11,0.4); }
+.rw-btn-tukar:disabled {
+  opacity: 0.4; cursor: not-allowed; transform: none;
+  box-shadow: none;
+}
+
+/* History */
+.rw-history-list { display: flex; flex-direction: column; gap: 0; }
+.rw-hist-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border-color);
+}
+.rw-hist-item:last-child { border-bottom: none; }
+.rw-hist-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; color: white; flex-shrink: 0;
+}
+.rw-hist-info { flex: 1; min-width: 0; }
+.rw-hist-name { font-size: 0.78rem; font-weight: 600; color: var(--text-main); }
+.rw-hist-time { font-size: 0.65rem; color: var(--text-muted); }
+.rw-hist-poin {
+  font-size: 0.78rem; font-weight: 900; color: var(--gold);
+  display: flex; align-items: center; gap: 3px; flex-shrink: 0;
+}
+.rw-hist-status {
+  padding: 2px 8px; border-radius: 10px;
+  font-size: 0.6rem; font-weight: 700; white-space: nowrap;
+}
+.rw-hist-status.menunggu { background: #FEF3C7; color: #92400E; }
+.rw-hist-status.selesai { background: #D1FAE5; color: #065F46; }
+.rw-hist-status.ditolak { background: #FEE2E2; color: #991B1B; }
+.rw-empty { text-align: center; color: var(--text-muted); font-size: 0.78rem; padding: 20px 0; }
 </style>
 </head>
 <body>
@@ -2409,7 +2510,30 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
 
   </div>
   <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan Kader</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim Laporan</button><ul id="data" style="margin-top:15px"></ul></div>
-  <div id="dash-reward" class="card" style="display:none; margin-top:20px"><h3>Katalog Reward</h3><div id="rewardCatalog"></div><h3 style="margin-top:25px">Top Kader</h3><ul id="leaderboard"></ul></div>
+  <div id="dash-reward" style="display:none; margin-top:20px">
+    <!-- Poin Summary -->
+    <div class="rw-summary-card">
+      <div class="rw-summary-left">
+        <div class="rw-summary-icon"><i class="fas fa-coins"></i></div>
+        <div>
+          <div class="rw-summary-title">Total Poin Kamu</div>
+          <div class="rw-summary-sub" id="rwPoinInfo">Memuat...</div>
+        </div>
+      </div>
+      <div class="rw-summary-right">
+        <div class="rw-summary-value" id="rwPoinValue">0</div>
+        <div class="rw-summary-label">Poin</div>
+      </div>
+    </div>
+
+    <!-- Reward Catalog -->
+    <div class="rw-section-hdr"><i class="fas fa-gift"></i> Katalog Reward</div>
+    <div id="rewardCatalog" class="rw-catalog-list"></div>
+
+    <!-- Riwayat Penukaran -->
+    <div class="rw-section-hdr" style="margin-top:20px"><i class="fas fa-history"></i> Riwayat Penukaran</div>
+    <div id="rwHistory" class="rw-history-list"></div>
+  </div>
 </div>
 
 <!-- AUTH MODAL -->
@@ -2963,7 +3087,99 @@ function renderTugasHistory(snap) {
 // ==========================================
 function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); loadMrLeaderboard(); }
 function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
-function loadReward(u){ db.collection('users').doc(u).onSnapshot(d => { const p=d.data()?.poin||0; document.getElementById('rewardCatalog').innerHTML = `<div class="reward-item"><div class="reward-info"><h4>Token Listrik</h4><small>1000 Poin</small></div><button style="width:auto; padding:8px 16px" ${p>=1000 ? '' : 'disabled'}>${p>=1000 ? 'Tukar' : 'Kurang'}</button></div>`; }); }
+function loadReward(u){
+  // Reward catalog data — sama persis dengan Misi & Reward menu
+  const rewards = [
+    { id:'kaos', nama:'Kaos Partai', desc:'Kaos official PDI Perjuangan · Katun combed 30s · M, L, XL', poin:500, icon:'fa-tshirt', gradient:'linear-gradient(135deg,#EF4444,#DC2626)' },
+    { id:'mug', nama:'Mug Partai', desc:'Mug keramik logo PDI · 350ml · Microwave safe', poin:400, icon:'fa-mug-hot', gradient:'linear-gradient(135deg,#8B5CF6,#7C3AED)' },
+    { id:'token', nama:'Token Listrik Rp 100.000', desc:'Kode voucher dikirim via WhatsApp', poin:600, icon:'fa-bolt', gradient:'linear-gradient(135deg,#EAB308,#CA8A04)' },
+    { id:'voucher', nama:'Voucher Makan 2 Orang', desc:'Restoran mitra DPC · Berlaku 30 hari', poin:750, icon:'fa-utensils', gradient:'linear-gradient(135deg,#F97316,#EA580C)' },
+    { id:'jaket', nama:'Jaket Partai', desc:'Jaket official PDI Perjuangan · Parasut waterproof', poin:1000, icon:'fa-vest-patches', gradient:'linear-gradient(135deg,#2563EB,#1D4ED8)' }
+  ];
+
+  // Listen user poin realtime
+  db.collection('users').doc(u).onSnapshot(d => {
+    const poin = d.data()?.poin || 0;
+    const nama = d.data()?.nama || d.data()?.nome || 'Kader';
+    const periode = new Date().toLocaleString('id-ID', { month:'long', year:'numeric' });
+
+    // Update summary
+    const elPoinValue = document.getElementById('rwPoinValue');
+    const elPoinInfo = document.getElementById('rwPoinInfo');
+    if (elPoinValue) elPoinValue.textContent = poin.toLocaleString('id-ID');
+    if (elPoinInfo) elPoinInfo.textContent = nama + ' · ' + periode;
+
+    // Render catalog
+    const catalogEl = document.getElementById('rewardCatalog');
+    if (!catalogEl) return;
+    let h = '';
+    rewards.forEach(r => {
+      const canAfford = poin >= r.poin;
+      h += '<div class="rw-reward-card">' +
+        '<div class="rw-reward-icon" style="background:' + r.gradient + '"><i class="fas ' + r.icon + '"></i></div>' +
+        '<div class="rw-reward-info"><div class="rw-reward-name">' + r.nama + '</div><div class="rw-reward-desc">' + r.desc + '</div></div>' +
+        '<div class="rw-reward-right">' +
+          '<div class="rw-reward-poin"><i class="fas fa-coins"></i> ' + r.poin + '</div>' +
+          '<span class="rw-reward-status ' + (canAfford ? 'can' : 'not') + '">' + (canAfford ? 'Poin Cukup' : 'Poin Kurang') + '</span>' +
+          '<button class="rw-btn-tukar" onclick="rwTukar(\'' + r.id + '\',' + r.poin + ')" ' + (canAfford ? '' : 'disabled') + '><i class="fas fa-exchange-alt"></i> Tukar</button>' +
+        '</div></div>';
+    });
+    catalogEl.innerHTML = h;
+  });
+
+  // Listen riwayat penukaran
+  db.collection('reward_exchange').where('userId', '==', u).orderBy('waktu', 'desc').limit(10).onSnapshot(snap => {
+    const histEl = document.getElementById('rwHistory');
+    if (!histEl) return;
+    if (snap.empty) { histEl.innerHTML = '<div class="rw-empty">Belum ada riwayat penukaran reward</div>'; return; }
+    const iconMap = { kaos:'fa-tshirt', mug:'fa-mug-hot', token:'fa-bolt', voucher:'fa-utensils', jaket:'fa-vest-patches' };
+    const gradMap = { kaos:'linear-gradient(135deg,#EF4444,#DC2626)', mug:'linear-gradient(135deg,#8B5CF6,#7C3AED)', token:'linear-gradient(135deg,#EAB308,#CA8A04)', voucher:'linear-gradient(135deg,#F97316,#EA580C)', jaket:'linear-gradient(135deg,#2563EB,#1D4ED8)' };
+    let hh = '';
+    snap.forEach(d => {
+      const v = d.data();
+      const w = v.waktu ? v.waktu.toDate() : null;
+      const timeStr = w ? w.toLocaleString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '-';
+      const st = v.status || 'menunggu';
+      const stClass = st === 'selesai' ? 'selesai' : (st === 'ditolak' ? 'ditolak' : 'menunggu');
+      const stText = st === 'selesai' ? 'Selesai' : (st === 'ditolak' ? 'Ditolak' : 'Menunggu');
+      hh += '<div class="rw-hist-item">' +
+        '<div class="rw-hist-icon" style="background:' + (gradMap[v.rewardId] || 'linear-gradient(135deg,#94a3b8,#64748b)') + '"><i class="fas ' + (iconMap[v.rewardId] || 'fa-gift') + '"></i></div>' +
+        '<div class="rw-hist-info"><div class="rw-hist-name">' + (v.rewardNama || v.rewardId) + '</div><div class="rw-hist-time">' + timeStr + '</div></div>' +
+        '<div class="rw-hist-poin"><i class="fas fa-coins"></i> -' + v.poinDeducted + '</div>' +
+        '<span class="rw-hist-status ' + stClass + '">' + stText + '</span>' +
+        '</div>';
+    });
+    histEl.innerHTML = hh;
+  });
+}
+
+// Tukar reward
+async function rwTukar(rewardId, poinCost) {
+  const u = auth.currentUser.uid;
+  const confirmed = confirm('Tukar ' + poinCost + ' poin untuk reward ini?\n\nPoin akan dikurangi secara permanen.\nAmbil reward di Sekretariat DPC setelah disetujui.');
+  if (!confirmed) return;
+
+  try {
+    const userDoc = await db.collection('users').doc(u).get();
+    const currentPoin = userDoc.data()?.poin || 0;
+    if (currentPoin < poinCost) { alert('Poin tidak mencukupi. Anda memiliki ' + currentPoin + ' poin, dibutuhkan ' + poinCost + ' poin.'); return; }
+
+    const namaMap = { kaos:'Kaos Partai', mug:'Mug Partai', token:'Token Listrik Rp 100.000', voucher:'Voucher Makan 2 Orang', jaket:'Jaket Partai' };
+
+    await db.collection('users').doc(u).update({ poin: firebase.firestore.FieldValue.increment(-poinCost) });
+    await db.collection('reward_exchange').add({
+      userId: u,
+      rewardId: rewardId,
+      rewardNama: namaMap[rewardId] || rewardId,
+      poinDeducted: poinCost,
+      waktu: new Date(),
+      status: 'menunggu'
+    });
+    alert('Penukaran berhasil! Silakan ambil reward di Sekretariat DPC setelah disetujui admin.');
+  } catch (e) {
+    alert('Gagal menukar reward. Coba lagi.');
+  }
+}
 function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { let h=""; let i=1; s.forEach(d => { const v=d.data(); h+=`<li><b>#${i}</b> ${v.nama} <span style="margin-left:auto">${v.poin}</span></li>`; i++; }); document.getElementById('leaderboard').innerHTML=h||'Kosong'; let h2=""; let i2=1; s.docs.slice(0,3).forEach(d => { const v=d.data(); h2+=`<div class="leaderboard-item"><div class="lb-rank r${i2}">${i2}</div><img src="${v.photoURL||'https://ui-avatars.com/api/?name='+v.nama}" class="lb-avatar-sm"><div class="lb-info"><div class="lb-name-sm">${v.nama}</div><div class="lb-poin-sm">${v.poin} poin</div></div></div>`; i2++; }); document.getElementById('topKaderList').innerHTML = h2 || 'Belum ada data'; }); }
 async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); navigator.geolocation.getCurrentPosition(async pos => { await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); }, ()=>alert("GPS error")); }
 function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); }); }
