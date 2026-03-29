@@ -832,8 +832,7 @@ auth.onAuthStateChanged(async (user) => {
 
       if (!doc.exists) {
         console.warn('[AUTH] Doc user tidak ditemukan:', user.uid);
-        await auth.signOut();
-        _authChecked = false;
+        _authChecked = true; // block re-process
         resetLoginBtn();
         showLoginError('Data user tidak ditemukan di sistem.');
         return;
@@ -844,11 +843,10 @@ auth.onAuthStateChanged(async (user) => {
 
       console.log('[AUTH] Role check → uid:', user.uid, 'role:', role);
 
-      // 🚫 BUKAN ADMIN → KICK OUT
+      // 🚫 BUKAN ADMIN → TOLAK AKSES (JANGAN signOut karena akan logout dari index.html juga!)
       if (role !== 'admin') {
-        console.warn('[AUTH] BUKAN ADMIN, kick out. Role:', role);
-        await auth.signOut();
-        _authChecked = false;
+        console.warn('[AUTH] BUKAN ADMIN, akses ditolak. Role:', role);
+        _authChecked = true; // block re-process tapi JANGAN signOut
         resetLoginBtn();
         showLoginError('Akses ditolak! Hanya admin yang boleh masuk ke panel ini.');
         return;
@@ -870,7 +868,6 @@ auth.onAuthStateChanged(async (user) => {
     } catch (err) {
       console.error('[AUTH] Error verifikasi:', err);
       _authChecked = false;
-      try { await auth.signOut(); } catch(e) {}
       resetLoginBtn();
       showLoginError('Terjadi kesalahan saat verifikasi. Coba lagi.');
     }
