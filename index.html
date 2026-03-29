@@ -2940,21 +2940,23 @@ async function tsDoCheckin() {
   btn.disabled = true;
 
   try {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(todayStart);
-    todayEnd.setDate(todayEnd.getDate() + 1);
+    const today = new Date().toDateString();
 
-    const existing = await db.collection('tugas_submit')
+    // Query sederhana: hanya userId + tipe, filter waktu di JS (hindari composite index)
+    const snap = await db.collection('tugas_submit')
       .where('userId', '==', auth.currentUser.uid)
       .where('tipe', '==', 'checkin')
-      .where('waktu', '>=', todayStart)
-      .where('waktu', '<', todayEnd)
-      .where('status', '!=', 'rejected')
-      .limit(1)
       .get();
 
-    if (!existing.empty) {
+    let alreadyDone = false;
+    snap.forEach(d => {
+      const v = d.data();
+      if (v.status === 'rejected') return;
+      const w = v.waktu ? v.waktu.toDate() : null;
+      if (w && w.toDateString() === today) alreadyDone = true;
+    });
+
+    if (alreadyDone) {
       btn.classList.add('done');
       btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
       btn.removeAttribute('onclick');
@@ -2979,6 +2981,7 @@ async function tsDoCheckin() {
     btn.disabled = true;
 
   } catch (e) {
+    console.error('Checkin error:', e);
     if (btn.classList.contains('done')) return;
     btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
     btn.disabled = false;
