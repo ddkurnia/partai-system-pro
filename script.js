@@ -3,7 +3,7 @@
 // ==========================================
 const App = {
   modules: {},
-  order: ['Firebase', 'Globals', 'Theme', 'Wilayah', 'Navigation', 'Hero', 'Auth', 'Map', 'Dashboard', 'Analytics', 'Store', 'Profile'],
+  order: ['Firebase', 'Globals', 'Theme', 'Wilayah', 'Navigation', 'Hero', 'Auth', 'Berita', 'Map', 'Dashboard', 'Analytics', 'Store', 'Profile'],
 
   register: function(name, module) {
     this.modules[name] = module;
@@ -430,7 +430,7 @@ const Auth = {
           console.log("LOGIN DATA:", data);
 
           // 🔥 ADMIN → REDIRECT KE ADMIN.HTML
-          if (data && data.role === "admin") {
+          if (data && String(data.role).toLowerCase() === "admin") {
             window.location.href = "admin.html";
             return;
           }
@@ -513,6 +513,7 @@ const Auth = {
       await res.user.sendEmailVerification();
       await db.collection("users").doc(res.user.uid).set({
         ...data,
+        role: 'kader',
         poin: 0,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -528,11 +529,35 @@ const Auth = {
   login: async function() {
     try {
       const auth = App.safeRun('Firebase', 'getAuth');
-      const user = await auth.signInWithEmailAndPassword(
+      const db = App.safeRun('Firebase', 'getDb');
+
+      const cred = await auth.signInWithEmailAndPassword(
         document.getElementById('loginEmail').value,
         document.getElementById('loginPassword').value
       );
-      if (!user.user.emailVerified) alert("Email belum verifikasi.");
+
+      if (!cred.user.emailVerified) {
+        alert("Email belum verifikasi.");
+        await auth.signOut();
+        return;
+      }
+
+      // 🔑 CEK ROLE DARI FIRESTORE SEBELUM NAVIGASI
+      const doc = await db.collection("users").doc(cred.user.uid).get();
+      const data = doc.data();
+
+      if (!data) {
+        alert("Data user tidak ditemukan.");
+        await auth.signOut();
+        return;
+      }
+
+      if (data.role === "admin") {
+        window.location.href = "admin.html";
+        return;
+      }
+
+      // 👤 USER BIASA → TETAP DI HALAMAN UTAMA
       App.safeRun('Navigation', 'closeAuthModal');
       App.safeRun('Navigation', 'showView', 'dashboard');
     } catch (e) {
@@ -647,6 +672,134 @@ const Auth = {
     } catch (error) {
       console.error('[Auth] loadStats error:', error);
     }
+  }
+};
+
+// ==========================================
+// BERITA MODULE (Real-time dari Admin)
+// ==========================================
+const Berita = {
+  init: function() {
+    this.listenBerita();
+  },
+
+  listenBerita: function() {
+    try {
+      const db = App.safeRun('Firebase', 'getDb');
+
+      db.collection('berita')
+        .where('aktif', '==', true)
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(snap => {
+          const container = document.getElementById('beritaList');
+          if (!container) return;
+
+          if (snap.empty) {
+            container.innerHTML = `
+              <div style="text-align:center;padding:30px;color:var(--text-muted)">
+                <i class="fas fa-newspaper" style="font-size:36px;opacity:0.3;margin-bottom:10px;display:block"></i>
+                <p>Belum ada berita atau pengumuman</p>
+              </div>`;
+            return;
+          }
+
+          let html = '';
+          snap.forEach(doc => {
+            const b = doc.data();
+            const id = doc.id;
+            const tgl = b.createdAt ? new Date(b.createdAt.toDate()).toLocaleDateString('id-ID', {
+              day: 'numeric', month: 'long', year: 'numeric'
+            }) : '';
+            const isPengumuman = b.kategori === 'pengumuman';
+            const badgeColor = isPengumuman ? '#F59E0B' : '#E31E25';
+            const badgeBg = isPengumuman ? '#FEF3C7' : '#FEE2E2';
+            const badgeIcon = isPengumuman ? '📢' : '📰';
+            const badgeLabel = isPengumuman ? 'Pengumuman' : 'Berita';
+            const thumb = b.foto || '';
+            const shortIsi = b.isi.length > 100 ? b.isi.substring(0, 100) + '...' : b.isi;
+
+            if (thumb) {
+              // Card dengan foto
+              html += `
+                <div class="berita-card" onclick="openBeritaDetail('${id}')" style="cursor:pointer">
+                  <img src="${thumb}" class="berita-card-img" onerror="this.style.display='none'">
+                  <div class="berita-card-body">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                      <span style="background:${badgeBg};color:${badgeColor};padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:600">${badgeIcon} ${badgeLabel}</span>
+                      <span style="font-size:0.75rem;color:var(--text-muted)"><i class="fas fa-clock"></i> ${tgl}</span>
+                    </div>
+                    <div style="font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.4">${b.judul}</div>
+                    <div style="font-size:0.85rem;color:var(--text-muted);line-height:1.5">${shortIsi}</div>
+                  </div>
+                </div>`;
+            } else {
+              // Card tanpa foto
+              html += `
+                <div class="berita-card berita-card-no-img" onclick="openBeritaDetail('${id}')" style="cursor:pointer">
+                  <div class="berita-card-body">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                      <span style="background:${badgeBg};color:${badgeColor};padding:2px 10px;border-radius:20px;font-size:0.7rem;font-weight:600">${badgeIcon} ${badgeLabel}</span>
+                      <span style="font-size:0.75rem;color:var(--text-muted)"><i class="fas fa-clock"></i> ${tgl}</span>
+                    </div>
+                    <div style="font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.4">${b.judul}</div>
+                    <div style="font-size:0.85rem;color:var(--text-muted);line-height:1.5">${shortIsi}</div>
+                  </div>
+                </div>`;
+            }
+          });
+
+          container.innerHTML = html;
+        });
+    } catch (error) {
+      console.error('[Berita] listenBerita error:', error);
+    }
+  },
+
+  openDetail: function(id) {
+    try {
+      const db = App.safeRun('Firebase', 'getDb');
+      db.collection('berita').doc(id).get().then(doc => {
+        if (!doc.exists) return;
+        const b = doc.data();
+        const tgl = b.createdAt ? new Date(b.createdAt.toDate()).toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) : '';
+        const isPengumuman = b.kategori === 'pengumuman';
+        const badgeColor = isPengumuman ? '#F59E0B' : '#E31E25';
+        const badgeBg = isPengumuman ? '#FEF3C7' : '#FEE2E2';
+        const badgeLabel = isPengumuman ? '📢 Pengumuman' : '📰 Berita';
+
+        const modal = document.getElementById('beritaDetailModal');
+        if (!modal) return;
+
+        modal.innerHTML = `
+          <div class="modal-overlay" onclick="closeBeritaDetail()" style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px">
+            <div class="modal-content" onclick="event.stopPropagation()" style="background:var(--card);border-radius:16px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+              ${b.foto ? `<img src="${b.foto}" style="width:100%;height:250px;object-fit:cover;border-radius:16px 16px 0 0" onerror="this.style.display='none'">` : ''}
+              <div style="padding:24px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+                  <span style="background:${badgeBg};color:${badgeColor};padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600">${badgeLabel}</span>
+                  <span style="font-size:0.8rem;color:var(--text-muted)"><i class="fas fa-clock"></i> ${tgl}</span>
+                </div>
+                <h2 style="font-size:1.3rem;font-weight:800;margin-bottom:16px;line-height:1.4">${b.judul}</h2>
+                <div style="font-size:0.95rem;color:var(--text);line-height:1.8;white-space:pre-wrap">${b.isi}</div>
+                <div style="margin-top:24px;text-align:right">
+                  <button onclick="closeBeritaDetail()" style="background:var(--bg);color:var(--text-muted);border:none;padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem">Tutup</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+
+        modal.style.display = 'block';
+      });
+    } catch (error) {
+      console.error('[Berita] openDetail error:', error);
+    }
+  },
+
+  closeDetail: function() {
+    const modal = document.getElementById('beritaDetailModal');
+    if (modal) modal.style.display = 'none';
   }
 };
 
@@ -1110,6 +1263,7 @@ App.register('Dashboard', Dashboard);
 App.register('Analytics', Analytics);
 App.register('Store', Store);
 App.register('Profile', Profile);
+App.register('Berita', Berita);
 
 // ==========================================
 // GLOBAL WRAPPER FUNCTIONS (HTML Interface)
@@ -1147,6 +1301,9 @@ function kirimUsulan() { App.safeRun('Dashboard', 'kirimUsulan'); }
 function switchStoreTab(tab) { App.safeRun('Store', 'switchStoreTab', tab); }
 function previewProductPhoto(input) { App.safeRun('Store', 'previewProductPhoto', input); }
 function tambahProduk() { App.safeRun('Store', 'tambahProduk'); }
+
+function openBeritaDetail(id) { App.safeRun('Berita', 'openDetail', id); }
+function closeBeritaDetail() { App.safeRun('Berita', 'closeDetail'); }
 
 function kirimKeSheet(type, payload) {
   fetch("https://script.google.com/macros/s/AKfycbx5pk1UiCAl6cszjUhPOYKuIp7HRtih9wXD5gYPwZ0Y7Rc0mOhSdPEYFZ3EgTJ6f3bP/exec", {
