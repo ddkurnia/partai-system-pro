@@ -4121,22 +4121,28 @@ async function loadAuthDesa(kid) {
   // ==========================================
 // 14. BERITA & PENGUMUMAN REALTIME
 // ==========================================
-function loadBerita() {
 function loadPengumuman() {
-  db.collection("pengumuman").orderBy("createdAt", "desc").onSnapshot(snap => {
-    const el = document.getElementById('pengumumanList');
+  db.collection("pengumuman").onSnapshot(snap => {
+    var el = document.getElementById('pengumumanList');
     if (!el) return;
     if (snap.empty) {
       el.innerHTML = '<li style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0"><i class="fas fa-bullhorn" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada pengumuman</li>';
       return;
     }
-    let html = '';
-    snap.forEach(d => {
-      const v = d.data();
-      const judul = v.judul || 'Pengumuman';
-      const isi = v.isi || '';
-      const w = v.createdAt ? (v.createdAt.toDate ? v.createdAt.toDate() : new Date(v.createdAt)) : null;
-      const tgl = w ? w.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '-';
+    var items = [];
+    snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+    items.sort(function(a, b) {
+      var wa = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate().getTime() : new Date(a.createdAt).getTime()) : 0;
+      var wb = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate().getTime() : new Date(b.createdAt).getTime()) : 0;
+      return wb - wa;
+    });
+    var html = '';
+    for (var i = 0; i < items.length; i++) {
+      var v = items[i];
+      var judul = v.judul || 'Pengumuman';
+      var isi = v.isi || '';
+      var w = v.createdAt ? (v.createdAt.toDate ? v.createdAt.toDate() : new Date(v.createdAt)) : null;
+      var tgl = w ? w.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '-';
       html += '<li style="padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:10px">' +
         '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#EA580C,#C2410C);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;font-size:0.85rem"><i class="fas fa-bullhorn"></i></div>' +
         '<div style="flex:1;min-width:0">' +
@@ -4144,8 +4150,10 @@ function loadPengumuman() {
           '<div style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:3px">' + judul + '</div>' +
           '<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">' + isi + '</div>' +
         '</div></li>';
-    });
+    }
     el.innerHTML = html;
+  }, function(err) {
+    console.error('Error pengumuman:', err);
   });
 }
 
