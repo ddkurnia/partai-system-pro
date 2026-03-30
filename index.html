@@ -4122,47 +4122,30 @@ async function loadAuthDesa(kid) {
 // 14. BERITA & PENGUMUMAN REALTIME
 // ==========================================
 function loadBerita() {
-  db.collection("berita").orderBy("waktu", "desc").onSnapshot(snap => {
-    const el = document.getElementById('beritaList');
-    const el2 = document.getElementById('beritaTerkiniList');
-    if (!el && !el2) return;
+function loadPengumuman() {
+  db.collection("pengumuman").orderBy("createdAt", "desc").onSnapshot(snap => {
+    const el = document.getElementById('pengumumanList');
+    if (!el) return;
     if (snap.empty) {
-      if (el) el.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0"><i class="fas fa-newspaper" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada berita</p>';
-      if (el2) el2.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:0.78rem;padding:15px 0">Belum ada berita terkini</p>';
+      el.innerHTML = '<li style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0"><i class="fas fa-bullhorn" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada pengumuman</li>';
       return;
     }
     let html = '';
-    let berandaHtml = '';
-    let count = 0;
     snap.forEach(d => {
       const v = d.data();
-      const foto = v.foto || v.gambar || 'https://placehold.co/600x300/f1f5f9/94a3b8?text=Berita';
-      const judul = v.judul || v.nama || 'Tanpa Judul';
-      const isi = v.isi || v.deskripsi || v.konten || '';
-      const w = v.waktu ? (v.waktu.toDate ? v.waktu.toDate() : new Date(v.waktu)) : null;
+      const judul = v.judul || 'Pengumuman';
+      const isi = v.isi || '';
+      const w = v.createdAt ? (v.createdAt.toDate ? v.createdAt.toDate() : new Date(v.createdAt)) : null;
       const tgl = w ? w.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '-';
-      // Full view (halaman Berita)
-      html += '<div class="news-item" style="flex-direction:column;padding:16px">' +
-        '<img src="' + foto + '" style="width:100%;height:180px;border-radius:12px;object-fit:cover;margin-bottom:12px" onerror="this.src=\'https://placehold.co/600x300/f1f5f9/94a3b8?text=Berita\'">' +
-        '<div class="news-content">' +
-          '<div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:4px"><i class="fas fa-calendar-alt" style="margin-right:4px"></i>' + tgl + '</div>' +
-          '<h4 style="margin-bottom:6px">' + judul + '</h4>' +
-          '<p>' + isi + '</p>' +
-        '</div></div>';
-      // Beranda (5 terbaru, ringkas)
-      if (count < 5) {
-        const shortIsi = isi.length > 80 ? isi.substring(0, 80) + '...' : isi;
-        berandaHtml += '<div class="news-item">' +
-          '<img src="' + foto + '" class="news-img" onerror="this.src=\'https://placehold.co/100x100/f1f5f9/94a3b8?text=Berita\'">' +
-          '<div class="news-content">' +
-            '<h4>' + judul + '</h4>' +
-            '<p>' + shortIsi + '</p>' +
-          '</div></div>';
-      }
-      count++;
+      html += '<li style="padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:10px">' +
+        '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#EA580C,#C2410C);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;font-size:0.85rem"><i class="fas fa-bullhorn"></i></div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:3px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div>' +
+          '<div style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:3px">' + judul + '</div>' +
+          '<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">' + isi + '</div>' +
+        '</div></li>';
     });
-    if (el) el.innerHTML = html;
-    if (el2) el2.innerHTML = berandaHtml;
+    el.innerHTML = html;
   });
 }
 
