@@ -1859,21 +1859,15 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
   <!-- BERITA TERKINI (hidden for guest) -->
   <div id="guestHideNews">
     <div class="section-title" style="margin-top:25px">Berita Terkini</div>
-    <div class="news-list">
-      <div class="news-item">
-        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="news-img">
-        <div class="news-content">
-          <h4>Rapat Koordinasi Tim Pemenangan</h4>
-          <p>Kegiatan rakor tim sukses di sekretariat DPC Meranti.</p>
-        </div>
-      </div>
+        <div class="news-list" id="beritaTerkiniList">
+      <div style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0;width:100%">Memuat berita terkini...</div>
     </div>
   </div>
 </div>
 
 <!-- VIEWS UMUM -->
-<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:var(--text-muted)">Informasi terkini seputar kegiatan partai.</p></div></div>
-<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><ul><li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC.</small></li></ul></div></div>
+<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px">Informasi terkini seputar kegiatan partai. <span style="font-size:0.68rem;color:var(--success);font-weight:700;display:inline-flex;align-items:center;gap:3px;margin-left:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>Realtime</span></p><div id="beritaList" style="display:flex;flex-direction:column;gap:12px"><p style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0">Memuat berita...</p></div></div></div>
+<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px">Informasi resmi dari DPC PDI Perjuangan. <span style="font-size:0.68rem;color:var(--success);font-weight:700;display:inline-flex;align-items:center;gap:3px;margin-left:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>Realtime</span></p><ul id="pengumumanList"><li style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0">Memuat pengumuman...</li></ul></div></div>
 <div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong></p></div></div>
 <div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
 <div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
