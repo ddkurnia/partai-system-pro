@@ -1753,466 +1753,2195 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 <!-- END AUTH SCREEN -->
 
 <!-- ========================================== -->
-<!-- MAIN APP                                  -->
+<!-- APP MAIN CONTENT (hidden until auth)       -->
 <!-- ========================================== -->
-<header id="mainHeader" style="display:none;">
+<div id="appMain" style="display:none;">
+
+<header>
   <div class="header-content">
-    <div class="header-left" onclick="navigateTo('beranda')">
+    <div class="header-left" onclick="showView('beranda')">
       <div class="logo">
-        <img src="https://partai.kedaimedia.com/logo-pdi.png" alt="Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23E31E25%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2258%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2236%22 font-weight=%22bold%22%3EPDI%3C/text%3E%3C/svg%3E'">
+        <img src="https://partai.kedaimedia.com/logo-pdi.png" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff'">
       </div>
       <div class="header-text">
-        <h1>PDI Perjuangan</h1>
+        <h1>PDI PERJUANGAN</h1>
         <p>Kab. Kepulauan Meranti</p>
       </div>
     </div>
     <div class="header-right">
-      <button class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn">
-        <i class="fas fa-moon"></i>
-      </button>
-      <button class="theme-toggle" onclick="handleLogout()" id="logoutBtn" title="Keluar">
-        <i class="fas fa-sign-out-alt"></i>
-      </button>
+       <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+         <i class="fas fa-moon"></i>
+       </div>
+       <div class="theme-toggle guest-header-login" id="headerLoginBtn" style="display:none;" onclick="guestGoLogin()">
+         <i class="fas fa-sign-in-alt"></i>
+       </div>
     </div>
   </div>
 </header>
 
-<div class="container" id="mainApp" style="display:none;">
+<div class="container">
 
-  <!-- ===== BERANDA ===== -->
-  <div id="view-beranda" class="view-section active container">
-    <!-- Hero Banner Slider -->
-    <div class="hero-banner">
-      <div class="hero-slide active" id="heroSlide0">
-        <div class="hero-overlay">
-          <span class="hero-tag">📱 App Kader</span>
-          <h2 class="hero-title">Selamat Datang Kader PDI Perjuangan</h2>
-          <p class="hero-desc">Platform digital untuk memperkuat perjuangan rakyat</p>
-        </div>
-      </div>
-      <div class="hero-slide" id="heroSlide1">
-        <div class="hero-overlay">
-          <span class="hero-tag">🗳️ Pemilu 2024</span>
-          <h2 class="hero-title">Bersatu Memenangkan Pemilu</h2>
-          <p class="hero-desc">Satu suara, satu harapan untuk Indonesia</p>
-        </div>
-      </div>
-      <div class="hero-slide" id="heroSlide2">
-        <div class="hero-overlay">
-          <span class="hero-tag">🔥 Aksi Nyata</span>
-          <h2 class="hero-title">Kerja Nyata Untuk Rakyat</h2>
-          <p class="hero-desc">Gotong royong membangun Kepulauan Meranti</p>
-        </div>
-      </div>
-      <div class="hero-dots">
-        <div class="dot active" onclick="goToSlide(0)"></div>
-        <div class="dot" onclick="goToSlide(1)"></div>
-        <div class="dot" onclick="goToSlide(2)"></div>
-      </div>
+<!-- VIEW 1: BERANDA UTAMA -->
+<div id="view-beranda" class="view-section active">
+  <!-- HERO -->
+  <div class="hero-banner">
+    <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1540910419892-4a36d2c3268c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+
+    <div class="hero-overlay">
+      <span class="hero-tag">App Resmi</span>
+      <h2 class="hero-title">Satukan Langkah<br>Majukan Meranti</h2>
+      <p class="hero-desc">Platform digital untuk kader PDI Perjuangan.</p>
     </div>
 
-    <!-- Welcome Card -->
-    <div class="welcome-card" id="welcomeCard">
-      <div class="welcome-icon"><i class="fas fa-hand-fist"></i></div>
-      <div class="welcome-text">
-        <h3 id="welcomeName">Halo, Kader!</h3>
-        <p id="welcomeDesc">Ayo jalankan misi hari ini dan kumpulkan poin!</p>
-      </div>
+    <div class="hero-dots">
+      <div class="dot active" onclick="goToSlide(0)"></div>
+      <div class="dot" onclick="goToSlide(1)"></div>
+      <div class="dot" onclick="goToSlide(2)"></div>
     </div>
+  </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-value" id="statKader">0</div>
-        <div class="stat-label">Total Kader</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="statRelawan">0</div>
-        <div class="stat-label">Relawan</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value" id="statDesa">0</div>
-        <div class="stat-label">Desa</div>
-      </div>
+  <!-- WELCOME -->
+  <div class="welcome-card">
+    <div class="welcome-icon"><i class="fas fa-hand-peace"></i></div>
+    <div class="welcome-text">
+      <h3 id="welcomeUserName">Selamat Datang, Kader!</h3>
+      <p>Akses seluruh informasi, program kerja, dan layanan partai dalam satu genggaman.</p>
     </div>
+  </div>
 
-    <!-- Menu Grid -->
-    <div class="section-title">Menu Utama</div>
+  <!-- STATS (hidden for guest) -->
+  <div class="stats-grid" id="guestHideStats">
+    <div class="stat-item"><div class="stat-value" id="statKader">-</div><div class="stat-label">Total Kader</div></div>
+    <div class="stat-item"><div class="stat-value" id="statLaporan">-</div><div class="stat-label">Laporan</div></div>
+    <div class="stat-item"><div class="stat-value" id="statProduk">-</div><div class="stat-label">Produk UMKM</div></div>
+  </div>
+
+  <!-- MENU (hidden for guest) -->
+  <div id="guestHideMenu">
+    <div class="section-title">Layanan Utama</div>
     <div class="menu-grid">
-      <div class="menu-item" onclick="navigateTo('dashboard')">
-        <div class="menu-icon c-red"><i class="fas fa-tachometer-alt"></i></div>
-        <span class="menu-text">Dashboard</span>
-      </div>
-      <div class="menu-item" onclick="navigateTo('misi')">
-        <div class="menu-icon c-blue"><i class="fas fa-bullseye"></i></div>
-        <span class="menu-text">Misi & Reward</span>
-      </div>
-      <div class="menu-item" onclick="navigateTo('store')">
-        <div class="menu-icon c-green"><i class="fas fa-store"></i></div>
-        <span class="menu-text">Toko Kader</span>
-      </div>
-      <div class="menu-item" onclick="navigateTo('berita')">
-        <div class="menu-icon c-purple"><i class="fas fa-newspaper"></i></div>
-        <span class="menu-text">Berita</span>
-      </div>
-      <div class="menu-item" onclick="navigateTo('pengumuman')">
-        <div class="menu-icon c-orange"><i class="fas fa-bullhorn"></i></div>
-        <span class="menu-text">Pengumuman</span>
-      </div>
-      <div class="menu-item" onclick="navigateTo('profil')">
-        <div class="menu-icon c-cyan"><i class="fas fa-user-circle"></i></div>
-        <span class="menu-text">Profil</span>
-      </div>
-      <div class="menu-item" onclick="window.open('admin.html','_blank')">
-        <div class="menu-icon c-gray"><i class="fas fa-shield-halved"></i></div>
-        <span class="menu-text">Admin</span>
-      </div>
-      <div class="menu-item" onclick="navigateTo('beranda')">
-        <div class="menu-icon c-teal"><i class="fas fa-map-marked-alt"></i></div>
-        <span class="menu-text">Peta Kader</span>
+      <div class="menu-item" onclick="showView('berita')"><div class="menu-icon c-blue"><i class="fas fa-newspaper"></i></div><span class="menu-text">Berita</span></div>
+      <div class="menu-item" onclick="showView('pengumuman')"><div class="menu-icon c-orange"><i class="fas fa-bullhorn"></i></div><span class="menu-text">Info</span></div>
+      <div class="menu-item" onclick="showView('struktur')"><div class="menu-icon c-purple"><i class="fas fa-sitemap"></i></div><span class="menu-text">Struktur</span></div>
+      <div class="menu-item" onclick="showView('usulan')"><div class="menu-icon c-green"><i class="fas fa-lightbulb"></i></div><span class="menu-text">Usulan</span></div>
+      <div class="menu-item" onclick="showView('store')"><div class="menu-icon c-teal"><i class="fas fa-store"></i></div><span class="menu-text">Store</span></div>
+      <div class="menu-item" onclick="showView('galeri')"><div class="menu-icon c-pink"><i class="fas fa-images"></i></div><span class="menu-text">Galeri</span></div>
+      <div class="menu-item" onclick="showView('kontak')"><div class="menu-icon c-gray"><i class="fas fa-phone-alt"></i></div><span class="menu-text">Kontak</span></div>
+      <div class="menu-item" onclick="showView('statistik')"><div class="menu-icon c-yellow"><i class="fas fa-chart-pie"></i></div><span class="menu-text">Statistik</span></div>
+      <div class="menu-item" onclick="showView('misi-reward')"><div class="menu-icon c-red"><i class="fas fa-trophy"></i></div><span class="menu-text">Misi & Reward</span></div>
+      <div class="menu-item" onclick="navigateToDashboard()"><div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div><span class="menu-text">Dashboard</span></div>
+    </div>
+  </div>
+
+  <!-- GUEST LOGIN BANNER (hidden for logged-in) -->
+  <div id="guestLoginBanner" style="display:none;">
+    <div class="guest-login-banner">
+      <i class="fas fa-lock"></i>
+      <h3>Fitur Ini Untuk Kader Terdaftar</h3>
+      <p>Login untuk mengakses seluruh layanan partai, misi & reward, store UMKM, dashboard kader, dan fitur lainnya.</p>
+      <button class="guest-login-btn" onclick="guestGoLogin()"><i class="fas fa-sign-in-alt"></i> Masuk / Daftar</button>
+    </div>
+  </div>
+
+  <!-- TOP KADER (hidden for guest) -->
+  <div id="guestHideLeaderboard">
+    <div class="section-title" style="margin-top:25px">
+      <span><i class="fas fa-medal" style="color:var(--gold);margin-right:6px"></i> Top 10 Kader</span>
+      <span style="margin-left:auto;font-size:0.68rem;color:var(--success);font-weight:700;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span> Realtime</span>
+    </div>
+    <div class="leaderboard-card">
+      <div id="topKaderList"><p class="mr-lb-empty">Memuat data...</p></div>
+    </div>
+  </div>
+
+  <!-- BERITA TERKINI (hidden for guest) -->
+  <div id="guestHideNews">
+    <div class="section-title" style="margin-top:25px">Berita Terkini</div>
+    <div class="news-list">
+      <div class="news-item">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" class="news-img">
+        <div class="news-content">
+          <h4>Rapat Koordinasi Tim Pemenangan</h4>
+          <p>Kegiatan rakor tim sukses di sekretariat DPC Meranti.</p>
+        </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- Leaderboard -->
+<!-- VIEWS UMUM -->
+<div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:var(--text-muted)">Informasi terkini seputar kegiatan partai.</p></div></div>
+<div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><ul><li><b>Rapat Rutin</b><br><small>Setiap Senin malam di Sekretariat DPC.</small></li></ul></div></div>
+<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong></p></div></div>
+<div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
+<div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
+<div id="view-bantuan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Bantuan</h3></div></div>
+<div id="view-kontak" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3></div></div>
+
+<!-- VIEW: MISI & REWARD -->
+<div id="view-misi-reward" class="view-section">
+
+  <!-- HERO -->
+  <div class="mr-hero">
+    <div class="mr-hero-tag"><i class="fas fa-star"></i> Event 3 Bulanan</div>
+    <h2><i class="fas fa-trophy"></i> Misi & Reward Kader</h2>
+    <p>Kumpulkan poin dari setiap misi yang kamu selesaikan. Tukarkan dengan hadiah eksklusif PDI Perjuangan Kab. Kepulauan Meranti!</p>
+  </div>
+
+  <!-- PERIODE INFO -->
+  <div class="mr-period-bar">
+    <i class="fas fa-calendar-alt"></i>
+    <span>Periode: <b>Januari - Maret 2026</b> &middot; Poin diakumulasi 3 bulan &middot; Reset tiap kuartal</span>
+  </div>
+
+  <!-- TAB NAVIGATION -->
+  <div class="mr-tabs">
+    <button class="mr-tab active" onclick="switchMrTab('rules')"><i class="fas fa-gavel"></i> Aturan</button>
+    <button class="mr-tab" onclick="switchMrTab('reward')"><i class="fas fa-gift"></i> Reward</button>
+    <button class="mr-tab" onclick="switchMrTab('misi')"><i class="fas fa-bullseye"></i> Misi</button>
+    <button class="mr-tab" onclick="switchMrTab('sosmed')"><i class="fas fa-share-alt"></i> Sosmed</button>
+    <button class="mr-tab" onclick="switchMrTab('leaderboard')"><i class="fas fa-medal"></i> Top 10</button>
+  </div>
+
+  <!-- ===================== TAB 1: ATURAN ===================== -->
+  <div id="mrPanel-rules" class="mr-panel active">
+
+    <!-- Accordion: Kualifikasi Peserta -->
+    <div class="mr-accordion open" id="acc-rule1">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule1')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626)"><span style="font-size:0.65rem;font-weight:900">1</span></div>
+        <div><div class="mr-acc-title">Kualifikasi Peserta</div><div class="mr-acc-subtitle">Siapa yang bisa mengikuti program ini</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Seluruh kader dan relawan PDI Perjuangan terdaftar di App Kader Kab. Kepulauan Meranti. Status akun harus <b>Aktif</b> dan email terverifikasi. Akun tamu tidak dapat mengikuti program.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Periode Event -->
+    <div class="mr-accordion" id="acc-rule2">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule2')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><span style="font-size:0.65rem;font-weight:900">2</span></div>
+        <div><div class="mr-acc-title">Periode Event</div><div class="mr-acc-subtitle">Jadwal dan siklus program</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Berlangsung setiap <b>3 bulan</b> (Q1: Jan-Mar, Q2: Apr-Jun, Q3: Jul-Sep, Q4: Okt-Des). Poin <b>tidak dapat dipindahkan</b> ke periode berikutnya. Reset otomatis tiap kuartal baru.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Sistem Poin -->
+    <div class="mr-accordion" id="acc-rule3">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule3')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#3B82F6,#2563EB)"><span style="font-size:0.65rem;font-weight:900">3</span></div>
+        <div><div class="mr-acc-title">Sistem Poin</div><div class="mr-acc-subtitle">Cara poin diberikan dan digunakan</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Poin diberikan setelah misi <b>diverifikasi admin</b>. Bersifat kumulatif dan langsung dapat ditukarkan selama stok tersedia. Penukaran via Dashboard &gt; Reward atau hub admin DPC.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Verifikasi Misi -->
+    <div class="mr-accordion" id="acc-rule4">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule4')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)"><span style="font-size:0.65rem;font-weight:900">4</span></div>
+        <div><div class="mr-acc-title">Verifikasi Misi</div><div class="mr-acc-subtitle">Proses pengecekan misi oleh admin</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Setiap misi melewati proses verifikasi admin DPC. Misi yang <b>tidak memenuhi syarat akan ditolak</b> dan poin tidak diberikan. Keputusan admin bersifat final.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Kedisiplinan -->
+    <div class="mr-accordion" id="acc-rule5">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule5')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><span style="font-size:0.65rem;font-weight:900">5</span></div>
+        <div><div class="mr-acc-title">Kedisiplinan & Anti Kecurangan</div><div class="mr-acc-subtitle">Sanksi pelanggaran</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Dilarang keras: fake akun, spam, bot, manipulasi data. Pelanggaran dikenakan <b>sanksi pengurangan poin 100%</b> atau <b>penonaktifan akun permanen</b>.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Pengambilan Reward -->
+    <div class="mr-accordion" id="acc-rule6">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule6')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#EC4899,#DB2777)"><span style="font-size:0.65rem;font-weight:900">6</span></div>
+        <div><div class="mr-acc-title">Pengambilan Reward</div><div class="mr-acc-subtitle">Cara mengambil hadiah</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">Ambil di <b>Sekretariat DPC</b> setelah disetujui. Kader luar kota bisa dikirim via cargo (biaya penerima). Konfirmasi maksimal <b>30 hari</b> setelah persetujuan.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Perubahan Ketentuan -->
+    <div class="mr-accordion" id="acc-rule7">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rule7')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#06B6D4,#0891B2)"><span style="font-size:0.65rem;font-weight:900">7</span></div>
+        <div><div class="mr-acc-title">Perubahan Ketentuan</div><div class="mr-acc-subtitle">Hak DPC mengubah aturan</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <div class="mr-ru-desc">DPC berhak mengubah syarat dan nilai poin sewaktu-waktu. Perubahan diinformasikan via App dan grup WhatsApp resmi. Kehadiran dalam kegiatan partai juga menjadi penilaian.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 2: REWARD ===================== -->
+  <div id="mrPanel-reward" class="mr-panel">
+
+    <!-- Accordion: Daftar Reward -->
+    <div class="mr-accordion open" id="acc-rew-list">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rew-list')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark))"><i class="fas fa-gift" style="font-size:0.85rem"></i></div>
+        <div><div class="mr-acc-title">Katalog Reward & Konversi Poin</div><div class="mr-acc-subtitle">5 hadiah eksklusif untuk kader</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content" style="overflow-x:auto">
+        <table class="mr-rew-table">
+          <thead>
+            <tr>
+              <th style="width:36px"></th>
+              <th>Reward</th>
+              <th style="text-align:center">Poin</th>
+              <th style="text-align:center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#EF4444,#DC2626)"><i class="fas fa-tshirt"></i></span></td>
+              <td><div class="rew-name">Kaos Partai</div><div class="rew-sub">Kaos official PDI Perjuangan &middot; Katun combed 30s &middot; M, L, XL</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#FEE2E2;color:#DC2626">500</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED)"><i class="fas fa-mug-hot"></i></span></td>
+              <td><div class="rew-name">Mug Partai</div><div class="rew-sub">Mug keramik logo PDI &middot; 350ml &middot; Microwave safe</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#EDE9FE;color:#7C3AED">400</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)"><i class="fas fa-vest-patches"></i></span></td>
+              <td><div class="rew-name">Jaket Partai</div><div class="rew-sub">Jaket official PDI Perjuangan &middot; Parasut waterproof</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#DBEAFE;color:#2563EB">1000</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#F97316,#EA580C)"><i class="fas fa-utensils"></i></span></td>
+              <td><div class="rew-name">Voucher Makan 2 Orang</div><div class="rew-sub">Restoran mitra DPC &middot; Berlaku 30 hari</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#FFF7ED;color:#EA580C">750</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+            <tr>
+              <td class="rew-icon-cell"><span class="rew-icon" style="background:linear-gradient(135deg,#EAB308,#CA8A04)"><i class="fas fa-bolt"></i></span></td>
+              <td><div class="rew-name">Token Listrik Rp 100.000</div><div class="rew-sub">Kode voucher dikirim via WhatsApp</div></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#FEF3C7;color:#B45309">600</span></td>
+              <td style="text-align:center"><span class="mr-badge" style="background:#D1FAE5;color:#059669">Tersedia</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:8px;text-align:center">*Stok reward terbatas. Penukaran berdasarkan urutan permintaan.</div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Cara Penukaran -->
+    <div class="mr-accordion" id="acc-rew-cara">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-rew-cara')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#3B82F6,#2563EB)"><i class="fas fa-exchange-alt" style="font-size:0.85rem"></i></div>
+        <div><div class="mr-acc-title">Cara Penukaran Reward</div><div class="mr-acc-subtitle">Langkah-langkah menukar poin</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">1</span></td><td>Kumpulkan poin dari misi yang telah diverifikasi admin</td></tr>
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">2</span></td><td>Pastikan poin mencukupi untuk reward yang diinginkan</td></tr>
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">3</span></td><td>Hubungi admin DPC via WhatsApp atau Dashboard &gt; Reward</td></tr>
+          <tr><td style="width:28px;text-align:center"><span style="font-weight:900;color:var(--primary)">4</span></td><td>Ambil reward di Sekretariat DPC dalam 30 hari setelah disetujui</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 3: MISI ===================== -->
+  <div id="mrPanel-misi" class="mr-panel">
+
+    <!-- Accordion: Misi 1 Rekrutmen -->
+    <div class="mr-accordion open" id="acc-misi1">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-misi1')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><i class="fas fa-user-plus"></i></div>
+        <div><div class="mr-acc-title">Misi 1: Rekruitmen Anggota</div><div class="mr-acc-subtitle">Berlaku sepanjang periode &middot; Verifikasi 3 hari kerja</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td colspan="2" style="padding-bottom:4px;font-weight:700;font-size:0.74rem;color:var(--text-muted);border-bottom:2px solid var(--border-color)">SKEMA POIN REKRUITMEN</td></tr>
+          <tr><td>Anggota baru mendaftar &amp; akun aktif</td><td class="pts">+20 poin</td></tr>
+          <tr><td>Anggota baru verifikasi email dalam 24 jam</td><td class="pts">+10 poin</td></tr>
+          <tr><td>Profil lengkap (provinsi-kecamatan-desa)</td><td class="pts">+15 poin</td></tr>
+          <tr><td>Bonus rekrut 5+ anggota aktif dalam 1 bulan</td><td class="pts">+50 poin</td></tr>
+          <tr><td colspan="2" style="padding-bottom:4px;font-weight:700;font-size:0.74rem;color:var(--text-muted);border-bottom:2px solid var(--border-color)">KETENTUAN</td></tr>
+          <tr><td colspan="2" style="border-bottom:none"><span style="color:var(--text-main)">1.</span> Wajib mendaftar melalui App Kader (bukan akun palsu)<br><span style="color:var(--text-main)">2.</span> Hanya berlaku untuk anggota beralamat di <b>Kab. Kepulauan Meranti</b><br><span style="color:var(--text-main)">3.</span> Verifikasi dilakukan admin DPC maksimal 3 hari kerja</td></tr>
+        </table>
+        <div class="mr-notice">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div><b>Penting:</b> Akun duplikat, data palsu, atau manipulasi akan mengakibatkan pembatalan poin dan sanksi untuk kreator referral.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Misi 2 Sosmed - Facebook -->
+    <div class="mr-accordion" id="acc-misi2-fb">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-misi2-fb')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+        <div><div class="mr-acc-title">Misi 2: Sosmed - Facebook</div><div class="mr-acc-subtitle">+30 poin/posting &middot; Maks 5/minggu</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td>Postingan bersifat positif &amp; membangun</td><td class="pts">Wajib</td></tr>
+          <tr><td>Minimal 1 foto (kegiatan/kader/desain resmi)</td><td class="pts">Wajib</td></tr>
+          <tr><td>Hashtag: <b>#PDIPerjuangan #PDIMeranti #KepulauanMeranti</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Status postingan <b>PUBLIC (Publik)</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Tidak mengandung SARA / ujaran kebencian</td><td class="pts">Wajib</td></tr>
+          <tr><td>Kirim screenshot + link URL ke admin</td><td class="pts">Wajib</td></tr>
+        </table>
+      </div></div>
+    </div>
+
+    <!-- Accordion: Misi 2 Sosmed - TikTok -->
+    <div class="mr-accordion" id="acc-misi2-tt">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-misi2-tt')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+        <div><div class="mr-acc-title">Misi 2: Sosmed - TikTok</div><div class="mr-acc-subtitle">+50 poin/video &middot; Maks 3/minggu</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+        <table class="mr-misi-table">
+          <tr><td>Durasi video <b>minimal 1 menit</b>, maks 3 menit</td><td class="pts">Wajib</td></tr>
+          <tr><td>Konten relevan PDI Perjuangan Kep. Meranti</td><td class="pts">Wajib</td></tr>
+          <tr><td>Video berstatus <b>PUBLIC (Publik)</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Hashtag: <b>#PDIPerjuangan #PDIMeranti #KepulauanMeranti #KaderPDI</b></td><td class="pts">Wajib</td></tr>
+          <tr><td>Tidak mengandung konten negatif / melanggar hukum</td><td class="pts">Wajib</td></tr>
+          <tr><td>Kirim link TikTok ke admin sebagai bukti</td><td class="pts">Wajib</td></tr>
+          <tr><td>Bonus 500+ views dalam 7 hari pertama</td><td class="pts" style="color:#10B981">+20</td></tr>
+        </table>
+        <div class="mr-notice">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div><b>Syarat Konten:</b> Harus orisinal (bukan repost), tidak melanggar hak cipta, mencerminkan nilai PDI Perjuangan. Admin berhak menolak konten yang tidak memenuhi syarat.</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 4: SOSMED TEMPLATE ===================== -->
+  <div id="mrPanel-sosmed" class="mr-panel">
+
+    <!-- Accordion: Template Facebook -->
+    <div class="mr-accordion open" id="acc-sosmed-fb">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-sosmed-fb')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+        <div><div class="mr-acc-title">Template Posting Facebook</div><div class="mr-acc-subtitle">2 contoh caption siap pakai</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+            <h4>Postingan Umum</h4>
+          </div>
+          <div class="mr-tmpl-box" id="fbPost1">PDI Perjuangan - Satukan Langkah untuk Kepulauan Meranti!
+
+Bersama PDI Perjuangan, kita wujudkan perubahan nyata untuk Kabupaten Kepulauan Meranti. Dari Tebing Tinggi hingga Rangsang, dari Merbau hingga Tasik Putri Puyu, semangat kader kami tak pernah padam!
+
+Mari bergabung bersama kami membangun Meranti yang lebih sejahtera, berkeadilan, dan bermartabat. Kader PDI Perjuangan siap melayani rakyat dengan sepenuh hati!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #SatukanLangkah #KaderPDI #MerantiBangkit #RakyatBerdaulat</div>
+          <button class="mr-copy-btn" onclick="copyText('fbPost1')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+            <h4>Postingan Kegiatan</h4>
+          </div>
+          <div class="mr-tmpl-box" id="fbPost2">Alhamdulillah, kegiatan [NAMA KEGIATAN] PDI Perjuangan DPC Kabupaten Kepulauan Meranti berjalan dengan lancar dan penuh semangat!
+
+Kegiatan ini dihadiri oleh kader-kader dari berbagai kecamatan di Kepulauan Meranti. Terima kasih atas partisipasi seluruh kader yang telah hadir dan berkontribusi. Mari terus bekerja keras untuk masyarakat!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #KaderMilitan #PDISatuUntukSemua</div>
+          <button class="mr-copy-btn" onclick="copyText('fbPost2')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+      </div></div>
+    </div>
+
+    <!-- Accordion: Template TikTok -->
+    <div class="mr-accordion" id="acc-sosmed-tt">
+      <div class="mr-acc-header" onclick="toggleAccordion('acc-sosmed-tt')">
+        <div class="mr-acc-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+        <div><div class="mr-acc-title">Template Caption TikTok</div><div class="mr-acc-subtitle">3 contoh caption &middot; Min. 1 menit</div></div>
+        <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
+      </div>
+      <div class="mr-acc-body"><div class="mr-acc-content">
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+            <h4>Video Persatuan Kader</h4>
+            <small>+1 min</small>
+          </div>
+          <div class="mr-tmpl-box" id="ttPost1">Kader PDI Perjuangan dari seluruh Kepulauan Meranti bersatu! Ini bukti nyata bahwa kami siap melayani rakyat dengan sepenuh hati. Dari Tebing Tinggi hingga Sungai Batang, PDI Perjuangan selalu hadir untuk rakyat!
+
+Buat kalian yang ingin bergabung dan berkontribusi untuk Kepulauan Meranti yang lebih baik, tunggu apa lagi? Jadilah bagian dari keluarga besar PDI Perjuangan!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #KaderPDI #MerantiBangkit #RakyatBerdaulat #PDISatuUntukSemua</div>
+          <button class="mr-copy-btn" onclick="copyText('ttPost1')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+            <h4>Video Potensi Meranti</h4>
+            <small>+1 min</small>
+          </div>
+          <div class="mr-tmpl-box" id="ttPost2">Kepulauan Meranti punya potensi luar biasa! Sumber daya alam yang kaya, budaya Melayu yang unik, dan masyarakat yang ramah. PDI Perjuangan berkomitmen penuh untuk memajukan daerah ini!
+
+Di video ini, kita lihat keindahan dan potensi Kepulauan Meranti. Yuk dukung pembangunan Meranti bersama PDI Perjuangan!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #PotensiMeranti #BangunMeranti #KaderPDI</div>
+          <button class="mr-copy-btn" onclick="copyText('ttPost2')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+        <div class="mr-tmpl-card">
+          <div class="mr-tmpl-head">
+            <div class="mr-tmpl-icon" style="background:linear-gradient(135deg,#000,#333)"><i class="fab fa-tiktok"></i></div>
+            <h4>Video Ajakan Rekrutmen</h4>
+            <small>+1 min</small>
+          </div>
+          <div class="mr-tmpl-box" id="ttPost3">Mau jadi bagian dari perubahan nyata di Kepulauan Meranti? Bergabunglah bersama PDI Perjuangan! Kami butuh kader-kader muda yang berdedikasi tinggi untuk membangun Meranti yang lebih baik.
+
+Caranya gampang, daftar langsung di App Kader PDI Perjuangan Kab. Kepulauan Meranti. Setelah terdaftar, kamu bisa ikut berbagai kegiatan partai, kumpulkan poin, dan tukarkan dengan reward menarik!
+
+Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti!
+
+#PDIPerjuangan #PDIPerjuanganMeranti #KepulauanMeranti #GabungPDI #KaderMudaPDI #MerantiBangkit</div>
+          <button class="mr-copy-btn" onclick="copyText('ttPost3')"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TAB 5: LEADERBOARD ===================== -->
+  <div id="mrPanel-leaderboard" class="mr-panel">
+    <div class="mr-hdr">
+      <span><i class="fas fa-medal" style="color:var(--gold)"></i> Leaderboard Top 10 Kader</span>
+      <span style="margin-left:auto;font-size:0.68rem;color:var(--success);font-weight:700;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span> Realtime</span>
+    </div>
+    <div id="mrLeaderboard"><p class="mr-lb-empty">Memuat data...</p></div>
+  </div>
+
+</div>
+<!-- END VIEW: MISI & REWARD -->
+
+<!-- VIEW: STATISTIK (Peta Kekuatan Kader) -->
+<div id="view-statistik" class="view-section">
+  <div class="analytics-section">
     <div class="section-title">
-      <span><i class="fas fa-trophy" style="color:#F59E0B;margin-right:6px;"></i> Top Kader</span>
-      <span style="font-size:0.75rem;color:var(--text-muted);cursor:pointer;" onclick="navigateTo('misi')">Lihat Semua →</span>
+      <span><i class="fas fa-chart-pie" style="color:var(--primary); margin-right:8px"></i> Peta Kekuatan Kader</span>
+      <div class="live-indicator">Data Live</div>
     </div>
-    <div class="leaderboard-card" id="leaderboardHome">
-      <div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:20px 0;">Memuat leaderboard...</div>
-    </div>
-
-    <!-- Berita Terkini (Guest Mode) -->
-    <div id="guestHideNews">
-      <div class="section-title">
-        <span><i class="fas fa-fire" style="color:var(--primary);margin-right:6px;"></i> Berita Terkini</span>
-      </div>
-      <div id="beritaTerkiniList">
-        <div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:20px 0;">Memuat berita...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== BERITA ===== -->
-  <div id="view-berita" class="view-section container">
-    <div class="section-title" style="font-size:1.2rem;"><i class="fas fa-newspaper" style="color:var(--primary);margin-right:8px;"></i> Berita</div>
-    <div id="beritaList">
-      <div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:40px 0;">
-        <i class="fas fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--primary);"></i>
-        Memuat berita...
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PENGUMUMAN ===== -->
-  <div id="view-pengumuman" class="view-section container">
-    <div class="section-title" style="font-size:1.2rem;"><i class="fas fa-bullhorn" style="color:var(--primary);margin-right:8px;"></i> Pengumuman</div>
-    <div id="pengumumanList">
-      <div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:40px 0;">
-        <i class="fas fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--primary);"></i>
-        Memuat pengumuman...
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== DASHBOARD ===== -->
-  <div id="view-dashboard" class="view-section container">
-    <div class="section-title" style="font-size:1.2rem;"><i class="fas fa-tachometer-alt" style="color:var(--primary);margin-right:8px;"></i> Dashboard</div>
     <div class="card">
-      <div id="dash-peta"></div>
-    </div>
-    <div class="stats-grid" style="margin-top:16px;">
-      <div class="stat-item"><div class="stat-value" id="dashPoin">0</div><div class="stat-label">Poin Saya</div></div>
-      <div class="stat-item"><div class="stat-value" id="dashMisi">0</div><div class="stat-label">Misi Selesai</div></div>
-      <div class="stat-item"><div class="stat-value" id="dashRank">-</div><div class="stat-label">Ranking</div></div>
-    </div>
-    <div class="card" style="margin-top:16px;">
-      <h3 style="font-size:0.95rem;font-weight:800;margin-bottom:10px;"><i class="fas fa-chart-bar" style="color:var(--primary);margin-right:6px;"></i> Statistik Wilayah</h3>
-      <div class="chart-wrapper"><canvas id="dashChart"></canvas></div>
+      <div class="chart-wrapper">
+        <canvas id="analyticsChart"></canvas>
+      </div>
+
+      <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:10px; text-align:right">
+        Update terakhir: <span id="lastUpdate">-</span>
+      </div>
+
+      <table class="table-analytics">
+        <thead>
+          <tr>
+            <th>Kecamatan</th>
+            <th style="text-align:center">Jumlah</th>
+            <th style="text-align:right; width:30%">Persentase</th>
+          </tr>
+        </thead>
+        <tbody id="analyticsTable">
+          <tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Memuat data...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- ===== MISI & REWARD ===== -->
-  <div id="view-misi" class="view-section container">
-    <div class="mr-hero">
-      <div class="mr-hero-tag"><i class="fas fa-bullseye"></i> Misi & Reward</div>
-      <h2>Kumpulkan Poin, Raih Hadiah!</h2>
-      <p>Selesaikan misi harian untuk mendapatkan poin yang bisa ditukarkan dengan hadiah menarik.</p>
+  <!-- ========================================== -->
+  <!-- TITIK PENYEBARAN KADER PARTAI              -->
+  <!-- ========================================== -->
+  <div class="analytics-section">
+    <div class="section-title">
+      <span><i class="fas fa-map-marker-alt" style="color:#3B82F6; margin-right:8px"></i> Titik Penyebaran Kader Partai</span>
+      <div class="live-indicator">Data Live</div>
     </div>
-    <div class="mr-period-bar">
-      <i class="fas fa-calendar-alt"></i>
-      <span>Periode: <strong id="misiPeriod">Januari 2026</strong></span>
-    </div>
-    <div class="mr-tabs">
-      <button class="mr-tab active" onclick="switchMrTab(this,'mr-panel-misi')"><i class="fas fa-tasks"></i> Misi</button>
-      <button class="mr-tab" onclick="switchMrTab(this,'mr-panel-reward')"><i class="fas fa-gift"></i> Reward</button>
-      <button class="mr-tab" onclick="switchMrTab(this,'mr-panel-leaderboard')"><i class="fas fa-trophy"></i> Leaderboard</button>
-      <button class="mr-tab" onclick="switchMrTab(this,'mr-panel-rules')"><i class="fas fa-book"></i> Aturan</button>
-    </div>
-    <!-- Panel: Misi -->
-    <div id="mr-panel-misi" class="mr-panel active">
-      <div class="ts-header"><i class="fas fa-clipboard-list"></i> Daftar Misi</div>
-      <div class="ts-sub">Selesaikan misi untuk mendapatkan poin</div>
-      <div class="ts-summary" id="misiSummary">
-        <div class="ts-sum-item"><div class="ts-sum-val" id="misiTotal">0</div><div class="ts-sum-lbl">Total</div></div>
-        <div class="ts-sum-item"><div class="ts-sum-val" id="misiSelesai">0</div><div class="ts-sum-lbl">Selesai</div></div>
-        <div class="ts-sum-item"><div class="ts-sum-val" id="misiPending">0</div><div class="ts-sum-lbl">Pending</div></div>
-      </div>
-      <div id="misiList">
-        <div class="ts-empty">Belum ada misi tersedia.</div>
-      </div>
-    </div>
-    <!-- Panel: Reward -->
-    <div id="mr-panel-reward" class="mr-panel">
-      <div class="rw-summary-card">
-        <div class="rw-summary-left">
-          <div class="rw-summary-icon"><i class="fas fa-coins"></i></div>
-          <div><div class="rw-summary-title">Poin Anda</div><div class="rw-summary-sub">Tukarkan dengan hadiah</div></div>
+    <div class="card">
+      <!-- Summary Cards -->
+      <div style="display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;">
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);">
+          <div class="mini-stat-value" style="color:#2563EB;" id="distKecamatan">-</div>
+          <div class="mini-stat-label" style="color:#1E40AF;">Kecamatan</div>
         </div>
-        <div class="rw-summary-right">
-          <div class="rw-summary-value" id="rewardPoin">0</div>
-          <div class="rw-summary-label">POIN</div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">
+          <div class="mini-stat-value" style="color:#16A34A;" id="distTotal">-</div>
+          <div class="mini-stat-label" style="color:#166534;">Total Kader</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">
+          <div class="mini-stat-value" style="color:#EA580C;" id="distAvg">-</div>
+          <div class="mini-stat-label" style="color:#9A3412;">Rata-rata</div>
         </div>
       </div>
-      <div id="rewardCatalog">
-        <div class="rw-empty">Belum ada katalog reward.</div>
+
+      <!-- Horizontal Bar Chart -->
+      <div class="chart-wrapper-lg">
+        <canvas id="distribusiChart"></canvas>
       </div>
-    </div>
-    <!-- Panel: Leaderboard -->
-    <div id="mr-panel-leaderboard" class="mr-panel">
-      <div class="mr-hdr"><i class="fas fa-trophy" style="color:#F59E0B;"></i> Leaderboard Periode Ini</div>
-      <div id="misiLeaderboard">
-        <div class="mr-lb-empty">Memuat leaderboard...</div>
-      </div>
-    </div>
-    <!-- Panel: Rules -->
-    <div id="mr-panel-rules" class="mr-panel">
-      <div class="mr-hdr"><i class="fas fa-book" style="color:var(--blue);"></i> Aturan Misi & Reward</div>
-      <div class="mr-accordion open">
-        <div class="mr-acc-header" onclick="toggleMrAcc(this)">
-          <div class="mr-acc-icon c-red"><i class="fas fa-star"></i></div>
-          <div><div class="mr-acc-title">Perolehan Poin</div><div class="mr-acc-subtitle">Cara mendapatkan poin</div></div>
-          <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
-        </div>
-        <div class="mr-acc-body"><div class="mr-acc-content">
-          <table class="mr-misi-table">
-            <tr><td>Check-in Harian</td><td class="pts">+5 poin</td></tr>
-            <tr><td>Share Media Sosial</td><td class="pts">+10 poin</td></tr>
-            <tr><td>Kunjungan Lapangan</td><td class="pts">+20 poin</td></tr>
-            <tr><td>Kehadiran Rapat</td><td class="pts">+15 poin</td></tr>
-            <tr><td>Rekrut Kader Baru</td><td class="pts">+50 poin</td></tr>
-          </table>
-        </div></div>
-      </div>
-      <div class="mr-accordion">
-        <div class="mr-acc-header" onclick="toggleMrAcc(this)">
-          <div class="mr-acc-icon c-blue"><i class="fas fa-shield-alt"></i></div>
-          <div><div class="mr-acc-title">Syarat & Ketentuan</div><div class="mr-acc-subtitle">Aturan umum program</div></div>
-          <div class="mr-acc-toggle"><i class="fas fa-chevron-down"></i></div>
-        </div>
-        <div class="mr-acc-body"><div class="mr-acc-content">
-          <div class="mr-notice"><i class="fas fa-exclamation-triangle"></i><div>Poin akan direset setiap periode. Pastikan menukarkan poin sebelum periode berakhir.</div></div>
-        </div></div>
-      </div>
+
+      <!-- Table -->
+      <table class="table-analytics">
+        <thead>
+          <tr>
+            <th style="width:28px">#</th>
+            <th>Kecamatan</th>
+            <th style="text-align:center">Kader</th>
+            <th style="text-align:right; width:30%">Persentase</th>
+          </tr>
+        </thead>
+        <tbody id="distribusiTable">
+          <tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Memuat data...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- ===== STORE ===== -->
-  <div id="view-store" class="view-section container">
-    <div class="section-title" style="font-size:1.2rem;"><i class="fas fa-store" style="color:var(--primary);margin-right:8px;"></i> Toko Kader</div>
+  <!-- ========================================== -->
+  <!-- TITIK LEMAH PENYEBARAN KADER PDI          -->
+  <!-- ========================================== -->
+  <div class="analytics-section">
+    <div class="section-title">
+      <span><i class="fas fa-exclamation-triangle" style="color:#EF4444; margin-right:8px"></i> Titik Lemah Penyebaran Kader PDI</span>
+      <div class="live-indicator">Data Live</div>
+    </div>
+    <div class="card">
+      <!-- Status Summary Cards -->
+      <div style="display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;" id="weakStatCards">
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FEF2F2,#FECACA);">
+          <div class="mini-stat-value" style="color:#DC2626;" id="statKritis">0</div>
+          <div class="mini-stat-label" style="color:#991B1B;">Kritis (0)</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FFF7ED,#FED7AA);">
+          <div class="mini-stat-value" style="color:#EA580C;" id="statLemah">0</div>
+          <div class="mini-stat-label" style="color:#9A3412;">Lemah (1-2)</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#FFFBEB,#FEF3C7);">
+          <div class="mini-stat-value" style="color:#D97706;" id="statCukup">0</div>
+          <div class="mini-stat-label" style="color:#92400E;">Cukup (3-5)</div>
+        </div>
+        <div class="mini-stat-card" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">
+          <div class="mini-stat-value" style="color:#16A34A;" id="statKuat">0</div>
+          <div class="mini-stat-label" style="color:#166534;">Kuat (6+)</div>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div class="chart-wrapper-lg">
+        <canvas id="weakChart"></canvas>
+      </div>
+
+      <!-- Detail Table -->
+      <table class="table-analytics">
+        <thead>
+          <tr>
+            <th>Kecamatan</th>
+            <th style="text-align:center">Status</th>
+            <th style="text-align:center">Kader</th>
+            <th style="text-align:right; width:25%">Kekuatan</th>
+          </tr>
+        </thead>
+        <tbody id="weakTable">
+          <tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Memuat data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW: STORE UMKM -->
+<div id="view-store" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-store" style="color:#14B8A6; margin-right:8px"></i> Store UMKM Kader</h3>
     <div class="store-tabs">
-      <div class="store-tab active" onclick="switchStoreTab(this,'semua')">Semua</div>
-      <div class="store-tab" onclick="switchStoreTab(this,'merchandise')">Merchandise</div>
-      <div class="store-tab" onclick="switchStoreTab(this,'elektronik')">Elektronik</div>
+      <div class="store-tab active" onclick="switchStoreTab('list')"><i class="fas fa-th-large"></i> Etalase</div>
+      <div class="store-tab" onclick="switchStoreTab('add')"><i class="fas fa-plus-circle"></i> Jual Produk</div>
     </div>
-    <div class="product-grid" id="storeProductGrid">
-      <div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 0;">Belum ada produk.</div>
+    <div id="store-list">
+      <div id="productGrid" class="product-grid"><p style="text-align:center; grid-column: span 2; color:var(--text-muted); font-size:0.82rem; padding:30px 0">Memuat produk...</p></div>
+    </div>
+    <div id="store-add" style="display:none;">
+      <div class="st-form-group">
+        <label class="form-label">Nama Produk *</label>
+        <input type="text" id="inputNamaProduk" placeholder="Contoh: Keripik Singkong Emping">
+      </div>
+      <div class="st-form-row">
+        <div class="st-form-group">
+          <label class="form-label">Harga (Rp) *</label>
+          <input type="number" id="inputHargaProduk" placeholder="15000">
+        </div>
+        <div class="st-form-group">
+          <label class="form-label">Berat (gram)</label>
+          <input type="number" id="inputBeratProduk" placeholder="250">
+        </div>
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Kategori</label>
+        <select id="inputKategoriProduk">
+          <option value="">Pilih Kategori</option>
+          <option value="Makanan & Minuman">Makanan & Minuman</option>
+          <option value="Kerajinan Tangan">Kerajinan Tangan</option>
+          <option value="Pakaian & Aksesoris">Pakaian & Aksesoris</option>
+          <option value="Pertanian & Perkebunan">Pertanian & Perkebunan</option>
+          <option value="Perikanan & Kelautan">Perikanan & Kelautan</option>
+          <option value="Jasa">Jasa</option>
+          <option value="Elektronik">Elektronik</option>
+          <option value="Kesehatan & Kecantikan">Kesehatan & Kecantikan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Deskripsi Produk *</label>
+        <textarea id="inputDescProduk" rows="3" placeholder="Jelaskan produk Anda secara detail (min. 20 karakter)..."></textarea>
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Nomor WhatsApp *</label>
+        <input type="text" id="inputWaProduk" placeholder="08xxxxxxxxxx">
+      </div>
+      <div class="st-form-group">
+        <label class="form-label">Foto Produk * <small style="color:var(--text-muted)">(Maks 2MB)</small></label>
+        <label class="file-upload-area" id="stUploadArea">
+          <i class="fas fa-camera"></i>
+          <p id="stUploadText">Tap untuk pilih foto produk</p>
+          <input type="file" id="inputFotoProduk" accept="image/*" onchange="previewProductPhoto(this)">
+        </label>
+        <div class="preview-container" id="previewPhotoContainer"><img src="" alt="Preview" class="preview-img" id="previewPhotoImg"></div>
+      </div>
+      <button onclick="tambahProduk()" id="btnUploadProduk" style="margin-top:15px"><i class="fas fa-paper-plane"></i> Upload Produk</button>
     </div>
   </div>
+</div>
 
-  <!-- ===== PROFIL ===== -->
-  <div id="view-profil" class="view-section container">
-    <div class="card" style="text-align:center;">
-      <img id="profilAvatar" src="https://ui-avatars.com/api/?name=Kader&background=E31E25&color=fff&size=100" style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px;display:block;border:3px solid var(--primary);">
-      <h3 id="profilNama" style="font-size:1.1rem;font-weight:800;">Kader PDI</h3>
-      <p id="profilJabatan" style="color:var(--primary);font-size:0.8rem;font-weight:700;">Kader</p>
-      <p id="profilWilayah" style="color:var(--text-muted);font-size:0.8rem;margin-top:4px;">Kab. Kepulauan Meranti</p>
-      <div style="display:flex;gap:10px;margin-top:16px;">
-        <div class="mini-stat-card" style="background:var(--bg-body);">
-          <div class="mini-stat-value" style="color:var(--primary);" id="profilPoin">0</div>
-          <div class="mini-stat-label">Poin</div>
-        </div>
-        <div class="mini-stat-card" style="background:var(--bg-body);">
-          <div class="mini-stat-value" style="color:var(--success);" id="profilMisi">0</div>
-          <div class="mini-stat-label">Misi</div>
-        </div>
-        <div class="mini-stat-card" style="background:var(--bg-body);">
-          <div class="mini-stat-value" style="color:var(--blue);" id="profilRank">-</div>
-          <div class="mini-stat-label">Rank</div>
-        </div>
+<!-- RULES MODAL FOR STORE -->
+<div id="stRulesModal" class="st-rules-overlay">
+  <div class="st-rules-box">
+    <div class="st-rules-header">
+      <i class="fas fa-gavel"></i>
+      <div>
+        <h4>Syarat & Ketentuan Jual Produk</h4>
+        <small>Wajib dibaca sebelum upload produk UMKM</small>
       </div>
     </div>
-    <div class="card" style="margin-top:16px;">
-      <h3 style="font-size:0.95rem;font-weight:800;margin-bottom:12px;"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:6px;"></i> Informasi Akun</h3>
-      <div style="font-size:0.85rem;line-height:2;">
-        <div><strong>Email:</strong> <span id="profilEmail">-</span></div>
-        <div><strong>WhatsApp:</strong> <span id="profilWA">-</span></div>
-        <div><strong>Desa:</strong> <span id="profilDesa">-</span></div>
-        <div><strong>Kecamatan:</strong> <span id="profilKec">-</span></div>
-      </div>
-      <button class="btn-logout" onclick="handleLogout()" style="margin-top:16px;">
-        <i class="fas fa-sign-out-alt"></i> Keluar
+    <div class="st-rules-body">
+      <div class="st-rule-item"><span class="st-rule-num">1</span><div><b>Produk Legal & Halal</b><br>Produk yang dijual harus legal sesuai hukum Republik Indonesia. Produk makanan/minuman wajib memiliki izin BPOM/PIRT atau sertifikasi halal dari MUI.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">2</span><div><b>Data Produk Akurat</b><br>Informasi nama, harga, berat, deskripsi, dan kategori produk harus sesuai dengan kondisi asli. Dilarang menyesatkan pembeli.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">3</span><div><b>Foto Produk Asli</b><br>Foto yang diupload harus foto asli produk, bukan gambar dari internet atau milik orang lain. Tidak boleh mengandung watermark pihak lain.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">4</span><div><b>Nomor WhatsApp Aktif</b><br>Nomor WhatsApp yang didaftarkan harus aktif dan dapat dihubungi oleh calon pembeli untuk transaksi.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">5</span><div><b>Tanggung Jawab Penjual</b><br>Penjual bertanggung jawab penuh atas kualitas, pengiriman, dan layanan produk yang dijual. Platform tidak bertanggung jawab atas sengketa transaksi.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">6</span><div><b>Larangan Konten</b><br>Dilarang menjual produk ilegal, barang bajakan, SARA, pornografi, obat terlarang, senjata, atau produk yang melanggar hukum Indonesia.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">7</span><div><b>Sanksi Pelanggaran</b><br>Pelanggaran terhadap aturan ini dapat mengakibatkan penghapusan produk dan/atau penonaktifan akun penjual secara permanen.</div></div>
+      <div class="st-rule-item"><span class="st-rule-num">8</span><div><b>Perubahan Aturan</b><br>Pengelola platform berhak mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diinformasikan melalui App.</div></div>
+    </div>
+    <div class="st-rules-footer">
+      <label class="st-rules-check">
+        <input type="checkbox" id="stRulesCheck" onchange="document.getElementById('stRulesAccept').classList.toggle('enabled', this.checked)">
+        <span>Saya telah membaca dan menyetujui seluruh syarat & ketentuan di atas</span>
+      </label>
+      <button id="stRulesAccept" class="st-rules-accept" onclick="stAcceptRules()">
+        <i class="fas fa-check-circle"></i> Lanjut Upload Produk
       </button>
     </div>
   </div>
 </div>
 
-<!-- ===== BOTTOM NAV ===== -->
-<nav class="bottom-nav" id="bottomNav" style="display:none;">
-  <div class="nav-item active" onclick="navigateTo('beranda')" data-view="beranda">
-    <i class="fas fa-home"></i>
-    <span>Beranda</span>
-  </div>
-  <div class="nav-item" onclick="navigateTo('berita')" data-view="berita">
-    <i class="fas fa-newspaper"></i>
-    <span>Berita</span>
-  </div>
-  <div class="nav-item" onclick="navigateTo('misi')" data-view="misi">
-    <i class="fas fa-bullseye"></i>
-    <span>Misi</span>
-  </div>
-  <div class="nav-item" onclick="navigateTo('store')" data-view="store">
-    <i class="fas fa-store"></i>
-    <span>Toko</span>
-  </div>
-  <div class="nav-item" onclick="navigateTo('profil')" data-view="profil">
-    <i class="fas fa-user-circle"></i>
-    <span>Profil</span>
-  </div>
-</nav>
+<!-- VIEW: DASHBOARD -->
+<div id="view-dashboard" class="view-section">
+  <div id="user"></div>
 
-<!-- ===== GUEST LOGIN BANNER ===== -->
-<div id="guestBanner" style="display:none;" class="container">
-  <div class="guest-login-banner">
-    <i class="fas fa-user-lock"></i>
-    <h3>Masuk untuk Akses Penuh</h3>
-    <p>Daftarkan akun atau masuk untuk menikmati semua fitur: misi, reward, dashboard, dan lainnya.</p>
-    <button class="guest-login-btn" onclick="showAuthScreen()"><i class="fas fa-sign-in-alt"></i> Masuk Sekarang</button>
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <h3 style="margin-bottom:20px;">Edit Profil</h3>
+      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden; background:var(--border-color); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem" id="previewAvatar"><span>A</span></div></div>
+      <label class="form-label">Nama</label>
+      <input type="text" id="editNama" placeholder="Nama">
+      <label class="form-label">No. HP</label>
+      <input type="text" id="editHp" placeholder="HP">
+      <button onclick="saveProfile()"><i class="fas fa-save"></i> Simpan</button>
+    </div>
+  </div>
+
+  <div class="section-title">Menu Dashboard</div>
+  <div class="menu-grid">
+    <div class="menu-item" onclick="showDashboardSection('peta')"><div class="menu-icon c-blue"><i class="fas fa-map-marked-alt"></i></div><span class="menu-text">Peta</span></div>
+    <div class="menu-item" onclick="showDashboardSection('tugas')"><div class="menu-icon c-purple"><i class="fas fa-tasks"></i></div><span class="menu-text">Tugas</span></div>
+    <div class="menu-item" onclick="showDashboardSection('laporan')"><div class="menu-icon c-orange"><i class="fas fa-file-alt"></i></div><span class="menu-text">Laporan</span></div>
+    <div class="menu-item" onclick="showDashboardSection('reward')"><div class="menu-icon c-green"><i class="fas fa-trophy"></i></div><span class="menu-text">Reward</span></div>
+  </div>
+
+  <div id="dash-peta" class="card" style="margin-top:20px"></div>
+  <div id="dash-tugas" class="card" style="display:none; margin-top:20px">
+    <div class="ts-header"><i class="fas fa-tasks"></i> Tugas & Misi Kader</div>
+    <div class="ts-sub" id="tsPeriode"></div>
+
+    <!-- Summary -->
+    <div class="ts-summary">
+      <div class="ts-sum-item">
+        <div class="ts-sum-val" id="tsSumCheckin">0</div>
+        <div class="ts-sum-lbl">Checkin Bulan Ini</div>
+      </div>
+      <div class="ts-sum-item">
+        <div class="ts-sum-val" id="tsSumFb">0</div>
+        <div class="ts-sum-lbl">Post Facebook</div>
+      </div>
+      <div class="ts-sum-item">
+        <div class="ts-sum-val" id="tsSumTt">0</div>
+        <div class="ts-sum-lbl">Post TikTok</div>
+      </div>
+      <div class="ts-sum-item">
+        <div class="ts-sum-val" id="tsSumPoin">0</div>
+        <div class="ts-sum-lbl">Poin Diperoleh</div>
+      </div>
+    </div>
+
+    <!-- CARD 1: CHECKIN HARIAN -->
+    <div class="ts-card">
+      <div class="ts-card-top">
+        <div class="ts-card-icon" style="background:linear-gradient(135deg,#10B981,#059669)"><i class="fas fa-fingerprint"></i></div>
+        <div class="ts-card-info">
+          <div class="ts-card-title">Checkin Harian</div>
+          <div class="ts-card-desc">1x per hari &middot; +10 poin</div>
+        </div>
+        <span class="ts-card-badge" style="background:#D1FAE5;color:#065F46">+10</span>
+      </div>
+      <div class="ts-card-body">
+        <button id="tsCheckinBtn" class="ts-btn-checkin" onclick="tsDoCheckin()" disabled>
+          <i class="fas fa-spinner fa-spin"></i> Memuat...
+        </button>
+        <div id="tsCheckinHist" class="ts-history"></div>
+      </div>
+    </div>
+
+    <!-- CARD 2: FACEBOOK -->
+    <div class="ts-card">
+      <div class="ts-card-top">
+        <div class="ts-card-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fab fa-facebook-f"></i></div>
+        <div class="ts-card-info">
+          <div class="ts-card-title">Posting Facebook</div>
+          <div class="ts-card-desc">Maks 5/minggu &middot; +30 poin/posting</div>
+        </div>
+        <span class="ts-card-badge" style="background:#DBEAFE;color:#1D4ED8">+30</span>
+      </div>
+      <div class="ts-card-body">
+        <div id="tsFbCooldown" style="display:none" class="ts-cooldown">
+          <i class="fas fa-clock"></i>
+          <span>Cooldown posting berikutnya</span>
+          <span class="ts-cooldown-timer" id="tsFbTimer">--:--</span>
+        </div>
+        <div class="ts-form" id="tsFbForm">
+          <label class="ts-form-label">Link Postingan Facebook *</label>
+          <input type="url" class="ts-form-input" id="tsFbLink" placeholder="https://facebook.com/...">
+          <label class="ts-form-label" style="margin-top:10px">Screenshot Bukti Posting *</label>
+          <div class="ts-upload-area" id="tsFbUploadArea" onclick="document.getElementById('tsFbFile').click()">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p id="tsFbUploadText">Tap untuk upload screenshot</p>
+            <img id="tsFbPreview" class="ts-upload-preview">
+            <input type="file" id="tsFbFile" accept="image/*" onchange="tsPreviewFile(this,'tsFbPreview','tsFbUploadArea','tsFbUploadText')">
+          </div>
+          <button id="tsFbBtn" class="ts-btn-submit" onclick="tsSubmitFb()">
+            <i class="fas fa-paper-plane"></i> Kirim Bukti Facebook
+          </button>
+        </div>
+        <div id="tsFbHist" class="ts-history"></div>
+      </div>
+    </div>
+
+    <!-- CARD 3: TIKTOK -->
+    <div class="ts-card">
+      <div class="ts-card-top">
+        <div class="ts-card-icon" style="background:linear-gradient(135deg,#1a1a1a,#333)"><i class="fab fa-tiktok"></i></div>
+        <div class="ts-card-info">
+          <div class="ts-card-title">Posting TikTok</div>
+          <div class="ts-card-desc">Maks 3/minggu &middot; +50 poin/video</div>
+        </div>
+        <span class="ts-card-badge" style="background:#F3F4F6;color:#1F2937">+50</span>
+      </div>
+      <div class="ts-card-body">
+        <div id="tsTtCooldown" style="display:none" class="ts-cooldown">
+          <i class="fas fa-clock"></i>
+          <span>Cooldown posting berikutnya</span>
+          <span class="ts-cooldown-timer" id="tsTtTimer">--:--</span>
+        </div>
+        <div class="ts-form" id="tsTtForm">
+          <label class="ts-form-label">Link Video TikTok *</label>
+          <input type="url" class="ts-form-input" id="tsTtLink" placeholder="https://tiktok.com/...">
+          <label class="ts-form-label" style="margin-top:10px">Screenshot Bukti Posting *</label>
+          <div class="ts-upload-area" id="tsTtUploadArea" onclick="document.getElementById('tsTtFile').click()">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p id="tsTtUploadText">Tap untuk upload screenshot</p>
+            <img id="tsTtPreview" class="ts-upload-preview">
+            <input type="file" id="tsTtFile" accept="image/*" onchange="tsPreviewFile(this,'tsTtPreview','tsTtUploadArea','tsTtUploadText')">
+          </div>
+          <button id="tsTtBtn" class="ts-btn-submit" onclick="tsSubmitTt()">
+            <i class="fas fa-paper-plane"></i> Kirim Bukti TikTok
+          </button>
+        </div>
+        <div id="tsTtHist" class="ts-history"></div>
+      </div>
+    </div>
+
+  </div>
+  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan Kader</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim Laporan</button><ul id="data" style="margin-top:15px"></ul></div>
+  <div id="dash-reward" style="display:none; margin-top:20px">
+    <!-- Poin Summary -->
+    <div class="rw-summary-card">
+      <div class="rw-summary-left">
+        <div class="rw-summary-icon"><i class="fas fa-coins"></i></div>
+        <div>
+          <div class="rw-summary-title">Total Poin Kamu</div>
+          <div class="rw-summary-sub" id="rwPoinInfo">Memuat...</div>
+        </div>
+      </div>
+      <div class="rw-summary-right">
+        <div class="rw-summary-value" id="rwPoinValue">0</div>
+        <div class="rw-summary-label">Poin</div>
+      </div>
+    </div>
+
+    <!-- Reward Catalog -->
+    <div class="rw-section-hdr"><i class="fas fa-gift"></i> Katalog Reward</div>
+    <div id="rewardCatalog" class="rw-catalog-list"></div>
+
+    <!-- Riwayat Penukaran -->
+    <div class="rw-section-hdr" style="margin-top:20px"><i class="fas fa-history"></i> Riwayat Penukaran</div>
+    <div id="rwHistory" class="rw-history-list"></div>
   </div>
 </div>
 
-<!-- ===== BERITA DETAIL MODAL ===== -->
-<div class="modal-overlay" id="beritaDetailModal" style="z-index:2500;">
-  <div class="modal-card" style="max-width:500px;">
-    <button class="modal-close" onclick="closeBeritaDetail()"><i class="fas fa-times"></i></button>
-    <div id="beritaDetailContent">
-      <div style="text-align:center;padding:40px 0;color:var(--text-muted);">Memuat...</div>
+<!-- AUTH MODAL -->
+<div id="authModal" class="modal-overlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+    <div id="loginForm" class="form-section active">
+      <h3 style="margin-bottom:20px; text-align:center">Masuk Dashboard</h3>
+      <input id="loginEmail" placeholder="Email" type="email">
+      <input id="loginPassword" type="password" placeholder="Password">
+      <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+      <div style="text-align:center; margin-top:15px"><button class="btn-link" onclick="showResetPassword()">Lupa Password?</button></div>
+      <div onclick="showReg()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Daftar Akun Baru</div>
+    </div>
+
+    <div id="registerForm" class="form-section">
+      <h3 style="margin-bottom:20px; text-align:center">Daftar Kader Baru</h3>
+      <label class="form-label">Nama Lengkap *</label>
+      <input type="text" id="regNama" placeholder="Nama Lengkap">
+      <label class="form-label">Nomor WhatsApp *</label>
+      <input type="text" id="regNohp" placeholder="08xxxxxxxxxx">
+      <label class="form-label">Provinsi *</label>
+      <select id="regProvinsi" onchange="loadKabupaten(this.value)"><option value="">Memuat...</option></select>
+      <label class="form-label">Kabupaten/Kota *</label>
+      <select id="regKabupaten" onchange="loadKecamatan(this.value)" disabled><option value="">Pilih Provinsi</option></select>
+      <label class="form-label">Kecamatan *</label>
+      <select id="regKecamatan" onchange="loadDesa(this.value)" disabled><option value="">Pilih Kabupaten</option></select>
+      <label class="form-label">Desa/Kelurahan *</label>
+      <select id="regDesa" disabled><option value="">Pilih Kecamatan</option></select>
+      <label class="form-label">Jabatan *</label>
+      <select id="regJabatan"><option value="Kader">Kader</option><option value="Relawan">Relawan</option></select>
+      <label class="form-label">Email *</label>
+      <input type="email" id="regEmail" placeholder="Email Aktif">
+      <label class="form-label">Password *</label>
+      <input type="password" id="regPassword" placeholder="Min. 6 karakter">
+      <button onclick="signup()" style="margin-top:20px"><i class="fas fa-user-plus"></i> Daftar</button>
+      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Sudah punya akun?</div>
+    </div>
+
+    <div id="resetForm" class="form-section">
+      <h3 style="margin-bottom:20px; text-align:center">Reset Password</h3>
+      <input id="resetEmail" placeholder="Email Akun" type="email">
+      <button onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Kirim Link</button>
+      <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Kembali</div>
     </div>
   </div>
 </div>
 
-<!-- ===== STORE RULES MODAL ===== -->
-<div class="st-rules-overlay" id="stRulesModal">
-  <div class="st-rules-box">
-    <div class="st-rules-header">
-      <i class="fas fa-store"></i>
-      <div><h4>Aturan Toko Kader</h4><small>Baca sebelum berbelanja</small></div>
-    </div>
-    <div class="st-rules-body">
-      <div class="st-rule-item"><div class="st-rule-num">1</div><div><b>Produk otentik</b> — Semua produk dijamin original dari DPC PDI Perjuangan.</div></div>
-      <div class="st-rule-item"><div class="st-rule-num">2</div><div><b>Pembayaran via WhatsApp</b> — Klik tombol WhatsApp untuk menghubungi penjual langsung.</div></div>
-      <div class="st-rule-item"><div class="st-rule-num">3</div><div><b>Penukaran poin</b> — Produk bertanda "Poin" bisa ditukar dengan poin kader Anda.</div></div>
-      <div class="st-rule-item"><div class="st-rule-num">4</div><div><b>Pengiriman</b> — Koordinasi pengiriman dilakukan langsung dengan penjual.</div></div>
-    </div>
-    <div class="st-rules-footer">
-      <div class="st-rules-check"><input type="checkbox" id="storeRulesCheck" onchange="document.getElementById('storeRulesAccept').classList.toggle('enabled',this.checked)"><label for="storeRulesCheck">Saya telah membaca dan menyetujui aturan di atas</label></div>
-      <button class="st-rules-accept" id="storeRulesAccept" onclick="closeStoreRules()"><i class="fas fa-check"></i> Mengerti</button>
-    </div>
-  </div>
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="navBeranda" onclick="showView('beranda')"><i class="fas fa-home"></i><span>Beranda</span></div>
+  <div class="nav-item" id="navStore" onclick="showView('store')"><i class="fas fa-store"></i><span>Store</span></div>
+  <div class="nav-item" id="navDashboard" onclick="navigateToDashboard()"><i class="fas fa-user"></i><span>Dashboard</span></div>
+  <div class="nav-item" id="navLogin" style="display:none;" onclick="guestGoLogin()"><i class="fas fa-sign-in-alt"></i><span>Masuk</span></div>
 </div>
 
-<!-- ========================================== -->
-<!-- JAVASCRIPT                                 -->
-<!-- ========================================== -->
+</div>
+
 <script>
-// ===== FIREBASE CONFIG =====
+// ==========================================
+// 1. FIREBASE INIT
+// ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBSahPLj7pPM36Ktqr47sOhIJ4AhNh_yV0",
   authDomain: "partai-meranti.firebaseapp.com",
   projectId: "partai-meranti",
-  storageBucket: "partai-meranti.appspot.com",
-  messagingSenderId: "683256856579",
-  appId: "1:683256856579:web:2e58e40e7fde4e63b09cae"
+  storageBucket: "partai-meranti.appspot.com"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ===== STATE =====
-let currentUser = null;
-let isGuest = false;
-let heroIndex = 0;
-let heroInterval = null;
-let dashMap = null;
+// ==========================================
+// 2. GLOBALS
+// ==========================================
+let currentUserData = null;
+let unsubUser = null;
+let mapMarkers = {};
+let map = null;
+let slideIndex = 0;
+let analyticsChart = null;
+let distribusiChart = null;
+let weakPointChart = null;
+let isGuestMode = false;
+let kecamatanRefList = []; // Akan diisi otomatis dari API Wilayah
 
-// ===== THEME =====
-function toggleTheme() {
-  document.body.classList.toggle('dark-mode');
-  const isDark = document.body.classList.contains('dark-mode');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  document.getElementById('themeToggleBtn').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+// ==========================================
+// 3. API WILAYAH
+// ==========================================
+const API_WILAYAH = "https://www.emsifa.com/api-wilayah-indonesia/api";
+async function fetchWilayah(url) { try { const r = await fetch(url); return r.json(); } catch (e) { return []; } }
+
+// ==========================================
+// Fetch semua kecamatan dari API Wilayah
+// (sumber yang SAMA dengan form registrasi)
+// ==========================================
+async function fetchKecamatanMeranti() {
+  try {
+    // Cari kabupaten "Kepulauan Meranti" dari API
+    // Provinsi Riau = id "14"
+    const regencies = await fetchWilayah(`${API_WILAYAH}/regencies/14.json`);
+    const meranti = regencies.find(r => r.name.includes('Kepulauan Meranti'));
+    if (!meranti) {
+      console.warn('Kabupaten Kepulauan Meranti tidak ditemukan di API');
+      return [];
+    }
+    // Fetch semua kecamatan di bawah kabupaten tersebut
+    const kecamatan = await fetchWilayah(`${API_WILAYAH}/districts/${meranti.id}.json`);
+    console.log('✅ Kecamatan dari API:', kecamatan.map(k => k.name));
+    return kecamatan.map(k => k.name);
+  } catch (e) {
+    console.error('Gagal fetch kecamatan:', e);
+    return [];
+  }
 }
-function loadTheme() {
-  if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark-mode');
-    const btn = document.getElementById('themeToggleBtn');
-    if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
+async function loadProvinces() { const s = document.getElementById('regProvinsi'); s.innerHTML = '<option value="">Pilih Provinsi</option>'; (await fetchWilayah(`${API_WILAYAH}/provinces.json`)).forEach(p => s.innerHTML += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`); }
+async function loadKabupaten(pid) { const s = document.getElementById('regKabupaten'); const s2 = document.getElementById('regKecamatan'); const s3 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kabupaten</option>'; s2.disabled = true; s3.innerHTML = '<option value="">Pilih Kecamatan</option>'; s3.disabled = true; if (!pid) return; (await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
+async function loadKecamatan(kid) { const s = document.getElementById('regKecamatan'); const s2 = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; s2.innerHTML = '<option value="">Pilih Kecamatan</option>'; s2.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`)).forEach(k => s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`); s.disabled = false; }
+async function loadDesa(kid) { const s = document.getElementById('regDesa'); s.innerHTML = '<option value="">Memuat...</option>'; s.disabled = true; if (!kid) return; (await fetchWilayah(`${API_WILAYAH}/villages/${kid}.json`)).forEach(d => s.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`); s.disabled = false; }
+
+// ==========================================
+// 4. THEME
+// ==========================================
+function toggleTheme() { document.body.classList.toggle("dark-mode"); const isDark = document.body.classList.contains("dark-mode"); localStorage.setItem("theme", isDark ? "dark" : "light"); document.querySelector('#themeBtn i').className = isDark ? 'fas fa-sun' : 'fas fa-moon'; if(analyticsChart) updateChartTheme(); }
+function loadTheme() { if (localStorage.getItem("theme") === "dark") { document.body.classList.add("dark-mode"); document.querySelector('#themeBtn i').className = 'fas fa-sun'; } }
+
+// ==========================================
+// 5. NAVIGATION
+// ==========================================
+function showView(id) { if(isGuestMode && id !== 'beranda') { guestGoLogin(); return; } document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active')); document.getElementById('view-'+id).classList.add('active'); window.scrollTo(0,0); const nav = document.querySelectorAll('.nav-item'); nav.forEach(n => n.classList.remove('active')); if(id==='beranda') nav[0].classList.add('active'); if(id==='store') nav[1].classList.add('active'); if(id==='dashboard') nav[2].classList.add('active'); }
+function showDashboardSection(sec) { document.querySelectorAll('[id^="dash-"]').forEach(e => e.style.display = 'none'); document.getElementById('dash-'+sec).style.display = 'block'; if(sec === 'peta' && !map) initMap(); }
+function navigateToDashboard() { if(isGuestMode) { guestGoLogin(); return; } if(auth.currentUser) { showView('dashboard'); } else { openAuthModal(); } }
+function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+function showReg(){ document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.add('active'); document.getElementById('resetForm').classList.remove('active'); }
+function showLog(){ document.getElementById('loginForm').classList.add('active'); document.getElementById('registerForm').classList.remove('active'); document.getElementById('resetForm').classList.remove('active'); }
+function showResetPassword() { document.getElementById('loginForm').classList.remove('active'); document.getElementById('registerForm').classList.remove('active'); document.getElementById('resetForm').classList.add('active'); }
+
+// ==========================================
+// 6. HERO
+// ==========================================
+function updateSlide() { const slides = document.querySelectorAll('.hero-slide'); const dots = document.querySelectorAll('.dot'); slides.forEach((s, i) => { s.classList.remove('active'); dots[i].classList.remove('active'); }); slideIndex++; if (slideIndex > slides.length) slideIndex = 1; slides[slideIndex-1].classList.add('active'); dots[slideIndex-1].classList.add('active'); setTimeout(updateSlide, 4000); }
+setTimeout(updateSlide, 4000);
+
+// ==========================================
+// 7. AUTH STATE
+// ==========================================
+auth.onAuthStateChanged(user => {
+  if(user){
+    showApp();
+    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); if(map) updateMyPresence(user.uid, currentUserData.nama); }, err => console.error(err));
+    closeAuthModal(); initMap(); updateMyLocation(user); listenToOtherUsers(); loadData(); loadLeaderboard(); initTugasDashboard(user.uid); loadReward(user.uid); loadStats();
+  } else {
+    showAuth();
+    document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; } if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
+  }
+});
+
+function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit Profil</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; const wEl = document.getElementById('welcomeUserName'); if(wEl && currentUserData.nama) { const nama = currentUserData.nama; const capitalized = nama.charAt(0).toUpperCase() + nama.slice(1); wEl.textContent = 'Selamat Datang, ' + capitalized + '!'; } }
+function openEditModal() { document.getElementById('editNama').value = currentUserData.nama || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nama||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
+function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+async function saveProfile() { const nama = document.getElementById('editNama').value; const hp = document.getElementById('editHp').value; if(!nama) return alert("Nama wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nama, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
+
+// ==========================================
+// 8. AUTH ACTIONS
+// ==========================================
+function signup(){
+  const get = (id) => document.getElementById(id);
+  const getVal = (id) => get(id).value;
+  const getTxt = (id) => get(id).options[get(id).selectedIndex].getAttribute('data-name') || "";
+  const getId = (id) => get(id).value;
+
+  const data = {
+    nama: getVal('regNama'),
+    nohp: getVal('regNohp'),
+    provinsi: getTxt('regProvinsi'),
+    provinsi_id: getId('regProvinsi'),
+    kabupaten: getTxt('regKabupaten'),
+    kabupaten_id: getId('regKabupaten'),
+    kecamatan: getTxt('regKecamatan'),
+    kecamatan_id: getId('regKecamatan'),
+    desa: getTxt('regDesa'),
+    desa_id: getId('regDesa'),
+    jabatan: getVal('regJabatan'),
+    email: getVal('regEmail'),
+    status: 'Aktif'
+  };
+  const pass = getVal('regPassword');
+  if(!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) return alert("Lengkapi data!");
+
+  auth.createUserWithEmailAndPassword(data.email, pass).then(async res => {
+    await res.user.sendEmailVerification();
+    await db.collection("users").doc(res.user.uid).set({...data, poin: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp()});
+    alert("Sukses! Cek email verifikasi."); showLog();
+  }).catch(e => alert(e.message));
+}
+function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).then(user => { if(!user.user.emailVerified) alert("Email belum verifikasi."); closeAuthModal(); showView('dashboard'); }).catch(e => alert(e.message)); }
+function resetPassword() { const email = document.getElementById('resetEmail').value; if(!email) return alert("Email?"); auth.sendPasswordResetEmail(email).then(() => alert("Link terkirim!")).catch(e => alert(e.message)); }
+function logout(){ auth.signOut(); }
+
+// ==========================================
+// 9. MAP
+// ==========================================
+function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
+function getUserIcon(isMe) { return L.divIcon({ className: '', html: `<div style="background:${isMe ? '#E31E25' : '#10B981'}; width:20px; height:20px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [20, 20] }); }
+function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => {}, { enableHighAccuracy: true }); }
+function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama }, { merge: true }); }
+function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const d = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([d.lat, d.lng]); } else { mapMarkers[uid] = L.marker([d.lat, d.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : d.nama}</b>`); } }); }); }
+
+// ==========================================
+// 10. TUGAS (MISI & REWARD INTEGRATION)
+// ==========================================
+
+// Cooldown: 4 hours in ms
+const TS_COOLDOWN = 4 * 60 * 60 * 1000;
+let tsCooldownIntervals = { fb: null, tt: null };
+
+// NOTE: Firestore composite index required for tugas_submit collection:
+// userId (Ascending) + waktu (Descending)
+
+// Init tugas dashboard
+function initTugasDashboard(userId) {
+  const now = new Date();
+  const periodeEl = document.getElementById('tsPeriode');
+  if (periodeEl) {
+    periodeEl.textContent = now.toLocaleString('id-ID', { month: 'long', year: 'numeric' }) + ' \u00b7 Misi sesuai layanan Misi & Reward';
+  }
+  // Listen for user's task submissions (tanpa orderBy supaya tidak perlu composite index)
+  db.collection('tugas_submit').where('userId', '==', userId).onSnapshot(snap => {
+    renderTugasSummary(snap);
+    renderTugasCheckinState(snap);
+    renderTugasSosmedState(snap, 'facebook', 'tsFbCooldown', 'tsFbTimer', 'tsFbForm', 'tsFbBtn');
+    renderTugasSosmedState(snap, 'tiktok', 'tsTtCooldown', 'tsTtTimer', 'tsTtForm', 'tsTtBtn');
+    renderTugasHistory(snap);
+  }, err => {
+    console.error('tugas_submit listener error:', err);
+    // Jika query gagal, aktifkan tombol checkin (tsDoCheckin tetap aman karena cek db sendiri)
+    const btn = document.getElementById('tsCheckinBtn');
+    if (btn && !btn.classList.contains('done')) {
+      btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
+      btn.disabled = false;
+    }
+  });
+}
+
+// Summary counts
+function renderTugasSummary(snap) {
+  let checkinCount = 0, fbCount = 0, ttCount = 0, totalPoin = 0;
+  snap.forEach(d => {
+    const v = d.data();
+    if (v.status === 'rejected') return;
+    totalPoin += (v.poin || 0);
+    if (v.tipe === 'checkin') checkinCount++;
+    else if (v.tipe === 'facebook') fbCount++;
+    else if (v.tipe === 'tiktok') ttCount++;
+  });
+  const el = (id) => document.getElementById(id);
+  if (el('tsSumCheckin')) el('tsSumCheckin').textContent = checkinCount;
+  if (el('tsSumFb')) el('tsSumFb').textContent = fbCount;
+  if (el('tsSumTt')) el('tsSumTt').textContent = ttCount;
+  if (el('tsSumPoin')) el('tsSumPoin').textContent = totalPoin;
+}
+
+// Checkin state — listener Firestore, cek data hari ini
+function renderTugasCheckinState(snap) {
+  const btn = document.getElementById('tsCheckinBtn');
+  if (!btn) return;
+  const today = new Date().toDateString();
+  let alreadyDone = false;
+  snap.forEach(d => {
+    const v = d.data();
+    if (v.tipe === 'checkin' && v.status !== 'rejected') {
+      const w = v.waktu ? v.waktu.toDate() : null;
+      if (w && w.toDateString() === today) alreadyDone = true;
+    }
+  });
+  if (alreadyDone) {
+    btn.classList.add('done');
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
+    btn.removeAttribute('onclick');
+    btn.disabled = true;
+  } else {
+    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
+    btn.classList.remove('done');
+    btn.disabled = false;
   }
 }
 
-// ===== NAVIGATION =====
-function navigateTo(view) {
-  if (isGuest && ['dashboard','misi','store','profil'].includes(view)) {
-    showAuthScreen();
+// Do checkin — tanpa GPS, langsung tambah poin, cek db dulu
+async function tsDoCheckin() {
+  const btn = document.getElementById('tsCheckinBtn');
+  if (btn.classList.contains('done') || btn.disabled) return;
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+  btn.disabled = true;
+
+  try {
+    const today = new Date().toDateString();
+
+    // Query sederhana: hanya userId + tipe, filter waktu di JS (hindari composite index)
+    const snap = await db.collection('tugas_submit')
+      .where('userId', '==', auth.currentUser.uid)
+      .where('tipe', '==', 'checkin')
+      .get();
+
+    let alreadyDone = false;
+    snap.forEach(d => {
+      const v = d.data();
+      if (v.status === 'rejected') return;
+      const w = v.waktu ? v.waktu.toDate() : null;
+      if (w && w.toDateString() === today) alreadyDone = true;
+    });
+
+    if (alreadyDone) {
+      btn.classList.add('done');
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
+      btn.removeAttribute('onclick');
+      btn.disabled = true;
+      return;
+    }
+
+    await db.collection('tugas_submit').add({
+      userId: auth.currentUser.uid,
+      tipe: 'checkin',
+      poin: 10,
+      waktu: new Date(),
+      status: 'pending'
+    });
+    await db.collection('users').doc(auth.currentUser.uid).update({
+      poin: firebase.firestore.FieldValue.increment(10)
+    });
+
+    btn.classList.add('done');
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Berhasil Checkin Hari Ini';
+    btn.removeAttribute('onclick');
+    btn.disabled = true;
+
+  } catch (e) {
+    console.error('Checkin error:', e);
+    if (btn.classList.contains('done')) return;
+    btn.innerHTML = '<i class="fas fa-hand-pointer"></i> Checkin Sekarang';
+    btn.disabled = false;
+    alert('Gagal checkin. Coba lagi.');
+  }
+}
+
+// Sosmed state & cooldown
+function renderTugasSosmedState(snap, tipe, cooldownId, timerId, formId, btnId) {
+  const cooldownEl = document.getElementById(cooldownId);
+  const timerEl = document.getElementById(timerId);
+  const formEl = document.getElementById(formId);
+  const btnEl = document.getElementById(btnId);
+  if (!cooldownEl) return;
+
+  // Find last submission of this type (non-rejected)
+  let lastTime = null;
+  snap.forEach(d => {
+    const v = d.data();
+    if (v.tipe === tipe && v.status !== 'rejected') {
+      const w = v.waktu ? v.waktu.toDate() : null;
+      if (w && (!lastTime || w > lastTime)) lastTime = w;
+    }
+  });
+
+  if (!lastTime) {
+    cooldownEl.style.display = 'none';
+    if (formEl) formEl.style.display = 'block';
     return;
   }
-  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-  const el = document.getElementById('view-' + view);
-  if (el) el.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navItem = document.querySelector(`.nav-item[data-view="${view}"]`);
-  if (navItem) navItem.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (view === 'dashboard') initDashboard();
+
+  const now = new Date();
+  const elapsed = now - lastTime;
+
+  if (elapsed < TS_COOLDOWN) {
+    // Still in cooldown
+    cooldownEl.style.display = 'flex';
+    if (formEl) formEl.style.display = 'none';
+    startCooldownTimer(tipe, cooldownId, timerId, formId, btnId, TS_COOLDOWN - elapsed);
+  } else {
+    cooldownEl.style.display = 'none';
+    if (formEl) formEl.style.display = 'block';
+  }
 }
 
-// ===== AUTH =====
-function showAuthScreen() {
+function startCooldownTimer(tipe, cooldownId, timerId, formId, btnId, remaining) {
+  // Clear previous interval
+  if (tsCooldownIntervals[tipe]) clearInterval(tsCooldownIntervals[tipe]);
+  const timerEl = document.getElementById(timerId);
+  const cooldownEl = document.getElementById(cooldownId);
+  const formEl = document.getElementById(formId);
+  if (!timerEl) return;
+
+  const update = () => {
+    if (remaining <= 0) {
+      clearInterval(tsCooldownIntervals[tipe]);
+      tsCooldownIntervals[tipe] = null;
+      if (cooldownEl) cooldownEl.style.display = 'none';
+      if (formEl) formEl.style.display = 'block';
+      return;
+    }
+    const h = Math.floor(remaining / 3600000);
+    const m = Math.floor((remaining % 3600000) / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    timerEl.textContent = (h > 0 ? h + 'j ' : '') + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    remaining -= 1000;
+  };
+  update();
+  tsCooldownIntervals[tipe] = setInterval(update, 1000);
+}
+
+// Preview uploaded file
+function tsPreviewFile(input, previewId, areaId, textId) {
+  const preview = document.getElementById(previewId);
+  const area = document.getElementById(areaId);
+  const text = document.getElementById(textId);
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran file maks 5MB'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    if (area) area.classList.add('has-file');
+    if (text) text.textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+// Upload image to Cloudinary
+async function tsUploadImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'partai_upload');
+  const res = await fetch('https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload', { method: 'POST', body: formData });
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// Submit Facebook
+async function tsSubmitFb() {
+  const linkInput = document.getElementById('tsFbLink');
+  const fileInput = document.getElementById('tsFbFile');
+  const btn = document.getElementById('tsFbBtn');
+  const link = linkInput ? linkInput.value.trim() : '';
+  if (!link) { alert('Masukkan link postingan Facebook.'); return; }
+  if (!link.includes('facebook.com') && !link.includes('fb.')) { alert('Link harus dari Facebook.'); return; }
+  if (!fileInput || !fileInput.files || !fileInput.files[0]) { alert('Upload screenshot bukti posting.'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
+  try {
+    const screenshotUrl = await tsUploadImage(fileInput.files[0]);
+    await db.collection('tugas_submit').add({
+      userId: auth.currentUser.uid,
+      tipe: 'facebook',
+      poin: 30,
+      link: link,
+      screenshot: screenshotUrl,
+      waktu: new Date(),
+      status: 'pending'
+    });
+    await db.collection('users').doc(auth.currentUser.uid).update({
+      poin: firebase.firestore.FieldValue.increment(30)
+    });
+    linkInput.value = '';
+    fileInput.value = '';
+    const preview = document.getElementById('tsFbPreview');
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    const area = document.getElementById('tsFbUploadArea');
+    if (area) area.classList.remove('has-file');
+    const text = document.getElementById('tsFbUploadText');
+    if (text) text.textContent = 'Tap untuk upload screenshot';
+    btn.innerHTML = '<i class="fas fa-check"></i> Berhasil Dikirim!';
+    setTimeout(() => { btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Bukti Facebook'; btn.disabled = false; }, 2000);
+  } catch (e) {
+    alert('Gagal mengirim. Coba lagi.');
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Bukti Facebook';
+    btn.disabled = false;
+  }
+}
+
+// Submit TikTok
+async function tsSubmitTt() {
+  const linkInput = document.getElementById('tsTtLink');
+  const fileInput = document.getElementById('tsTtFile');
+  const btn = document.getElementById('tsTtBtn');
+  const link = linkInput ? linkInput.value.trim() : '';
+  if (!link) { alert('Masukkan link video TikTok.'); return; }
+  if (!link.includes('tiktok.com')) { alert('Link harus dari TikTok.'); return; }
+  if (!fileInput || !fileInput.files || !fileInput.files[0]) { alert('Upload screenshot bukti posting.'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
+  try {
+    const screenshotUrl = await tsUploadImage(fileInput.files[0]);
+    await db.collection('tugas_submit').add({
+      userId: auth.currentUser.uid,
+      tipe: 'tiktok',
+      poin: 50,
+      link: link,
+      screenshot: screenshotUrl,
+      waktu: new Date(),
+      status: 'pending'
+    });
+    await db.collection('users').doc(auth.currentUser.uid).update({
+      poin: firebase.firestore.FieldValue.increment(50)
+    });
+    linkInput.value = '';
+    fileInput.value = '';
+    const preview = document.getElementById('tsTtPreview');
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    const area = document.getElementById('tsTtUploadArea');
+    if (area) area.classList.remove('has-file');
+    const text = document.getElementById('tsTtUploadText');
+    if (text) text.textContent = 'Tap untuk upload screenshot';
+    btn.innerHTML = '<i class="fas fa-check"></i> Berhasil Dikirim!';
+    setTimeout(() => { btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Bukti TikTok'; btn.disabled = false; }, 2000);
+  } catch (e) {
+    alert('Gagal mengirim. Coba lagi.');
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Bukti TikTok';
+    btn.disabled = false;
+  }
+}
+
+// Render history list
+function renderTugasHistory(snap) {
+  const fbEl = document.getElementById('tsFbHist');
+  const ttEl = document.getElementById('tsTtHist');
+  const ciEl = document.getElementById('tsCheckinHist');
+
+  const fbItems = [], ttItems = [], ciItems = [];
+  snap.forEach(d => {
+    const v = d.data();
+    const w = v.waktu ? v.waktu.toDate() : null;
+    const timeStr = w ? w.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+    const statusClass = v.status || 'pending';
+    const statusText = statusClass === 'verified' ? 'Terverifikasi' : (statusClass === 'rejected' ? 'Ditolak' : 'Menunggu');
+    const dotColor = statusClass === 'verified' ? 'green' : (statusClass === 'rejected' ? 'yellow' : 'blue');
+    const item = `<div class="ts-hist-item">
+      <span class="ts-hist-dot ${dotColor}"></span>
+      <div class="ts-hist-text">${v.link ? '<a href="'+v.link+'" target="_blank">Lihat Posting</a>' : 'GPS Checkin'}</div>
+      <span class="ts-hist-status ${statusClass}">${statusText}</span>
+      <span class="ts-hist-time">${timeStr}</span>
+    </div>`;
+    if (v.tipe === 'facebook') fbItems.push(item);
+    else if (v.tipe === 'tiktok') ttItems.push(item);
+    else if (v.tipe === 'checkin') ciItems.push(item);
+  });
+
+  if (fbEl) fbEl.innerHTML = fbItems.length ? '<div class="ts-hist-title"><i class="fas fa-history"></i> Riwayat Facebook ('+fbItems.length+')</div>' + fbItems.slice(0, 5).join('') : '<div class="ts-empty">Belum ada posting Facebook</div>';
+  if (ttEl) ttEl.innerHTML = ttItems.length ? '<div class="ts-hist-title"><i class="fas fa-history"></i> Riwayat TikTok ('+ttItems.length+')</div>' + ttItems.slice(0, 5).join('') : '<div class="ts-empty">Belum ada posting TikTok</div>';
+  if (ciEl) ciEl.innerHTML = ciItems.length ? '<hr class="ts-sep"><div class="ts-hist-title"><i class="fas fa-history"></i> Riwayat Checkin</div>' + ciItems.slice(0, 3).join('') : '';
+}
+
+// ==========================================
+// 11. LOADERS
+// ==========================================
+function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); loadMrLeaderboard(); }
+function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
+function loadReward(u){
+  // Reward catalog data — sama persis dengan Misi & Reward menu
+  const rewards = [
+    { id:'kaos', nama:'Kaos Partai', desc:'Kaos official PDI Perjuangan · Katun combed 30s · M, L, XL', poin:500, icon:'fa-tshirt', gradient:'linear-gradient(135deg,#EF4444,#DC2626)' },
+    { id:'mug', nama:'Mug Partai', desc:'Mug keramik logo PDI · 350ml · Microwave safe', poin:400, icon:'fa-mug-hot', gradient:'linear-gradient(135deg,#8B5CF6,#7C3AED)' },
+    { id:'token', nama:'Token Listrik Rp 100.000', desc:'Kode voucher dikirim via WhatsApp', poin:600, icon:'fa-bolt', gradient:'linear-gradient(135deg,#EAB308,#CA8A04)' },
+    { id:'voucher', nama:'Voucher Makan 2 Orang', desc:'Restoran mitra DPC · Berlaku 30 hari', poin:750, icon:'fa-utensils', gradient:'linear-gradient(135deg,#F97316,#EA580C)' },
+    { id:'jaket', nama:'Jaket Partai', desc:'Jaket official PDI Perjuangan · Parasut waterproof', poin:1000, icon:'fa-vest-patches', gradient:'linear-gradient(135deg,#2563EB,#1D4ED8)' }
+  ];
+
+  // Listen user poin realtime
+  db.collection('users').doc(u).onSnapshot(d => {
+    const poin = d.data()?.poin || 0;
+    const nama = d.data()?.nama || d.data()?.nome || 'Kader';
+    const periode = new Date().toLocaleString('id-ID', { month:'long', year:'numeric' });
+
+    // Update summary
+    const elPoinValue = document.getElementById('rwPoinValue');
+    const elPoinInfo = document.getElementById('rwPoinInfo');
+    if (elPoinValue) elPoinValue.textContent = poin.toLocaleString('id-ID');
+    if (elPoinInfo) elPoinInfo.textContent = nama + ' · ' + periode;
+
+    // Render catalog
+    const catalogEl = document.getElementById('rewardCatalog');
+    if (!catalogEl) return;
+    let h = '';
+    rewards.forEach(r => {
+      const canAfford = poin >= r.poin;
+      h += '<div class="rw-reward-card">' +
+        '<div class="rw-reward-icon" style="background:' + r.gradient + '"><i class="fas ' + r.icon + '"></i></div>' +
+        '<div class="rw-reward-info"><div class="rw-reward-name">' + r.nama + '</div><div class="rw-reward-desc">' + r.desc + '</div></div>' +
+        '<div class="rw-reward-right">' +
+          '<div class="rw-reward-poin"><i class="fas fa-coins"></i> ' + r.poin + '</div>' +
+          '<span class="rw-reward-status ' + (canAfford ? 'can' : 'not') + '">' + (canAfford ? 'Poin Cukup' : 'Poin Kurang') + '</span>' +
+          '<button class="rw-btn-tukar" onclick="rwTukar(\'' + r.id + '\',' + r.poin + ')" ' + (canAfford ? '' : 'disabled') + '><i class="fas fa-exchange-alt"></i> Tukar</button>' +
+        '</div></div>';
+    });
+    catalogEl.innerHTML = h;
+  });
+
+  // Listen riwayat penukaran
+  db.collection('reward_exchange').where('userId', '==', u).orderBy('waktu', 'desc').limit(10).onSnapshot(snap => {
+    const histEl = document.getElementById('rwHistory');
+    if (!histEl) return;
+    if (snap.empty) { histEl.innerHTML = '<div class="rw-empty">Belum ada riwayat penukaran reward</div>'; return; }
+    const iconMap = { kaos:'fa-tshirt', mug:'fa-mug-hot', token:'fa-bolt', voucher:'fa-utensils', jaket:'fa-vest-patches' };
+    const gradMap = { kaos:'linear-gradient(135deg,#EF4444,#DC2626)', mug:'linear-gradient(135deg,#8B5CF6,#7C3AED)', token:'linear-gradient(135deg,#EAB308,#CA8A04)', voucher:'linear-gradient(135deg,#F97316,#EA580C)', jaket:'linear-gradient(135deg,#2563EB,#1D4ED8)' };
+    let hh = '';
+    snap.forEach(d => {
+      const v = d.data();
+      const w = v.waktu ? v.waktu.toDate() : null;
+      const timeStr = w ? w.toLocaleString('id-ID', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '-';
+      const st = v.status || 'menunggu';
+      const stClass = st === 'selesai' ? 'selesai' : (st === 'ditolak' ? 'ditolak' : 'menunggu');
+      const stText = st === 'selesai' ? 'Selesai' : (st === 'ditolak' ? 'Ditolak' : 'Menunggu');
+      hh += '<div class="rw-hist-item">' +
+        '<div class="rw-hist-icon" style="background:' + (gradMap[v.rewardId] || 'linear-gradient(135deg,#94a3b8,#64748b)') + '"><i class="fas ' + (iconMap[v.rewardId] || 'fa-gift') + '"></i></div>' +
+        '<div class="rw-hist-info"><div class="rw-hist-name">' + (v.rewardNama || v.rewardId) + '</div><div class="rw-hist-time">' + timeStr + '</div></div>' +
+        '<div class="rw-hist-poin"><i class="fas fa-coins"></i> -' + v.poinDeducted + '</div>' +
+        '<span class="rw-hist-status ' + stClass + '">' + stText + '</span>' +
+        '</div>';
+    });
+    histEl.innerHTML = hh;
+  });
+}
+
+// Tukar reward
+async function rwTukar(rewardId, poinCost) {
+  const u = auth.currentUser.uid;
+  const confirmed = confirm('Tukar ' + poinCost + ' poin untuk reward ini?\n\nPoin akan dikurangi secara permanen.\nAmbil reward di Sekretariat DPC setelah disetujui.');
+  if (!confirmed) return;
+
+  try {
+    const userDoc = await db.collection('users').doc(u).get();
+    const currentPoin = userDoc.data()?.poin || 0;
+    if (currentPoin < poinCost) { alert('Poin tidak mencukupi. Anda memiliki ' + currentPoin + ' poin, dibutuhkan ' + poinCost + ' poin.'); return; }
+
+    const namaMap = { kaos:'Kaos Partai', mug:'Mug Partai', token:'Token Listrik Rp 100.000', voucher:'Voucher Makan 2 Orang', jaket:'Jaket Partai' };
+
+    await db.collection('users').doc(u).update({ poin: firebase.firestore.FieldValue.increment(-poinCost) });
+    await db.collection('reward_exchange').add({
+      userId: u,
+      rewardId: rewardId,
+      rewardNama: namaMap[rewardId] || rewardId,
+      poinDeducted: poinCost,
+      waktu: new Date(),
+      status: 'menunggu'
+    });
+    alert('Penukaran berhasil! Silakan ambil reward di Sekretariat DPC setelah disetujui admin.');
+  } catch (e) {
+    alert('Gagal menukar reward. Coba lagi.');
+  }
+}
+function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { const el = document.getElementById('topKaderList'); if(!el) return; if(s.empty){ el.innerHTML='<p class="mr-lb-empty">Belum ada data kader</p>'; return; } let html='<div style="overflow-x:auto"><table class="mr-lb-table"><thead><tr>'; html+='<th>#</th><th>Kader</th><th>Wilayah</th><th>Poin</th>'; html+='</tr></thead><tbody>'; let i=1; s.forEach(d => { const v=d.data(); const avatar=v.photoURL||'https://ui-avatars.com/api/?name='+encodeURIComponent(v.nama||'Kader'); const rankBg=i===1?'linear-gradient(135deg,#FFD700,#FFA500)':(i===2?'linear-gradient(135deg,#C0C0C0,#A9A9A9)':(i===3?'linear-gradient(135deg,#CD7F32,#8B4513)':'linear-gradient(135deg,#94a3b8,#64748b)')); const podiumClass=i<=3?' lb-podium-'+i:''; const kec=v.kecamatan||'-'; const desa=v.desa||''; const wilayah=desa?desa+', '+kec:kec; html+=`<tr class="${podiumClass}">`; html+=`<td class="lb-rank-cell"><span class="lb-rank-badge" style="background:${rankBg}">${i}</span></td>`; html+=`<td class="lb-name-cell"><img src="${avatar}" class="lb-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(v.nama||"K")}'">${v.nama||'-'}</td>`; html+=`<td class="lb-wilayah-cell"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:4px;font-size:0.65rem"></i>${wilayah}</td>`; html+=`<td class="lb-poin-cell"><i class="fas fa-coins" style="font-size:0.7rem;margin-right:3px"></i>${v.poin||0}</td>`; html+='</tr>'; i++; }); html+='</tbody></table></div>'; el.innerHTML=html; }); }
+async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); navigator.geolocation.getCurrentPosition(async pos => { await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); }, ()=>alert("GPS error")); }
+function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); }); }
+
+// ==========================================
+// 12. ANALYTICS REALTIME (EXTENDED)
+// ==========================================
+async function initAnalytics() {
+    // STEP 1: Fetch daftar kecamatan dari API Wilayah (sumber sama dengan form registrasi)
+    // Ini menjamin nama kecamatan 100% cocok dengan data di Firestore
+    kecamatanRefList = await fetchKecamatanMeranti();
+    console.log('📊 Referensi kecamatan:', kecamatanRefList);
+
+    // STEP 2: Dengarkan perubahan data secara realtime dari Firestore
+    db.collection("users").onSnapshot(snapshot => {
+        let total = 0;
+        const dist = {};
+
+        snapshot.forEach(d => {
+            const u = d.data();
+            total++;
+            let kecName = u.kecamatan || "Belum Lengkap";
+            if (!dist[kecName]) dist[kecName] = 0;
+            dist[kecName]++;
+        });
+
+        document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString('id-ID');
+
+        const labels = Object.keys(dist);
+        const data = Object.values(dist);
+        const colors = ['#E31E25', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#14B8A6', '#F97316', '#6366F1'];
+
+        // --- PIE CHART (existing) ---
+        const ctx = document.getElementById('analyticsChart').getContext('2d');
+        if (analyticsChart) {
+            analyticsChart.data.labels = labels;
+            analyticsChart.data.datasets[0].data = data;
+            analyticsChart.update();
+        } else {
+            analyticsChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#64748b', usePointStyle: true, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        const tbody = document.getElementById('analyticsTable');
+        let tHtml = '';
+        const sorted = Object.entries(dist).sort((a, b) => b[1] - a[1]);
+        sorted.forEach(([name, count]) => {
+            const percent = ((count / total) * 100).toFixed(1);
+            tHtml += `<tr>
+                <td>${name}</td>
+                <td style="text-align:center"><b>${count}</b></td>
+                <td style="text-align:right">
+                    ${percent}%
+                    <div class="percent-bar"><div class="percent-fill" style="width:${percent}%"></div></div>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = tHtml || '<tr><td colspan="3" style="text-align:center; color:var(--text-muted)">Belum ada data</td></tr>';
+
+        // ==========================================
+        // TITIK PENYEBARAN KADER PARTAI
+        // ==========================================
+        const sortedLabels = [...labels].sort((a, b) => dist[b] - dist[a]);
+        const sortedData = sortedLabels.map(l => dist[l]);
+        const maxCount = Math.max(...sortedData, 1);
+
+        // Generate gradient colors based on rank (red for lowest, green for highest)
+        const barColors = sortedData.map((_, i) => {
+            const ratio = sortedLabels.length > 1 ? i / (sortedLabels.length - 1) : 1;
+            const r = Math.round(239 - (ratio * 209));
+            const g = Math.round(68 + (ratio * 89));
+            const b = Math.round(68 + (ratio * 57));
+            return `rgb(${r}, ${g}, ${b})`;
+        });
+
+        // Summary stats
+        document.getElementById('distKecamatan').innerText = labels.length;
+        document.getElementById('distTotal').innerText = total;
+        document.getElementById('distAvg').innerText = labels.length > 0 ? (total / labels.length).toFixed(1) : '0';
+
+        // Horizontal bar chart
+        const distCtx = document.getElementById('distribusiChart').getContext('2d');
+        if (distribusiChart) {
+            distribusiChart.data.labels = sortedLabels;
+            distribusiChart.data.datasets[0].data = sortedData;
+            distribusiChart.data.datasets[0].backgroundColor = barColors;
+            distribusiChart.update();
+        } else {
+            distribusiChart = new Chart(distCtx, {
+                type: 'bar',
+                data: {
+                    labels: sortedLabels,
+                    datasets: [{
+                        label: 'Jumlah Kader',
+                        data: sortedData,
+                        backgroundColor: barColors,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 18
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { weight: 'bold' },
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                label: function(ctx) {
+                                    const pct = total > 0 ? ((ctx.parsed.x / total) * 100).toFixed(1) : 0;
+                                    return `${ctx.parsed.x} Kader (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, color: '#64748b', font: { size: 11 } },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 10, weight: '600' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Table distribusi
+        const distTbody = document.getElementById('distribusiTable');
+        let dHtml = '';
+        sortedLabels.forEach((name, i) => {
+            const count = dist[name];
+            const percent = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+            const rankColor = i === 0 ? '#2563EB' : (i === 1 ? '#7C3AED' : (i === 2 ? '#EA580C' : 'var(--text-muted)'));
+            dHtml += `<tr>
+                <td style="font-weight:800; color:${rankColor}; font-size:0.8rem">${i + 1}</td>
+                <td style="font-size:0.85rem">${name}</td>
+                <td style="text-align:center"><b style="font-size:0.95rem">${count}</b></td>
+                <td style="text-align:right">
+                    <span style="font-size:0.8rem">${percent}%</span>
+                    <div class="percent-bar"><div class="percent-fill" style="width:${percent}%; background:${barColors[i]}"></div></div>
+                </td>
+            </tr>`;
+        });
+        distTbody.innerHTML = dHtml || '<tr><td colspan="4" style="text-align:center; color:var(--text-muted)">Belum ada data</td></tr>';
+
+        // ==========================================
+        // TITIK LEMAH PENYEBARAN KADER PDI
+        // ==========================================
+        // Gunakan kecamatanRefList dari API (nama pasti sama dengan data user)
+        // Fallback: jika API gagal, gunakan nama unik dari data user yang sudah ada
+        const weakLabels = kecamatanRefList.length > 0
+          ? kecamatanRefList
+          : [...new Set(Object.keys(dist))];
+
+        // Log untuk debugging sinkronisasi data
+        console.log('📊 Data kader dari Firestore:', dist);
+        console.log('📊 Referensi kecamatan (API):', weakLabels);
+
+        // Mapping: cocokkan nama kecamatan (case-insensitive & trim)
+        const normalize = (str) => (str || '').toLowerCase().trim();
+        const distNormalized = {};
+        Object.keys(dist).forEach(key => {
+          distNormalized[normalize(key)] = dist[key];
+        });
+
+        const weakData = weakLabels.map(kec => {
+          // Cari kecocokan: exact match dulu, lalu normalized
+          if (dist[kec] !== undefined) return dist[kec];
+          const norm = normalize(kec);
+          if (distNormalized[norm] !== undefined) return distNormalized[norm];
+          return 0;
+        });
+
+        const weakMaxCount = Math.max(...weakData, 1);
+        const avgPerKec = weakLabels.length > 0 ? total / weakLabels.length : 0;
+
+        // Color coding based on cadre count
+        const weakColors = weakData.map(count => {
+            if (count === 0) return '#EF4444';
+            if (count <= 2) return '#F97316';
+            if (count <= 5) return '#EAB308';
+            return '#22C55E';
+        });
+
+        const weakBorderColors = weakData.map(count => {
+            if (count === 0) return '#B91C1C';
+            if (count <= 2) return '#C2410C';
+            if (count <= 5) return '#A16207';
+            return '#15803D';
+        });
+
+        // Count statuses
+        let kritis = 0, lemah = 0, cukup = 0, kuat = 0;
+        weakData.forEach(count => {
+            if (count === 0) kritis++;
+            else if (count <= 2) lemah++;
+            else if (count <= 5) cukup++;
+            else kuat++;
+        });
+        document.getElementById('statKritis').innerText = kritis;
+        document.getElementById('statLemah').innerText = lemah;
+        document.getElementById('statCukup').innerText = cukup;
+        document.getElementById('statKuat').innerText = kuat;
+
+        // Weak points bar chart
+        const weakCtx = document.getElementById('weakChart').getContext('2d');
+        if (weakPointChart) {
+            weakPointChart.data.datasets[0].data = weakData;
+            weakPointChart.data.datasets[0].backgroundColor = weakColors;
+            weakPointChart.data.datasets[0].borderColor = weakBorderColors;
+            weakPointChart.update();
+        } else {
+            weakPointChart = new Chart(weakCtx, {
+                type: 'bar',
+                data: {
+                    labels: weakLabels,
+                    datasets: [{
+                        label: 'Jumlah Kader',
+                        data: weakData,
+                        backgroundColor: weakColors,
+                        borderColor: weakBorderColors,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 18
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            titleFont: { weight: 'bold' },
+                            cornerRadius: 8,
+                            padding: 10,
+                            callbacks: {
+                                afterLabel: function(ctx) {
+                                    const val = ctx.parsed.x;
+                                    let status = '';
+                                    if (val === 0) status = '⚠️ KRITIS - Tidak ada kader';
+                                    else if (val <= 2) status = '🟠 LEMAH - Perlu penguatan';
+                                    else if (val <= 5) status = '🟡 CUKUP - Perlu penambahan';
+                                    else status = '🟢 KUAT - Terjaga';
+                                    return status;
+                                },
+                                label: function(ctx) {
+                                    return `${ctx.parsed.x} Kader`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, color: '#64748b', font: { size: 11 } },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#64748b', font: { size: 9, weight: '600' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Weak points table
+        const weakTbody = document.getElementById('weakTable');
+        let wHtml = '';
+
+        // Sort by count ascending (most critical first)
+        const weakSorted = weakLabels.map((kec, idx) => ({ kec, count: weakData[idx] }))
+            .sort((a, b) => a.count - b.count);
+
+        weakSorted.forEach(({ kec, count }) => {
+            let status, badgeClass, strengthPercent, barColor;
+
+            if (count === 0) {
+                status = 'Kritis'; badgeClass = 'badge-kritis'; strengthPercent = 0; barColor = '#EF4444';
+            } else if (count <= 2) {
+                status = 'Lemah'; badgeClass = 'badge-lemah'; strengthPercent = Math.min((count / 6) * 100, 35); barColor = '#F97316';
+            } else if (count <= 5) {
+                status = 'Cukup'; badgeClass = 'badge-cukup'; strengthPercent = Math.min((count / weakMaxCount) * 100, 70); barColor = '#EAB308';
+            } else {
+                status = 'Kuat'; badgeClass = 'badge-kuat'; strengthPercent = (count / weakMaxCount) * 100; barColor = '#22C55E';
+            }
+
+            const statusIcon = count === 0 ? '🔴' : (count <= 2 ? '🟠' : (count <= 5 ? '🟡' : '🟢'));
+
+            wHtml += `<tr>
+                <td style="font-size:0.82rem; font-weight:500">${kec}</td>
+                <td style="text-align:center"><span class="badge ${badgeClass}">${statusIcon} ${status}</span></td>
+                <td style="text-align:center; font-weight:800; font-size:0.95rem; color:${barColor}">${count}</td>
+                <td style="text-align:right; width:25%">
+                    <div class="strength-bar">
+                        <div class="strength-fill" style="width:${strengthPercent}%; background:${barColor}"></div>
+                    </div>
+                </td>
+            </tr>`;
+        });
+        weakTbody.innerHTML = wHtml;
+    });
+}
+
+function updateChartTheme() {
+    const isDark = document.body.classList.contains('dark-mode');
+    const tickColor = isDark ? '#9CA3AF' : '#64748b';
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)';
+
+    if (analyticsChart) {
+        analyticsChart.options.plugins.legend.labels.color = tickColor;
+        analyticsChart.update();
+    }
+    if (distribusiChart) {
+        distribusiChart.options.scales.x.ticks.color = tickColor;
+        distribusiChart.options.scales.x.grid.color = gridColor;
+        distribusiChart.options.scales.y.ticks.color = tickColor;
+        distribusiChart.update();
+    }
+    if (weakPointChart) {
+        weakPointChart.options.scales.x.ticks.color = tickColor;
+        weakPointChart.options.scales.x.grid.color = gridColor;
+        weakPointChart.options.scales.y.ticks.color = tickColor;
+        weakPointChart.update();
+    }
+}
+
+// ==========================================
+// 13. STORE
+// ==========================================
+function switchStoreTab(tab) {
+  document.querySelectorAll('.store-tab').forEach((el, i) => { el.classList.remove('active'); if((tab==='list'&&i===0)||(tab==='add'&&i===1)) el.classList.add('active'); });
+  document.getElementById('store-list').style.display = tab==='list'?'block':'none';
+  document.getElementById('store-add').style.display = tab==='add'?'block':'none';
+  if (tab === 'add') {
+    // Show rules popup if not yet accepted
+    const accepted = localStorage.getItem('st_rules_accepted');
+    if (!accepted) {
+      document.getElementById('stRulesModal').classList.add('show');
+      document.getElementById('stRulesCheck').checked = false;
+      document.getElementById('stRulesAccept').classList.remove('enabled');
+    }
+  }
+}
+
+function stAcceptRules() {
+  const chk = document.getElementById('stRulesCheck');
+  if (!chk.checked) return;
+  localStorage.setItem('st_rules_accepted', '1');
+  document.getElementById('stRulesModal').classList.remove('show');
+}
+
+function previewProductPhoto(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (file.size > 2 * 1024 * 1024) { alert('Ukuran foto maksimal 2MB'); input.value = ''; return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('previewPhotoImg').src = e.target.result;
+      document.getElementById('previewPhotoContainer').style.display = 'block';
+      document.getElementById('stUploadText').textContent = file.name;
+      document.getElementById('stUploadArea').style.borderColor = '#10B981';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+async function tambahProduk() {
+  const nama = document.getElementById('inputNamaProduk').value.trim();
+  const harga = parseInt(document.getElementById('inputHargaProduk').value);
+  const berat = parseInt(document.getElementById('inputBeratProduk').value) || 0;
+  const kategori = document.getElementById('inputKategoriProduk').value;
+  const desc = document.getElementById('inputDescProduk').value.trim();
+  const wa = document.getElementById('inputWaProduk').value.trim();
+  const file = document.getElementById('inputFotoProduk').files[0];
+  const btn = document.getElementById('btnUploadProduk');
+
+  // Validasi
+  if (!nama) { alert('Masukkan nama produk'); return; }
+  if (!harga || harga <= 0) { alert('Masukkan harga produk yang valid'); return; }
+  if (!desc || desc.length < 20) { alert('Deskripsi produk minimal 20 karakter'); return; }
+  if (!wa || !/^0\d{8,13}$/.test(wa)) { alert('Masukkan nomor WhatsApp yang valid (contoh: 08xxxxxxxxxx)'); return; }
+  if (!file) { alert('Upload foto produk'); return; }
+  if (file.size > 2 * 1024 * 1024) { alert('Ukuran foto maksimal 2MB'); return; }
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
+  btn.disabled = true;
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'partai_upload');
+    const res = await fetch('https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload', { method: 'POST', body: formData });
+    const img = await res.json();
+
+    await db.collection('produk').add({
+      nama: nama,
+      harga: harga,
+      berat: berat,
+      kategori: kategori || '-',
+      deskripsi: desc,
+      whatsapp: wa,
+      foto: img.secure_url,
+      userId: auth.currentUser.uid,
+      namaKader: currentUserData.nama || currentUserData.nome || 'Kader',
+      avatarKader: currentUserData.photoURL || '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Reset form
+    document.getElementById('inputNamaProduk').value = '';
+    document.getElementById('inputHargaProduk').value = '';
+    document.getElementById('inputBeratProduk').value = '';
+    document.getElementById('inputKategoriProduk').value = '';
+    document.getElementById('inputDescProduk').value = '';
+    document.getElementById('inputWaProduk').value = '';
+    document.getElementById('inputFotoProduk').value = '';
+    document.getElementById('previewPhotoContainer').style.display = 'none';
+    document.getElementById('stUploadText').textContent = 'Tap untuk pilih foto produk';
+    document.getElementById('stUploadArea').style.borderColor = '';
+
+    btn.innerHTML = '<i class="fas fa-check"></i> Berhasil Diupload!';
+    setTimeout(() => {
+      switchStoreTab('list');
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Upload Produk';
+      btn.disabled = false;
+    }, 1200);
+  } catch (e) {
+    alert('Gagal upload produk. Coba lagi.');
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Upload Produk';
+    btn.disabled = false;
+  }
+}
+
+function loadProduk() {
+  db.collection('produk').onSnapshot(snap => {
+    const g = document.getElementById('productGrid');
+    if (!g) return;
+    if (snap.empty) {
+      g.innerHTML = '<p style="text-align:center;grid-column:span 2;color:var(--text-muted);font-size:0.82rem;padding:30px 0"><i class="fas fa-box-open" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada produk UMKM</p>';
+      return;
+    }
+    let h = '';
+    snap.forEach(d => {
+      const p = d.data();
+      const t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+      const avatar = p.avatarKader || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.namaKader || 'K');
+      const wa = p.whatsapp || '';
+      const waClean = wa.replace(/^0/, '62');
+      const waMsg = encodeURIComponent('Halo, saya tertarik dengan produk "' + (p.nama || '') + '" yang dijual di Store UMKM PDI Perjuangan Kep. Meranti. Apakah masih tersedia?');
+      const waLink = 'https://wa.me/' + waClean + '?text=' + waMsg;
+      const kategori = p.kategori && p.kategori !== '-' ? '<span style="display:inline-block;background:rgba(20,184,166,0.1);color:#0D9488;padding:2px 8px;border-radius:10px;font-size:0.6rem;font-weight:600;margin-bottom:4px">' + p.kategori + '</span>' : '';
+      const berat = p.berat ? '<div class="product-weight"><i class="fas fa-weight-hanging" style="margin-right:3px"></i>' + p.berat + ' gram</div>' : '';
+
+      h += '<div class="product-card">' +
+        '<img src="' + p.foto + '" class="product-img" onerror="this.src=\'https://placehold.co/300x200/f1f5f9/94a3b8?text=Foto+Produk\'">' +
+        '<div class="product-body">' +
+          kategori +
+          '<div class="product-name">' + p.nama + '</div>' +
+          '<div class="product-price">Rp ' + p.harga.toLocaleString('id-ID') + '</div>' +
+          berat +
+          '<div class="product-desc">' + p.deskripsi + '</div>' +
+          '<div class="product-seller"><img src="' + avatar + '" onerror="this.src=\'https://ui-avatars.com/api/?name=K\'"><span>' + p.namaKader + '</span> &middot; ' + t + '</div>' +
+          (wa ? '<button class="product-wa-btn" onclick="window.open(\'' + waLink + '\',\'_blank\')"><i class="fab fa-whatsapp"></i> Hubungi via WhatsApp</button>' : '') +
+        '</div></div>';
+    });
+    g.innerHTML = h;
+  });
+}
+
+// ==========================================
+// MISI & REWARD - TAB SWITCH, ACCORDION, LEADERBOARD & COPY
+// ==========================================
+function switchMrTab(tabName) {
+  document.querySelectorAll('.mr-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mr-tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById('mrPanel-' + tabName);
+  if (panel) panel.classList.add('active');
+  const tabs = document.querySelectorAll('.mr-tab');
+  const tabMap = ['rules','reward','misi','sosmed','leaderboard'];
+  const idx = tabMap.indexOf(tabName);
+  if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+}
+
+function toggleAccordion(id) {
+  const acc = document.getElementById(id);
+  if (!acc) return;
+  acc.classList.toggle('open');
+}
+
+function loadMrLeaderboard() {
+  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(snap => {
+    const el = document.getElementById('mrLeaderboard');
+    if (!el) return;
+    if (snap.empty) { el.innerHTML = '<p class="mr-lb-empty">Belum ada data kader</p>'; return; }
+    let html = '<div style="overflow-x:auto"><table class="mr-lb-table"><thead><tr>';
+    html += '<th>#</th><th>Kader</th><th>Wilayah</th><th>Poin</th>';
+    html += '</tr></thead><tbody>';
+    let i = 1;
+    snap.forEach(d => {
+      const v = d.data();
+      const avatar = v.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(v.nama || 'Kader');
+      const rankBg = i === 1 ? 'linear-gradient(135deg,#FFD700,#FFA500)' : (i === 2 ? 'linear-gradient(135deg,#C0C0C0,#A9A9A9)' : (i === 3 ? 'linear-gradient(135deg,#CD7F32,#8B4513)' : 'linear-gradient(135deg,#94a3b8,#64748b)'));
+      const podiumClass = i <= 3 ? ' lb-podium-' + i : '';
+      const kec = v.kecamatan || '-';
+      const desa = v.desa || '';
+      const wilayah = desa ? desa + ', ' + kec : kec;
+      html += `<tr class="${podiumClass}">`;
+      html += `<td class="lb-rank-cell"><span class="lb-rank-badge" style="background:${rankBg}">${i}</span></td>`;
+      html += `<td class="lb-name-cell"><img src="${avatar}" class="lb-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(v.nama||'K')}'">${v.nama || '-'}</td>`;
+      html += `<td class="lb-wilayah-cell"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:4px;font-size:0.65rem"></i>${wilayah}</td>`;
+      html += `<td class="lb-poin-cell"><i class="fas fa-coins" style="font-size:0.7rem;margin-right:3px"></i>${v.poin || 0}</td>`;
+      html += '</tr>';
+      i++;
+    });
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
+  });
+}
+
+function copyText(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  const text = el.innerText;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.parentElement.querySelector('.mr-copy-btn');
+      if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Teks'; }, 2000); }
+    }).catch(() => { fallbackCopy(text, el); });
+  } else {
+    fallbackCopy(text, el);
+  }
+}
+
+function fallbackCopy(text, el) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    const btn = el.parentElement.querySelector('.mr-copy-btn');
+    if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Salin Teks'; }, 2000); }
+  } catch(e) { alert('Gagal menyalin. Silakan salin manual.'); }
+  document.body.removeChild(ta);
+}
+
+// ==========================================
+// AUTH SCREEN FUNCTIONS
+// ==========================================
+
+function showApp() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appMain').style.display = 'block';
+  isGuestMode = false;
+  applyGuestMode(false);
+}
+
+function showAuth() {
+  if (!isGuestMode) {
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('appMain').style.display = 'none';
+  }
+}
+
+function applyGuestMode(isGuest) {
+  const hideIds = ['guestHideStats','guestHideMenu','guestHideLeaderboard','guestHideNews'];
+  hideIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = isGuest ? 'none' : '';
+  });
+  const bannerEl = document.getElementById('guestLoginBanner');
+  if(bannerEl) bannerEl.style.display = isGuest ? 'block' : 'none';
+  if(isGuest) {
+    document.getElementById('navStore').style.display = 'none';
+    document.getElementById('navDashboard').style.display = 'none';
+    document.getElementById('navLogin').style.display = '';
+    document.getElementById('navLogin').classList.add('guest-nav-login');
+    document.getElementById('headerLoginBtn').style.display = '';
+    document.getElementById('welcomeUserName').textContent = 'Selamat Datang, Tamu!';
+    showView('beranda');
+  } else {
+    document.getElementById('navStore').style.display = '';
+    document.getElementById('navDashboard').style.display = '';
+    document.getElementById('navLogin').style.display = 'none';
+    document.getElementById('navLogin').classList.remove('guest-nav-login');
+    document.getElementById('headerLoginBtn').style.display = 'none';
+  }
+}
+
+function guestGoLogin() {
+  isGuestMode = false;
   document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('appMain').style.display = 'none';
   switchToLogin();
 }
-function hideAuthScreen() {
-  document.getElementById('authScreen').style.display = 'none';
-}
+
 function switchToLogin() {
   document.getElementById('authLogin').style.display = 'block';
   document.getElementById('authRegister').style.display = 'none';
   document.getElementById('authReset').style.display = 'none';
   document.getElementById('authLoading').style.display = 'none';
 }
+
 function switchToRegister() {
   document.getElementById('authLogin').style.display = 'none';
   document.getElementById('authRegister').style.display = 'block';
   document.getElementById('authReset').style.display = 'none';
   document.getElementById('authLoading').style.display = 'none';
-  loadAuthProvinsi();
+  loadAuthProvinces();
 }
+
 function switchToReset() {
   document.getElementById('authLogin').style.display = 'none';
   document.getElementById('authRegister').style.display = 'none';
   document.getElementById('authReset').style.display = 'block';
   document.getElementById('authLoading').style.display = 'none';
 }
+
 function showAuthLoading() {
   document.getElementById('authLogin').style.display = 'none';
   document.getElementById('authRegister').style.display = 'none';
@@ -2220,394 +3949,191 @@ function showAuthLoading() {
   document.getElementById('authLoading').style.display = 'block';
 }
 
-async function handleLogin() {
-  const email = document.getElementById('authLoginEmail').value.trim();
-  const pass = document.getElementById('authLoginPassword').value;
-  if (!email || !pass) return alert('Email dan password wajib diisi.');
-  showAuthLoading();
-  try {
-    await auth.signInWithEmailAndPassword(email, pass);
-  } catch (e) {
-    alert('Login gagal: ' + e.message);
-    switchToLogin();
+function handleLogin() {
+  const email = document.getElementById('authLoginEmail').value;
+  const password = document.getElementById('authLoginPassword').value;
+
+  if (!email || !password) {
+    alert("Email dan password wajib diisi!");
+    return;
   }
-}
-async function handleSignup() {
-  const nama = document.getElementById('authRegNama').value.trim();
-  const nohp = document.getElementById('authRegNohp').value.trim();
-  const prov = document.getElementById('authRegProvinsi').value;
-  const kab = document.getElementById('authRegKabupaten').value;
-  const kec = document.getElementById('authRegKecamatan').value;
-  const desa = document.getElementById('authRegDesa').value;
-  const jabatan = document.getElementById('authRegJabatan').value;
-  const email = document.getElementById('authRegEmail').value.trim();
-  const pass = document.getElementById('authRegPassword').value;
-  if (!nama || !nohp || !email || !pass || !prov || !kab || !kec || !desa) return alert('Semua field wajib diisi.');
-  if (pass.length < 6) return alert('Password minimal 6 karakter.');
+
   showAuthLoading();
-  try {
-    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    await db.collection('users').doc(cred.user.uid).set({
-      nama, nohp, email, jabatan, prov, kab, kec, desa,
-      poin: 0, misiSelesai: 0, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(nama)}&background=E31E25&color=fff&size=100`
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(user => {
+      if (!user.user.emailVerified) {
+        alert("Email belum verifikasi. Cek inbox email Anda.");
+      }
+    })
+    .catch(e => {
+      switchToLogin();
+      alert(e.message);
     });
-  } catch (e) {
-    alert('Daftar gagal: ' + e.message);
-    switchToLogin();
-  }
 }
-async function handleResetPassword() {
-  const email = document.getElementById('authResetEmail').value.trim();
-  if (!email) return alert('Masukkan email Anda.');
+
+function handleSignup() {
+  const get = (id) => document.getElementById(id);
+  const getVal = (id) => get(id).value;
+  const getTxt = (id) => {
+    const sel = get(id);
+    if (sel && sel.selectedIndex >= 0 && sel.options[sel.selectedIndex]) {
+      return sel.options[sel.selectedIndex].getAttribute('data-name') || "";
+    }
+    return "";
+  };
+  const getId = (id) => get(id)?.value || "";
+
+  const data = {
+    nama: getVal('authRegNama'),
+    nohp: getVal('authRegNohp'),
+    provinsi: getTxt('authRegProvinsi'),
+    provinsi_id: getId('authRegProvinsi'),
+    kabupaten: getTxt('authRegKabupaten'),
+    kabupaten_id: getId('authRegKabupaten'),
+    kecamatan: getTxt('authRegKecamatan'),
+    kecamatan_id: getId('authRegKecamatan'),
+    desa: getTxt('authRegDesa'),
+    desa_id: getId('authRegDesa'),
+    jabatan: getVal('authRegJabatan'),
+    email: getVal('authRegEmail'),
+    status: 'Aktif'
+  };
+
+  const pass = getVal('authRegPassword');
+
+  if (!data.nama || !data.nohp || !data.kecamatan || !data.email || !pass) {
+    alert("Lengkapi semua data wajib!");
+    return;
+  }
+
+  if (pass.length < 6) {
+    alert("Password minimal 6 karakter!");
+    return;
+  }
+
   showAuthLoading();
-  try {
-    await auth.sendPasswordResetEmail(email);
-    alert('Link reset password telah dikirim ke email Anda.');
-    switchToLogin();
-  } catch (e) {
-    alert('Gagal: ' + e.message);
-    switchToLogin();
-  }
+
+  auth.createUserWithEmailAndPassword(data.email, pass)
+    .then(async res => {
+      await res.user.sendEmailVerification();
+      await db.collection("users").doc(res.user.uid).set({
+        ...data,
+        poin: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("Pendaftaran berhasil! Cek email untuk verifikasi.");
+    })
+    .catch(e => {
+      switchToRegister();
+      alert(e.message);
+    });
 }
-function handleLogout() {
-  if (confirm('Yakin ingin keluar?')) {
-    auth.signOut();
+
+function handleResetPassword() {
+  const email = document.getElementById('authResetEmail').value;
+
+  if (!email) {
+    alert("Masukkan email akun Anda!");
+    return;
   }
+
+  showAuthLoading();
+
+  auth.sendPasswordResetEmail(email)
+    .then(() => {
+      alert("Link reset password telah dikirim ke email Anda!");
+      switchToLogin();
+    })
+    .catch(e => {
+      switchToReset();
+      alert(e.message);
+    });
 }
+
 function loginAsGuest() {
-  isGuest = true;
-  hideAuthScreen();
-  showGuestMode();
+  isGuestMode = true;
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('appMain').style.display = 'block';
+  applyGuestMode(true);
 }
 
-function showGuestMode() {
-  document.getElementById('mainApp').style.display = 'none';
-  document.getElementById('mainHeader').style.display = 'none';
-  document.getElementById('bottomNav').style.display = 'none';
-  document.getElementById('guestBanner').style.display = 'block';
-  navigateTo('beranda');
-  loadBeritaTerkini();
-}
-function showLoggedInMode() {
-  document.getElementById('mainApp').style.display = 'flex';
-  document.getElementById('mainHeader').style.display = 'block';
-  document.getElementById('bottomNav').style.display = 'flex';
-  document.getElementById('guestBanner').style.display = 'none';
-  navigateTo('beranda');
-  loadUserData();
-  loadBeritaTerkini();
-  loadLeaderboardHome();
-}
-
-// ===== WILAYAH (Simplified) =====
-function loadAuthProvinsi() {
-  const sel = document.getElementById('authRegProvinsi');
-  sel.innerHTML = '<option value="">Pilih Provinsi</option><option value="28" selected>Riau</option>';
-  if (sel.value) loadAuthKabupaten(sel.value);
-}
-function loadAuthKabupaten(provId) {
-  const sel = document.getElementById('authRegKabupaten');
-  sel.disabled = false;
-  sel.innerHTML = '<option value="">Pilih Kabupaten</option><option value="Kab. Kepulauan Meranti" selected>Kab. Kepulauan Meranti</option>';
-  if (sel.value) loadAuthKecamatan(sel.value);
-}
-function loadAuthKecamatan(kab) {
-  const sel = document.getElementById('authRegKecamatan');
-  sel.disabled = false;
-  const kec = ['Tebing Tinggi','Tebing Tinggi Barat','Rangsang','Rangsang Barat','Merbau','Pulau Merbau','Tasik Putri Puyu','Sinar Balanti','Bandar Petalangan'];
-  sel.innerHTML = '<option value="">Pilih Kecamatan</option>' + kec.map(k => `<option value="${k}">${k}</option>`).join('');
-}
-function loadAuthDesa(kec) {
-  const sel = document.getElementById('authRegDesa');
-  sel.disabled = false;
-  const desa = ['Selat Panjang','Tanjung Harapan','Sungai Tohor','Teluk Belitung','Mekar Sari'];
-  sel.innerHTML = '<option value="">Pilih Desa</option>' + desa.map(d => `<option value="${d}">${d}</option>`).join('');
-}
-
-// ===== HERO SLIDER =====
-function goToSlide(i) {
-  document.querySelectorAll('.hero-slide').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-  document.getElementById('heroSlide' + i).classList.add('active');
-  document.querySelectorAll('.dot')[i].classList.add('active');
-  heroIndex = i;
-}
-function startHeroSlider() {
-  heroInterval = setInterval(() => {
-    heroIndex = (heroIndex + 1) % 3;
-    goToSlide(heroIndex);
-  }, 4000);
-}
-
-// ===== LOAD USER DATA =====
-async function loadUserData() {
-  if (!currentUser) return;
-  try {
-    const doc = await db.collection('users').doc(currentUser.uid).get();
-    if (doc.exists) {
-      const d = doc.data();
-      document.getElementById('welcomeName').textContent = 'Halo, ' + d.nama + '!';
-      document.getElementById('profilNama').textContent = d.nama;
-      document.getElementById('profilJabatan').textContent = d.jabatan || 'Kader';
-      document.getElementById('profilEmail').textContent = d.email;
-      document.getElementById('profilWA').textContent = d.nohp || '-';
-      document.getElementById('profilWilayah').textContent = (d.desa || '') + ', ' + (d.kec || '');
-      document.getElementById('profilDesa').textContent = d.desa || '-';
-      document.getElementById('profilKec').textContent = d.kec || '-';
-      document.getElementById('profilPoin').textContent = d.poin || 0;
-      document.getElementById('profilMisi').textContent = d.misiSelesai || 0;
-      document.getElementById('profilAvatar').src = d.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(d.nama)}&background=E31E25&color=fff&size=100`;
-      document.getElementById('dashPoin').textContent = d.poin || 0;
-      document.getElementById('rewardPoin').textContent = d.poin || 0;
-    }
-  } catch (e) { console.log('Load user error:', e); }
-  loadStats();
-}
-
-// ===== LOAD STATS =====
-async function loadStats() {
-  try {
-    const snap = await db.collection('users').get();
-    let kader = 0, relawan = 0, desaSet = new Set();
-    snap.forEach(doc => {
-      const d = doc.data();
-      if (d.jabatan === 'Relawan') relawan++; else kader++;
-      if (d.desa) desaSet.add(d.desa);
-    });
-    document.getElementById('statKader').textContent = kader;
-    document.getElementById('statRelawan').textContent = relawan;
-    document.getElementById('statDesa').textContent = desaSet.size;
-  } catch (e) { console.log('Stats error:', e); }
-}
-
-// ===== BERITA =====
-async function loadBerita() {
-  const container = document.getElementById('beritaList');
-  try {
-    const snap = await db.collection('berita').orderBy('createdAt','desc').limit(20).get();
-    if (snap.empty) {
-      container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">Belum ada berita.</div>';
-      return;
-    }
-    let html = '<div class="news-list">';
-    snap.forEach(doc => {
-      const d = doc.data();
-      const date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}) : '';
-      html += `
-        <div class="news-item" onclick="openBeritaDetail('${doc.id}')">
-          <img class="news-img" src="${d.gambar || 'https://placehold.co/120x120/E31E25/FFFFFF?text=PDI'}" alt="" onerror="this.src='https://placehold.co/120x120/E31E25/FFFFFF?text=PDI'">
-          <div class="news-content">
-            <h4>${d.judul || 'Berita'}</h4>
-            <p>${date}</p>
-          </div>
-        </div>`;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-  } catch (e) {
-    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">Gagal memuat berita.</div>';
-  }
-}
-
-async function loadBeritaTerkini() {
-  const container = document.getElementById('beritaTerkiniList');
-  if (!container) return;
-  try {
-    const snap = await db.collection('berita').orderBy('createdAt','desc').limit(5).get();
-    if (snap.empty) {
-      container.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:16px 0;">Belum ada berita terkini.</div>';
-      return;
-    }
-    let html = '<div class="news-list">';
-    snap.forEach(doc => {
-      const d = doc.data();
-      const date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}) : '';
-      html += `
-        <div class="news-item" onclick="openBeritaDetail('${doc.id}')">
-          <img class="news-img" src="${d.gambar || 'https://placehold.co/120x120/E31E25/FFFFFF?text=PDI'}" alt="" onerror="this.src='https://placehold.co/120x120/E31E25/FFFFFF?text=PDI'">
-          <div class="news-content">
-            <h4>${d.judul || 'Berita'}</h4>
-            <p>${date}</p>
-          </div>
-        </div>`;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-  } catch (e) {
-    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:16px 0;">Gagal memuat berita.</div>';
-  }
-}
-
-function openBeritaDetail(id) {
-  const modal = document.getElementById('beritaDetailModal');
-  const content = document.getElementById('beritaDetailContent');
-  content.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i></div>';
-  modal.style.display = 'flex';
-  db.collection('berita').doc(id).get().then(doc => {
-    if (!doc.exists) { content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Berita tidak ditemukan.</div>'; return; }
-    const d = doc.data();
-    const date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : '';
-    content.innerHTML = `
-      <img src="${d.gambar || 'https://placehold.co/600x300/E31E25/FFFFFF?text=PDI+Perjuangan'}" style="width:100%;border-radius:14px;margin-bottom:16px;" alt="" onerror="this.src='https://placehold.co/600x300/E31E25/FFFFFF?text=PDI+Perjuangan'">
-      <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:8px;">${date}</div>
-      <h2 style="font-size:1.2rem;font-weight:800;line-height:1.3;margin-bottom:12px;">${d.judul}</h2>
-      <div style="font-size:0.88rem;line-height:1.8;color:var(--text-main);">${d.isi || 'Konten berita belum tersedia.'}</div>
-    `;
-  }).catch(() => {
-    content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Gagal memuat berita.</div>';
+async function loadAuthProvinces() {
+  const s = document.getElementById('authRegProvinsi');
+  if (!s) return;
+  s.innerHTML = '<option value="">Pilih Provinsi</option>';
+  const provinces = await fetchWilayah(`${API_WILAYAH}/provinces.json`);
+  provinces.forEach(p => {
+    s.innerHTML += `<option value="${p.id}" data-name="${p.name}">${p.name}</option>`;
   });
 }
-function closeBeritaDetail() {
-  document.getElementById('beritaDetailModal').style.display = 'none';
+
+async function loadAuthKabupaten(pid) {
+  const s = document.getElementById('authRegKabupaten');
+  const s2 = document.getElementById('authRegKecamatan');
+  const s3 = document.getElementById('authRegDesa');
+
+  s.innerHTML = '<option value="">Memuat...</option>';
+  s.disabled = true;
+  s2.innerHTML = '<option value="">Pilih Kabupaten</option>';
+  s2.disabled = true;
+  s3.innerHTML = '<option value="">Pilih Kecamatan</option>';
+  s3.disabled = true;
+
+  if (!pid) return;
+
+  const kabupatens = await fetchWilayah(`${API_WILAYAH}/regencies/${pid}.json`);
+  s.innerHTML = '<option value="">Pilih Kabupaten</option>';
+  kabupatens.forEach(k => {
+    s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`;
+  });
+  s.disabled = false;
 }
 
-// ===== PENGUMUMAN =====
-async function loadPengumuman() {
-  const container = document.getElementById('pengumumanList');
-  try {
-    const snap = await db.collection('pengumuman').orderBy('createdAt','desc').limit(20).get();
-    if (snap.empty) {
-      container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">Belum ada pengumuman.</div>';
-      return;
-    }
-    let html = '<div class="news-list">';
-    snap.forEach(doc => {
-      const d = doc.data();
-      const date = d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}) : '';
-      html += `
-        <div class="news-item" style="cursor:default;">
-          <div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--orange),#C2410C);display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;flex-shrink:0;">
-            <i class="fas fa-bullhorn"></i>
-          </div>
-          <div class="news-content">
-            <h4>${d.judul || 'Pengumuman'}</h4>
-            <p style="margin-top:4px;font-size:0.78rem;line-height:1.5;">${d.isi || ''}</p>
-            <p>${date}</p>
-          </div>
-        </div>`;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-  } catch (e) {
-    container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 0;">Gagal memuat pengumuman.</div>';
-  }
+async function loadAuthKecamatan(kid) {
+  const s = document.getElementById('authRegKecamatan');
+  const s2 = document.getElementById('authRegDesa');
+
+  s.innerHTML = '<option value="">Memuat...</option>';
+  s.disabled = true;
+  s2.innerHTML = '<option value="">Pilih Kecamatan</option>';
+  s2.disabled = true;
+
+  if (!kid) return;
+
+  const kecamatans = await fetchWilayah(`${API_WILAYAH}/districts/${kid}.json`);
+  s.innerHTML = '<option value="">Pilih Kecamatan</option>';
+  kecamatans.forEach(k => {
+    s.innerHTML += `<option value="${k.id}" data-name="${k.name}">${k.name}</option>`;
+  });
+  s.disabled = false;
 }
 
-// ===== LEADERBOARD =====
-async function loadLeaderboardHome() {
-  const container = document.getElementById('leaderboardHome');
-  try {
-    const snap = await db.collection('users').orderBy('poin','desc').limit(5).get();
-    if (snap.empty) { container.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:20px 0;">Belum ada data.</div>'; return; }
-    let html = '';
-    let rank = 0;
-    snap.forEach(doc => {
-      rank++;
-      const d = doc.data();
-      const rc = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
-      html += `
-        <div class="leaderboard-item">
-          <div class="lb-rank ${rc}">${rank}</div>
-          <img class="lb-avatar-sm" src="${d.avatar || 'https://ui-avatars.com/api/?name=U&background=E31E25&color=fff&size=40'}" alt="">
-          <div class="lb-info">
-            <div class="lb-name-sm">${d.nama || 'Anonim'}</div>
-            <div class="lb-poin-sm">${d.desa || ''}</div>
-          </div>
-          <div style="font-weight:900;color:var(--gold);font-size:0.9rem;">${d.poin || 0} <i class="fas fa-star" style="font-size:0.7rem;"></i></div>
-        </div>`;
-    });
-    container.innerHTML = html;
-  } catch (e) { container.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;padding:20px 0;">Gagal memuat.</div>'; }
+async function loadAuthDesa(kid) {
+  const s = document.getElementById('authRegDesa');
+  s.innerHTML = '<option value="">Memuat...</option>';
+  s.disabled = true;
+
+  if (!kid) return;
+
+  const desas = await fetchWilayah(`${API_WILAYAH}/villages/${kid}.json`);
+  s.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+  desas.forEach(d => {
+    s.innerHTML += `<option value="${d.id}" data-name="${d.name}">${d.name}</option>`;
+  });
+  s.disabled = false;
 }
 
-// ===== DASHBOARD =====
-function initDashboard() {
-  if (!dashMap) {
-    setTimeout(() => {
-      const el = document.getElementById('dash-peta');
-      if (!el) return;
-      dashMap = L.map('dash-peta').setView([1.15, 102.6], 11);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM' }).addTo(dashMap);
-      // Add sample markers
-      const locs = [[1.15,102.6],[1.2,102.65],[1.1,102.55],[1.18,102.58],[1.12,102.62]];
-      locs.forEach(l => L.marker(l).addTo(dashMap).bindPopup('Kader PDI'));
-    }, 300);
-  }
-}
-
-// ===== MISI TABS =====
-function switchMrTab(btn, panelId) {
-  btn.closest('.mr-tabs').querySelectorAll('.mr-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.mr-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(panelId).classList.add('active');
-}
-function toggleMrAcc(header) {
-  header.closest('.mr-accordion').classList.toggle('open');
-}
-
-// ===== STORE =====
-function switchStoreTab(btn, cat) {
-  btn.closest('.store-tabs').querySelectorAll('.store-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  loadStoreProducts(cat);
-}
-async function loadStoreProducts(cat = 'semua') {
-  const grid = document.getElementById('storeProductGrid');
-  try {
-    let q = db.collection('produk').limit(20);
-    if (cat !== 'semua') q = db.collection('produk').where('kategori','==',cat).limit(20);
-    const snap = await q.get();
-    if (snap.empty) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 0;">Belum ada produk.</div>'; return; }
-    let html = '';
-    snap.forEach(doc => {
-      const d = doc.data();
-      html += `
-        <div class="product-card">
-          <img class="product-img" src="${d.gambar || 'https://placehold.co/300x300/e2e8f0/64748b?text=Produk'}" alt="" onerror="this.src='https://placehold.co/300x300/e2e8f0/64748b?text=Produk'">
-          <div class="product-body">
-            <div class="product-name">${d.nama || 'Produk'}</div>
-            <div class="product-price">Rp ${(d.harga || 0).toLocaleString('id-ID')}</div>
-            ${d.berat ? `<div class="product-weight">${d.berat}</div>` : ''}
-            ${d.deskripsi ? `<div class="product-desc">${d.deskripsi}</div>` : ''}
-            <button class="product-wa-btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent('Halo, saya ingin memesan: ' + (d.nama||'Produk'))}','_blank')">
-              <i class="fab fa-whatsapp"></i> Pesan via WA
-            </button>
-          </div>
-        </div>`;
-    });
-    grid.innerHTML = html;
-  } catch (e) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:40px 0;">Gagal memuat produk.</div>'; }
-}
-function closeStoreRules() { document.getElementById('stRulesModal').classList.remove('show'); }
-
-// ===== AUTH STATE =====
-auth.onAuthStateChanged(user => {
-  currentUser = user;
-  isGuest = false;
-  if (user) {
-    hideAuthScreen();
-    showLoggedInMode();
-  } else {
-    showAuthScreen();
-  }
-});
-
-// ===== INIT =====
+// ==========================================
+// INIT
+// ==========================================
 window.onload = function() {
   loadTheme();
-  startHeroSlider();
-  // Load berita & pengumuman when navigating to their views
-  const origNav = navigateTo;
-  window.navigateTo = function(view) {
-    origNav(view);
-    if (view === 'berita') loadBerita();
-    if (view === 'pengumuman') loadPengumuman();
-    if (view === 'store') loadStoreProducts();
-  };
+  loadProvinces();
+  loadProduk();
+  initAnalytics(); // Sekarang async - akan fetch API dulu baru listen Firestore
 };
-</script>
 
+</script>
 </body>
 </html>
