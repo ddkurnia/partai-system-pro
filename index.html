@@ -1575,6 +1575,156 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 .rw-hist-status.selesai { background: #D1FAE5; color: #065F46; }
 .rw-hist-status.ditolak { background: #FEE2E2; color: #991B1B; }
 .rw-empty { text-align: center; color: var(--text-muted); font-size: 0.78rem; padding: 20px 0; }
+
+/* ==========================================
+   BERITA POPUP MODAL
+   ========================================== */
+.berita-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 5000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.berita-popup-overlay.show {
+  display: flex;
+  animation: beritaFadeIn 0.25s ease;
+}
+@keyframes beritaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.berita-popup-box {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 500px;
+  max-height: 88vh;
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: beritaSlideUp 0.3s ease;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+}
+@keyframes beritaSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.berita-popup-handle {
+  width: 40px;
+  height: 5px;
+  background: var(--border-color);
+  border-radius: 3px;
+  margin: 10px auto 0;
+  flex-shrink: 0;
+}
+.berita-popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s;
+}
+.berita-popup-close:hover {
+  background: rgba(227, 30, 37, 0.8);
+  transform: scale(1.1);
+}
+.berita-popup-imgwrap {
+  position: relative;
+  width: 100%;
+  max-height: 280px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-body);
+}
+.berita-popup-imgwrap img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  display: block;
+}
+.berita-popup-imgwrap .no-img {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  gap: 8px;
+}
+.berita-popup-imgwrap .no-img i {
+  font-size: 2.5rem;
+  color: var(--border-color);
+}
+.berita-popup-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  scrollbar-width: thin;
+}
+.berita-popup-body::-webkit-scrollbar {
+  width: 4px;
+}
+.berita-popup-body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
+.berita-popup-date {
+  font-size: 0.72rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.berita-popup-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--text-main);
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+.berita-popup-content {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.berita-popup-content img {
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+.berita-popup-footer {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
 </style>
 </head>
 <body>
@@ -2681,6 +2831,25 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
       <input id="resetEmail" placeholder="Email Akun" type="email">
       <button onclick="resetPassword()"><i class="fas fa-paper-plane"></i> Kirim Link</button>
       <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Kembali</div>
+    </div>
+  </div>
+</div>
+
+<!-- BERITA POPUP MODAL -->
+<div id="beritaPopup" class="berita-popup-overlay" onclick="closeBeritaPopup(event)">
+  <div class="berita-popup-box">
+    <div class="berita-popup-handle"></div>
+    <div class="berita-popup-imgwrap" id="beritaPopupImgWrap">
+      <button class="berita-popup-close" onclick="closeBeritaPopup(event, true)"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="berita-popup-body">
+      <div class="berita-popup-date" id="beritaPopupDate"></div>
+      <div class="berita-popup-title" id="beritaPopupTitle"></div>
+      <div class="berita-popup-content" id="beritaPopupContent"></div>
+    </div>
+    <div class="berita-popup-footer">
+      <i class="fas fa-newspaper"></i>
+      <span>PDI Perjuangan Kab. Kepulauan Meranti</span>
     </div>
   </div>
 </div>
@@ -4122,6 +4291,62 @@ async function loadAuthDesa(kid) {
 // 14. BERITA & PENGUMUMAN REALTIME
 // ==========================================
 
+function getBeritaFoto(v) {
+  return v.image_url || v.imageUrl || v.foto || v.gambar || v.image || v.photo || v.url || v.link_gambar || v.gambar_url || '';
+}
+
+function getBeritaWaktu(v) {
+  return v.createdAt || v.waktu || v.updatedAt || null;
+}
+
+function formatWaktu(field) {
+  if (!field) return '-';
+  const w = field.toDate ? field.toDate() : new Date(field);
+  return w.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatWaktuShort(field) {
+  if (!field) return '';
+  const w = field.toDate ? field.toDate() : new Date(field);
+  return w.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function openBeritaPopup(judul, isi, foto, waktuField) {
+  const popup = document.getElementById('beritaPopup');
+  const imgWrap = document.getElementById('beritaPopupImgWrap');
+  const dateEl = document.getElementById('beritaPopupDate');
+  const titleEl = document.getElementById('beritaPopupTitle');
+  const contentEl = document.getElementById('beritaPopupContent');
+
+  // Gambar
+  if (foto) {
+    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event, true)"><i class="fas fa-times"></i></button>' +
+      '<img src="' + foto + '" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML=\'<button class=\\'berita-popup-close\\' onclick=\\'closeBeritaPopup(event, true)\\'><i class=\\'fas fa-times\\'></i></button><div class=\\'no-img\\'><i class=\\'fas fa-image\\'></i><span>Foto tidak tersedia</span></div>\'">';
+  } else {
+    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event, true)"><i class="fas fa-times"></i></button>' +
+      '<div class="no-img"><i class="fas fa-newspaper"></i><span>Berita tanpa foto</span></div>';
+    imgWrap.style.height = 'auto';
+  }
+
+  // Tanggal
+  dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> ' + formatWaktu(waktuField);
+
+  // Judul & Isi
+  titleEl.textContent = judul;
+  contentEl.textContent = isi || 'Tidak ada konten.';
+
+  // Tampilkan
+  popup.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBeritaPopup(e, force) {
+  if (force || (e && e.target === document.getElementById('beritaPopup'))) {
+    document.getElementById('beritaPopup').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
 function loadBerita() {
   // === BERANDA: Berita Terkini (5 terbaru) ===
   db.collection("berita").orderBy("createdAt", "desc").limit(5).onSnapshot(snap => {
@@ -4138,20 +4363,49 @@ function loadBerita() {
       const v = d.data();
       const judul = v.judul || 'Berita';
       const isi = v.isi || '';
-      const foto = v.image_url || '';
-      const w = v.createdAt ? (v.createdAt.toDate ? v.createdAt.toDate() : new Date(v.createdAt)) : null;
-      const tgl = w ? w.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' }) : '';
+      const foto = getBeritaFoto(v);
+      const w = getBeritaWaktu(v);
+      const tgl = formatWaktuShort(w);
       const excerpt = isi.length > 80 ? isi.substring(0, 80) + '...' : isi;
+      const judulSafe = judul.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      const isiSafe = isi.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      const fotoSafe = foto.replace(/'/g, "\\'");
       
-      html += '<div class="news-item">' +
+      html += '<div class="news-item" onclick="openBeritaPopup(\'' + judulSafe + '\',\'' + isiSafe + '\',\'' + fotoSafe + '\',null)">' +
         (foto 
-          ? '<img src="' + foto + '" class="news-img" onerror="this.style.display=\'none\'">' 
+          ? '<img src="' + foto + '" class="news-img" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' 
           : '<div class="news-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-body)"><i class="fas fa-newspaper" style="color:var(--text-muted)"></i></div>') +
         '<div class="news-content">' +
           '<h4>' + judul + '</h4>' +
           '<p>' + (tgl ? '<span style="margin-right:8px"><i class="fas fa-calendar-alt"></i> ' + tgl + '</span>' : '') + excerpt + '</p>' +
         '</div></div>';
     });
+
+    // Simpan data untuk popup yang lebih aman
+    window._beritaData = [];
+    snap.forEach(d => { window._beritaData.push(d.data()); });
+    
+    // Render ulang dengan referensi index (lebih aman dari escape error)
+    html = '';
+    snap.forEach((d, idx) => {
+      const v = d.data();
+      const judul = v.judul || 'Berita';
+      const isi = v.isi || '';
+      const foto = getBeritaFoto(v);
+      const w = getBeritaWaktu(v);
+      const tgl = formatWaktuShort(w);
+      const excerpt = isi.length > 80 ? isi.substring(0, 80) + '...' : isi;
+      
+      html += '<div class="news-item" onclick="openBeritaByIndex(' + idx + ',\'terkini\')">' +
+        (foto 
+          ? '<img src="' + foto + '" class="news-img" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' 
+          : '<div class="news-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-body)"><i class="fas fa-newspaper" style="color:var(--text-muted)"></i></div>') +
+        '<div class="news-content">' +
+          '<h4>' + judul + '</h4>' +
+          '<p>' + (tgl ? '<span style="margin-right:8px"><i class="fas fa-calendar-alt"></i> ' + tgl + '</span>' : '') + excerpt + '</p>' +
+        '</div></div>';
+    });
+    
     el.innerHTML = html;
   }, err => console.error('Error berita terkini:', err));
 
@@ -4165,19 +4419,23 @@ function loadBerita() {
       return;
     }
     
+    // Simpan data halaman berita
+    window._beritaAllData = [];
+    snap.forEach(d => { window._beritaAllData.push(d.data()); });
+    
     let html = '';
-    snap.forEach(d => {
+    snap.forEach((d, idx) => {
       const v = d.data();
       const judul = v.judul || 'Berita';
       const isi = v.isi || '';
-      const foto = v.image_url || '';
-      const w = v.createdAt ? (v.createdAt.toDate ? v.createdAt.toDate() : new Date(v.createdAt)) : null;
-      const tgl = w ? w.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '-';
+      const foto = getBeritaFoto(v);
+      const w = getBeritaWaktu(v);
+      const tgl = formatWaktu(w);
       const excerpt = isi.length > 120 ? isi.substring(0, 120) + '...' : isi;
       
-      html += '<div class="news-item" style="flex-direction:column;gap:10px;padding:16px">' +
+      html += '<div class="news-item" style="flex-direction:column;gap:10px;padding:16px" onclick="openBeritaByIndex(' + idx + ',\'all\')">' +
         (foto 
-          ? '<img src="' + foto + '" style="width:100%;height:180px;object-fit:cover;border-radius:12px" onerror="this.style.display=\'none\'">' 
+          ? '<img src="' + foto + '" style="width:100%;height:180px;object-fit:cover;border-radius:12px" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' 
           : '') +
         '<div class="news-content">' +
           '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:5px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div>' +
@@ -4187,6 +4445,18 @@ function loadBerita() {
     });
     el.innerHTML = html;
   }, err => console.error('Error berita list:', err));
+}
+
+function openBeritaByIndex(idx, source) {
+  const data = source === 'all' ? window._beritaAllData : window._beritaData;
+  if (!data || !data[idx]) return;
+  const v = data[idx];
+  openBeritaPopup(
+    v.judul || 'Berita',
+    v.isi || '',
+    getBeritaFoto(v),
+    getBeritaWaktu(v)
+  );
 }
 
 function loadPengumuman() {
@@ -4204,8 +4474,8 @@ function loadPengumuman() {
       const v = d.data();
       const judul = v.judul || 'Pengumuman';
       const isi = v.isi || '';
-      const w = v.createdAt ? (v.createdAt.toDate ? v.createdAt.toDate() : new Date(v.createdAt)) : null;
-      const tgl = w ? w.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '-';
+      const w = getBeritaWaktu(v);
+      const tgl = formatWaktu(w);
       
       html += '<li style="padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:10px">' +
         '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#EA580C,#C2410C);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;font-size:0.85rem"><i class="fas fa-bullhorn"></i></div>' +
@@ -4217,7 +4487,7 @@ function loadPengumuman() {
     });
     el.innerHTML = html;
   }, err => console.error('Error pengumuman:', err));
-        }
+      }
 
 // ==========================================
 // INIT
