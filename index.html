@@ -1577,7 +1577,7 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 .rw-empty { text-align: center; color: var(--text-muted); font-size: 0.78rem; padding: 20px 0; }
 
 /* ==========================================
-   BERITA POPUP MODAL
+   BERITA POPUP MODAL (VERSI TENGAH)
    ========================================== */
 .berita-popup-overlay {
   position: fixed;
@@ -1586,9 +1586,9 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
   backdrop-filter: blur(4px);
   z-index: 5000;
   display: none;
-  align-items: flex-end;
+  align-items: center; /* Mengubah posisi dari bawah (flex-end) ke tengah (center) */
   justify-content: center;
-  padding: 0;
+  padding: 20px; /* Memberi jarak agar tidak mentok di pinggir layar HP */
 }
 .berita-popup-overlay.show {
   display: flex;
@@ -1602,25 +1602,26 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
   background: var(--bg-card);
   width: 100%;
   max-width: 500px;
-  max-height: 88vh;
-  border-radius: 24px 24px 0 0;
+  max-height: 85vh;
+  border-radius: 24px; /* Membuat semua sudut membulat */
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  animation: beritaSlideUp 0.3s ease;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+  animation: beritaPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animasi membesar (pop) dari tengah */
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
 }
-@keyframes beritaSlideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+@keyframes beritaPopIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.8) translateY(20px); 
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1) translateY(0); 
+  }
 }
 .berita-popup-handle {
-  width: 40px;
-  height: 5px;
-  background: var(--border-color);
-  border-radius: 3px;
-  margin: 10px auto 0;
-  flex-shrink: 0;
+  display: none; /* Menyembunyikan garis tarikan (handle) karena sudah bukan bergaya laci bawah */
 }
 .berita-popup-close {
   position: absolute;
