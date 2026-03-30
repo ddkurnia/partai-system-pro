@@ -4292,66 +4292,6 @@ async function loadAuthDesa(kid) {
 // ==========================================
 
 function getBeritaFoto(v) {
-  return v.image_url || v.imageUrl || v.foto || v.gambar || v.image || v.photo || v.url || v.link_gambar || v.gambar_url || '';
-}
-
-function getBeritaWaktu(v) {
-  return v.createdAt || v.waktu || v.updatedAt || null;
-}
-
-function formatWaktu(field) {
-  if (!field) return '-';
-  const w = field.toDate ? field.toDate() : new Date(field);
-  return w.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-function formatWaktuShort(field) {
-  if (!field) return '';
-  const w = field.toDate ? field.toDate() : new Date(field);
-  return w.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-function openBeritaPopup(judul, isi, foto, waktuField) {
-  const popup = document.getElementById('beritaPopup');
-  const imgWrap = document.getElementById('beritaPopupImgWrap');
-  const dateEl = document.getElementById('beritaPopupDate');
-  const titleEl = document.getElementById('beritaPopupTitle');
-  const contentEl = document.getElementById('beritaPopupContent');
-
-  // Gambar
-  if (foto) {
-    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event, true)"><i class="fas fa-times"></i></button>' +
-      '<img src="' + foto + '" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML=\'<button class=\\'berita-popup-close\\' onclick=\\'closeBeritaPopup(event, true)\\'><i class=\\'fas fa-times\\'></i></button><div class=\\'no-img\\'><i class=\\'fas fa-image\\'></i><span>Foto tidak tersedia</span></div>\'">';
-  } else {
-    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event, true)"><i class="fas fa-times"></i></button>' +
-      '<div class="no-img"><i class="fas fa-newspaper"></i><span>Berita tanpa foto</span></div>';
-    imgWrap.style.height = 'auto';
-  }
-
-  // Tanggal
-  dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> ' + formatWaktu(waktuField);
-
-  // Judul & Isi
-  titleEl.textContent = judul;
-  contentEl.textContent = isi || 'Tidak ada konten.';
-
-  // Tampilkan
-  popup.classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeBeritaPopup(e, force) {
-  if (force || (e && e.target === document.getElementById('beritaPopup'))) {
-    document.getElementById('beritaPopup').classList.remove('show');
-    document.body.style.overflow = '';
-  }
-}
-
-// ==========================================
-// 14. BERITA & PENGUMUMAN REALTIME
-// ==========================================
-
-function getBeritaFoto(v) {
   return v.image_url || v.imageUrl || v.foto || v.gambar || v.image || v.photo || v.url || '';
 }
 
