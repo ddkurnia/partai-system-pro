@@ -4347,147 +4347,152 @@ function closeBeritaPopup(e, force) {
   }
 }
 
+// ==========================================
+// 14. BERITA & PENGUMUMAN REALTIME
+// ==========================================
+
+function getBeritaFoto(v) {
+  return v.image_url || v.imageUrl || v.foto || v.gambar || v.image || v.photo || v.url || '';
+}
+
+function getBeritaWaktu(v) {
+  return v.createdAt || v.waktu || v.updatedAt || null;
+}
+
+function formatWaktu(field) {
+  if (!field) return '-';
+  var w = field.toDate ? field.toDate() : new Date(field);
+  return w.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatWaktuShort(field) {
+  if (!field) return '';
+  var w = field.toDate ? field.toDate() : new Date(field);
+  return w.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function openBeritaByIndex(idx, source) {
+  var data = source === 'all' ? window._beritaAllData : window._beritaData;
+  if (!data || !data[idx]) return;
+  var v = data[idx];
+  var judul = v.judul || 'Berita';
+  var isi = v.isi || '';
+  var foto = getBeritaFoto(v);
+  var w = getBeritaWaktu(v);
+
+  var popup = document.getElementById('beritaPopup');
+  var imgWrap = document.getElementById('beritaPopupImgWrap');
+  var dateEl = document.getElementById('beritaPopupDate');
+  var titleEl = document.getElementById('beritaPopupTitle');
+  var contentEl = document.getElementById('beritaPopupContent');
+
+  if (foto) {
+    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event,true)"><i class="fas fa-times"></i></button><img src="' + foto + '" referrerpolicy="no-referrer">';
+  } else {
+    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event,true)"><i class="fas fa-times"></i></button><div class="no-img"><i class="fas fa-newspaper"></i><span>Berita tanpa foto</span></div>';
+  }
+
+  dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> ' + formatWaktu(w);
+  titleEl.textContent = judul;
+  contentEl.textContent = isi || 'Tidak ada konten.';
+
+  popup.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBeritaPopup(e, force) {
+  if (force) {
+    document.getElementById('beritaPopup').classList.remove('show');
+    document.body.style.overflow = '';
+    return;
+  }
+  if (e.target === document.getElementById('beritaPopup')) {
+    document.getElementById('beritaPopup').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+
 function loadBerita() {
-  // === BERANDA: Berita Terkini (5 terbaru) ===
-  db.collection("berita").orderBy("createdAt", "desc").limit(5).onSnapshot(snap => {
-    const el = document.getElementById('beritaTerkiniList');
+  db.collection("berita").orderBy("createdAt", "desc").limit(5).onSnapshot(function(snap) {
+    var el = document.getElementById('beritaTerkiniList');
     if (!el) return;
-    
     if (snap.empty) {
       el.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0;width:100%"><i class="fas fa-newspaper" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada berita terkini</div>';
       return;
     }
-    
-    let html = '';
-    snap.forEach(d => {
-      const v = d.data();
-      const judul = v.judul || 'Berita';
-      const isi = v.isi || '';
-      const foto = getBeritaFoto(v);
-      const w = getBeritaWaktu(v);
-      const tgl = formatWaktuShort(w);
-      const excerpt = isi.length > 80 ? isi.substring(0, 80) + '...' : isi;
-      const judulSafe = judul.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-      const isiSafe = isi.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-      const fotoSafe = foto.replace(/'/g, "\\'");
-      
-      html += '<div class="news-item" onclick="openBeritaPopup(\'' + judulSafe + '\',\'' + isiSafe + '\',\'' + fotoSafe + '\',null)">' +
-        (foto 
-          ? '<img src="' + foto + '" class="news-img" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' 
-          : '<div class="news-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-body)"><i class="fas fa-newspaper" style="color:var(--text-muted)"></i></div>') +
-        '<div class="news-content">' +
-          '<h4>' + judul + '</h4>' +
-          '<p>' + (tgl ? '<span style="margin-right:8px"><i class="fas fa-calendar-alt"></i> ' + tgl + '</span>' : '') + excerpt + '</p>' +
-        '</div></div>';
-    });
-
-    // Simpan data untuk popup yang lebih aman
     window._beritaData = [];
-    snap.forEach(d => { window._beritaData.push(d.data()); });
-    
-    // Render ulang dengan referensi index (lebih aman dari escape error)
-    html = '';
-    snap.forEach((d, idx) => {
-      const v = d.data();
-      const judul = v.judul || 'Berita';
-      const isi = v.isi || '';
-      const foto = getBeritaFoto(v);
-      const w = getBeritaWaktu(v);
-      const tgl = formatWaktuShort(w);
-      const excerpt = isi.length > 80 ? isi.substring(0, 80) + '...' : isi;
-      
-      html += '<div class="news-item" onclick="openBeritaByIndex(' + idx + ',\'terkini\')">' +
-        (foto 
-          ? '<img src="' + foto + '" class="news-img" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' 
-          : '<div class="news-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-body)"><i class="fas fa-newspaper" style="color:var(--text-muted)"></i></div>') +
-        '<div class="news-content">' +
-          '<h4>' + judul + '</h4>' +
-          '<p>' + (tgl ? '<span style="margin-right:8px"><i class="fas fa-calendar-alt"></i> ' + tgl + '</span>' : '') + excerpt + '</p>' +
-        '</div></div>';
+    snap.forEach(function(d) { window._beritaData.push(d.data()); });
+    var html = '';
+    snap.forEach(function(d, idx) {
+      var v = d.data();
+      var judul = v.judul || 'Berita';
+      var isi = v.isi || '';
+      var foto = getBeritaFoto(v);
+      var tgl = formatWaktuShort(getBeritaWaktu(v));
+      var excerpt = isi.length > 80 ? isi.substring(0, 80) + '...' : isi;
+      html += '<div class="news-item" onclick="openBeritaByIndex(' + idx + ',\'terkini\')">';
+      if (foto) {
+        html += '<img src="' + foto + '" class="news-img" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">';
+      } else {
+        html += '<div class="news-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-body)"><i class="fas fa-newspaper" style="color:var(--text-muted)"></i></div>';
+      }
+      html += '<div class="news-content"><h4>' + judul + '</h4><p>' + (tgl ? '<span style="margin-right:8px"><i class="fas fa-calendar-alt"></i> ' + tgl + '</span>' : '') + excerpt + '</p></div></div>';
     });
-    
     el.innerHTML = html;
-  }, err => console.error('Error berita terkini:', err));
+  }, function(err) { console.error('Error berita terkini:', err); });
 
-  // === HALAMAN BERITA: Semua berita ===
-  db.collection("berita").orderBy("createdAt", "desc").onSnapshot(snap => {
-    const el = document.getElementById('beritaList');
+  db.collection("berita").orderBy("createdAt", "desc").onSnapshot(function(snap) {
+    var el = document.getElementById('beritaList');
     if (!el) return;
-    
     if (snap.empty) {
       el.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:30px 0;width:100%"><i class="fas fa-newspaper" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada berita</p>';
       return;
     }
-    
-    // Simpan data halaman berita
     window._beritaAllData = [];
-    snap.forEach(d => { window._beritaAllData.push(d.data()); });
-    
-    let html = '';
-    snap.forEach((d, idx) => {
-      const v = d.data();
-      const judul = v.judul || 'Berita';
-      const isi = v.isi || '';
-      const foto = getBeritaFoto(v);
-      const w = getBeritaWaktu(v);
-      const tgl = formatWaktu(w);
-      const excerpt = isi.length > 120 ? isi.substring(0, 120) + '...' : isi;
-      
-      html += '<div class="news-item" style="flex-direction:column;gap:10px;padding:16px" onclick="openBeritaByIndex(' + idx + ',\'all\')">' +
-        (foto 
-          ? '<img src="' + foto + '" style="width:100%;height:180px;object-fit:cover;border-radius:12px" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' 
-          : '') +
-        '<div class="news-content">' +
-          '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:5px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div>' +
-          '<h4 style="font-size:1rem">' + judul + '</h4>' +
-          '<p>' + excerpt + '</p>' +
-        '</div></div>';
+    snap.forEach(function(d) { window._beritaAllData.push(d.data()); });
+    var html = '';
+    snap.forEach(function(d, idx) {
+      var v = d.data();
+      var judul = v.judul || 'Berita';
+      var isi = v.isi || '';
+      var foto = getBeritaFoto(v);
+      var tgl = formatWaktu(getBeritaWaktu(v));
+      var excerpt = isi.length > 120 ? isi.substring(0, 120) + '...' : isi;
+      html += '<div class="news-item" style="flex-direction:column;gap:10px;padding:16px" onclick="openBeritaByIndex(' + idx + ',\'all\')">';
+      if (foto) {
+        html += '<img src="' + foto + '" style="width:100%;height:180px;object-fit:cover;border-radius:12px" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">';
+      }
+      html += '<div class="news-content"><div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:5px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div><h4 style="font-size:1rem">' + judul + '</h4><p>' + excerpt + '</p></div></div>';
     });
     el.innerHTML = html;
-  }, err => console.error('Error berita list:', err));
-}
-
-function openBeritaByIndex(idx, source) {
-  const data = source === 'all' ? window._beritaAllData : window._beritaData;
-  if (!data || !data[idx]) return;
-  const v = data[idx];
-  openBeritaPopup(
-    v.judul || 'Berita',
-    v.isi || '',
-    getBeritaFoto(v),
-    getBeritaWaktu(v)
-  );
+  }, function(err) { console.error('Error berita list:', err); });
 }
 
 function loadPengumuman() {
-  db.collection("pengumuman").orderBy("createdAt", "desc").onSnapshot(snap => {
-    const el = document.getElementById('pengumumanList');
+  db.collection("pengumuman").orderBy("createdAt", "desc").onSnapshot(function(snap) {
+    var el = document.getElementById('pengumumanList');
     if (!el) return;
-    
     if (snap.empty) {
       el.innerHTML = '<li style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0"><i class="fas fa-bullhorn" style="font-size:1.5rem;display:block;margin-bottom:10px;color:var(--border-color)"></i>Belum ada pengumuman</li>';
       return;
     }
-    
-    let html = '';
-    snap.forEach(d => {
-      const v = d.data();
-      const judul = v.judul || 'Pengumuman';
-      const isi = v.isi || '';
-      const w = getBeritaWaktu(v);
-      const tgl = formatWaktu(w);
-      
-      html += '<li style="padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:10px">' +
-        '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#EA580C,#C2410C);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;font-size:0.85rem"><i class="fas fa-bullhorn"></i></div>' +
-        '<div style="flex:1;min-width:0">' +
-          '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:3px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div>' +
-          '<div style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:3px">' + judul + '</div>' +
-          '<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">' + isi + '</div>' +
-        '</div></li>';
+    var html = '';
+    snap.forEach(function(d) {
+      var v = d.data();
+      var judul = v.judul || 'Pengumuman';
+      var isi = v.isi || '';
+      var tgl = formatWaktu(getBeritaWaktu(v));
+      html += '<li style="padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:10px">';
+      html += '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#EA580C,#C2410C);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;font-size:0.85rem"><i class="fas fa-bullhorn"></i></div>';
+      html += '<div style="flex:1;min-width:0">';
+      html += '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:3px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div>';
+      html += '<div style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:3px">' + judul + '</div>';
+      html += '<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">' + isi + '</div>';
+      html += '</div></li>';
     });
     el.innerHTML = html;
-  }, err => console.error('Error pengumuman:', err));
-      }
+  }, function(err) { console.error('Error pengumuman:', err); });
+}
 
 // ==========================================
 // INIT
