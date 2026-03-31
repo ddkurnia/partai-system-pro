@@ -2047,7 +2047,6 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
     <button class="mr-tab" onclick="switchMrTab('reward')"><i class="fas fa-gift"></i> Reward</button>
     <button class="mr-tab" onclick="switchMrTab('misi')"><i class="fas fa-bullseye"></i> Misi</button>
     <button class="mr-tab" onclick="switchMrTab('sosmed')"><i class="fas fa-share-alt"></i> Sosmed</button>
-    <button class="mr-tab" onclick="switchMrTab('leaderboard')"><i class="fas fa-medal"></i> Top 10</button>
   </div>
 
   <!-- ===================== TAB 1: ATURAN ===================== -->
@@ -2389,13 +2388,6 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
   </div>
 
   <!-- ===================== TAB 5: LEADERBOARD ===================== -->
-  <div id="mrPanel-leaderboard" class="mr-panel">
-    <div class="mr-hdr">
-      <span><i class="fas fa-medal" style="color:var(--gold)"></i> Leaderboard Top 10 Kader</span>
-      <span style="margin-left:auto;font-size:0.68rem;color:var(--success);font-weight:700;display:flex;align-items:center;gap:4px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span> Realtime</span>
-    </div>
-    <div id="mrLeaderboard"><p class="mr-lb-empty">Memuat data...</p></div>
-  </div>
 
 </div>
 <!-- END VIEW: MISI & REWARD -->
@@ -3362,7 +3354,11 @@ function renderTugasHistory(snap) {
 // ==========================================
 // 11. LOADERS
 // ==========================================
-function loadStats(){ db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); loadMrLeaderboard(); }
+function loadStats(){ 
+  db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); 
+  db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); 
+  db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); 
+}
 function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
 function loadReward(u){
   // Reward catalog data — sama persis dengan Misi & Reward menu
@@ -3457,10 +3453,59 @@ async function rwTukar(rewardId, poinCost) {
     alert('Gagal menukar reward. Coba lagi.');
   }
 }
-function loadLeaderboard(){ db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { const el = document.getElementById('topKaderList'); if(!el) return; if(s.empty){ el.innerHTML='<p class="mr-lb-empty">Belum ada data kader</p>'; return; } let html='<div style="overflow-x:auto"><table class="mr-lb-table"><thead><tr>'; html+='<th>#</th><th>Kader</th><th>Wilayah</th><th>Poin</th>'; html+='</tr></thead><tbody>'; let i=1; s.forEach(d => { const v=d.data(); const avatar=v.photoURL||'https://ui-avatars.com/api/?name='+encodeURIComponent(v.nama||'Kader'); const rankBg=i===1?'linear-gradient(135deg,#FFD700,#FFA500)':(i===2?'linear-gradient(135deg,#C0C0C0,#A9A9A9)':(i===3?'linear-gradient(135deg,#CD7F32,#8B4513)':'linear-gradient(135deg,#94a3b8,#64748b)')); const podiumClass=i<=3?' lb-podium-'+i:''; const kec=v.kecamatan||'-'; const desa=v.desa||''; const wilayah=desa?desa+', '+kec:kec; html+=`<tr class="${podiumClass}">`; html+=`<td class="lb-rank-cell"><span class="lb-rank-badge" style="background:${rankBg}">${i}</span></td>`; html+=`<td class="lb-name-cell"><img src="${avatar}" class="lb-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(v.nama||"K")}'">${v.nama||'-'}</td>`; html+=`<td class="lb-wilayah-cell"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:4px;font-size:0.65rem"></i>${wilayah}</td>`; html+=`<td class="lb-poin-cell"><i class="fas fa-coins" style="font-size:0.7rem;margin-right:3px"></i>${v.poin||0}</td>`; html+='</tr>'; i++; }); html+='</tbody></table></div>'; el.innerHTML=html; }); }
-async function kirimLaporan(){ const txt = document.getElementById('masalah').value; if(txt.length < 10) return alert("Terlalu pendek"); navigator.geolocation.getCurrentPosition(async pos => { await db.collection("laporan").add({ userId:auth.currentUser.uid, nama:currentUserData.nama, masalah:txt, lat:pos.coords.latitude, lng:pos.coords.longitude, waktu:new Date() }); await db.collection('users').doc(auth.currentUser.uid).update({ poin:firebase.firestore.FieldValue.increment(10) }); alert("Terkirim +10 Poin"); }, ()=>alert("GPS error")); }
-function kirimUsulan(){ const t = document.getElementById('usulanText').value; const n = document.getElementById('usulanNama').value; if(!t) return alert("Tulis usulan"); db.collection("usulan").add({ usulan:t, nama:n, tempo:new Date() }).then(() => { alert("Usulan terkirim!"); }); }
-
+function loadLeaderboard(){ 
+  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(s => { 
+    const el = document.getElementById('topKaderList'); 
+    if(!el) return; 
+    
+    if(s.empty){ 
+      el.innerHTML='<p class="mr-lb-empty">Belum ada data kader</p>'; 
+      return; 
+    } 
+    
+    let html='<div style="overflow-x:auto"><table class="mr-lb-table"><thead><tr>'; 
+    html+='<th style="width:38px;">#</th><th>Nama Kader</th><th style="text-align:center;">Gelar</th><th style="text-align:right;">Poin</th>'; 
+    html+='</tr></thead><tbody>'; 
+    
+    let i=1; 
+    s.forEach(d => { 
+      const v=d.data(); 
+      // Ambil avatar, jika kosong pakai inisial dengan warna merah PDI
+      const avatar=v.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(v.nama||'Kader')+'&background=E31E25&color=fff'; 
+      const rankBg=i===1?'linear-gradient(135deg,#FFD700,#FFA500)':(i===2?'linear-gradient(135deg,#C0C0C0,#A9A9A9)':(i===3?'linear-gradient(135deg,#CD7F32,#8B4513)':'linear-gradient(135deg,#94a3b8,#64748b)')); 
+      const podiumClass=i<=3?' lb-podium-'+i:''; 
+      
+      const kec=v.kecamatan||'Belum diatur'; 
+      const grade = getKaderGrade(v.poin); // Panggil fungsi gelar
+      
+      html+=`<tr class="${podiumClass}">`; 
+      html+=`<td class="lb-rank-cell"><span class="lb-rank-badge" style="background:${rankBg}">${i}</span></td>`; 
+      
+      // Kolom Nama (Avatar + Nama + Kecamatan di bawahnya)
+      html+=`<td class="lb-name-cell">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <img src="${avatar}" class="lb-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(v.nama||"K")}&background=E31E25&color=fff'">
+                <div style="display:flex; flex-direction:column; line-height:1.3;">
+                  <span style="font-size:0.8rem; font-weight:700; color:var(--text-main);">${v.nama||'-'}</span>
+                  <span style="font-size:0.65rem; color:var(--text-muted); font-weight:normal;"><i class="fas fa-map-marker-alt" style="color:var(--primary); margin-right:3px;"></i>Kec. ${kec}</span>
+                </div>
+              </div>
+            </td>`; 
+      
+      // Kolom Gelar (Menggantikan Wilayah)
+      html+=`<td style="text-align:center; vertical-align:middle; border: 1px solid var(--border-color);">
+              <span style="background:${grade.bg}; color:${grade.color}; padding:4px 8px; border-radius:12px; font-size:0.65rem; font-weight:700; white-space:nowrap;">${grade.title}</span>
+            </td>`; 
+            
+      // Kolom Poin
+      html+=`<td class="lb-poin-cell"><i class="fas fa-coins" style="font-size:0.7rem;margin-right:3px;color:var(--gold);"></i>${v.poin||0}</td>`; 
+      html+='</tr>'; 
+      i++; 
+    }); 
+    html+='</tbody></table></div>'; 
+    el.innerHTML=html; 
+  }); 
+}
 // ==========================================
 // 12. ANALYTICS REALTIME (EXTENDED)
 // ==========================================
@@ -3964,7 +4009,7 @@ function switchMrTab(tabName) {
   const panel = document.getElementById('mrPanel-' + tabName);
   if (panel) panel.classList.add('active');
   const tabs = document.querySelectorAll('.mr-tab');
-  const tabMap = ['rules','reward','misi','sosmed','leaderboard'];
+  const tabMap = ['rules','reward','misi','sosmed'];
   const idx = tabMap.indexOf(tabName);
   if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
 }
@@ -3973,36 +4018,6 @@ function toggleAccordion(id) {
   const acc = document.getElementById(id);
   if (!acc) return;
   acc.classList.toggle('open');
-}
-
-function loadMrLeaderboard() {
-  db.collection("users").orderBy("poin","desc").limit(10).onSnapshot(snap => {
-    const el = document.getElementById('mrLeaderboard');
-    if (!el) return;
-    if (snap.empty) { el.innerHTML = '<p class="mr-lb-empty">Belum ada data kader</p>'; return; }
-    let html = '<div style="overflow-x:auto"><table class="mr-lb-table"><thead><tr>';
-    html += '<th>#</th><th>Kader</th><th>Wilayah</th><th>Poin</th>';
-    html += '</tr></thead><tbody>';
-    let i = 1;
-    snap.forEach(d => {
-      const v = d.data();
-      const avatar = v.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(v.nama || 'Kader');
-      const rankBg = i === 1 ? 'linear-gradient(135deg,#FFD700,#FFA500)' : (i === 2 ? 'linear-gradient(135deg,#C0C0C0,#A9A9A9)' : (i === 3 ? 'linear-gradient(135deg,#CD7F32,#8B4513)' : 'linear-gradient(135deg,#94a3b8,#64748b)'));
-      const podiumClass = i <= 3 ? ' lb-podium-' + i : '';
-      const kec = v.kecamatan || '-';
-      const desa = v.desa || '';
-      const wilayah = desa ? desa + ', ' + kec : kec;
-      html += `<tr class="${podiumClass}">`;
-      html += `<td class="lb-rank-cell"><span class="lb-rank-badge" style="background:${rankBg}">${i}</span></td>`;
-      html += `<td class="lb-name-cell"><img src="${avatar}" class="lb-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(v.nama||'K')}'">${v.nama || '-'}</td>`;
-      html += `<td class="lb-wilayah-cell"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:4px;font-size:0.65rem"></i>${wilayah}</td>`;
-      html += `<td class="lb-poin-cell"><i class="fas fa-coins" style="font-size:0.7rem;margin-right:3px"></i>${v.poin || 0}</td>`;
-      html += '</tr>';
-      i++;
-    });
-    html += '</tbody></table></div>';
-    el.innerHTML = html;
-  });
 }
 
 function copyText(elementId) {
@@ -4464,6 +4479,19 @@ function linkify(inputText) {
     // Membungkus URL dengan tag <a>, target="_blank" agar buka tab/aplikasi baru
     return '<a href="' + url + '" target="_blank" style="color:#3B82F6; text-decoration:underline; font-weight:600;">' + url + '</a>';
   });
+}
+  // ==========================================
+// FUNGSI HELPER: PENENTU GELAR KADER
+// ==========================================
+function getKaderGrade(poin) {
+  const p = poin || 0;
+  if (p >= 1500) {
+    return { title: 'Kader Utama', bg: '#FEE2E2', color: '#DC2626' }; // Merah
+  } else if (p >= 500) {
+    return { title: 'Kader Madya', bg: '#FEF3C7', color: '#D97706' }; // Emas/Kuning
+  } else {
+    return { title: 'Kader Pratama', bg: '#D1FAE5', color: '#059669' }; // Hijau
+  }
 }
 // ==========================================
 // INIT
