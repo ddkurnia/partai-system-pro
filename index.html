@@ -2990,22 +2990,31 @@ function showView(id) {
   }
 }
 
-// ---> INI FUNGSI PEMBUAT QR CODE-NYA (VERSI API) <---
+// ---> INI FUNGSI PEMBUAT QR CODE-NYA (VERSI LOKAL ANTI-GAGAL) <---
 function generateAspirasiQR() {
   if (!auth || !auth.currentUser) return;
 
   const uid = auth.currentUser.uid;
   const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
-  
+
+  // 1. Tampilkan teks link
   const linkEl = document.getElementById('aspirasiLink');
   if (linkEl) linkEl.innerText = finalUrl;
-  
-  const qrImg = document.getElementById("qrcode-img");
-  if (qrImg) {
-    // Memanggil gambar langsung dari API
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(finalUrl)}&color=E31E25`;
-    qrImg.src = qrApiUrl;
-    qrImg.style.display = "block";
+
+  // 2. Render QR secara lokal ke dalam container HTML barumu
+  const qrContainer = document.getElementById("qrcode-container");
+  if (qrContainer) {
+    qrContainer.innerHTML = ""; // Bersihkan QR lama jika ada
+
+    // Eksekusi library qrcode.js
+    new QRCode(qrContainer, {
+      text: finalUrl,
+      width: 180,
+      height: 180,
+      colorDark : "#E31E25",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
   }
 }
 
