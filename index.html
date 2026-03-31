@@ -1963,10 +1963,19 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
   </div>
 
   <!-- STATS (hidden for guest) -->
-  <div class="stats-grid" id="guestHideStats">
-    <div class="stat-item"><div class="stat-value" id="statKader">-</div><div class="stat-label">Total Kader</div></div>
-    <div class="stat-item"><div class="stat-value" id="statLaporan">-</div><div class="stat-label">Laporan</div></div>
-    <div class="stat-item"><div class="stat-value" id="statProduk">-</div><div class="stat-label">Produk UMKM</div></div>
+    <div class="stats-grid" id="guestHideStats">
+    <div class="stat-item">
+      <div class="stat-value" id="statPoin">-</div>
+      <div class="stat-label">Poin Perjuangan</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statDigital">-</div>
+      <div class="stat-label">Aksi Digital</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="statUMKM">-</div>
+      <div class="stat-label">UMKM Berdaya</div>
+    </div>
   </div>
 
   <!-- MENU (hidden for guest) -->
@@ -3354,10 +3363,29 @@ function renderTugasHistory(snap) {
 // ==========================================
 // 11. LOADERS
 // ==========================================
-function loadStats(){ 
-  db.collection("users").onSnapshot(s => { document.getElementById('statKader').innerText = s.size; }); 
-  db.collection("laporan").onSnapshot(s => { document.getElementById('statLaporan').innerText = s.size; }); 
-  db.collection("produk").onSnapshot(s => { document.getElementById('statProduk').innerText = s.size; }); 
+function loadStats() { 
+  // 1. Total Poin Perjuangan (Agregasi poin semua kader)
+  db.collection("users").onSnapshot(s => { 
+    let totalPoin = 0;
+    s.forEach(d => {
+      totalPoin += (d.data().poin || 0);
+    });
+    // Menampilkan dengan format ribuan (contoh: 15.400)
+    const elPoin = document.getElementById('statPoin');
+    if(elPoin) elPoin.innerText = totalPoin > 0 ? totalPoin.toLocaleString('id-ID') : '0'; 
+  }); 
+
+  // 2. Aksi Digital (Total tugas/misi yang sudah disubmit kader)
+  db.collection("tugas_submit").onSnapshot(s => { 
+    const elDigital = document.getElementById('statDigital');
+    if(elDigital) elDigital.innerText = s.size > 0 ? s.size.toLocaleString('id-ID') : '0'; 
+  }); 
+
+  // 3. UMKM Berdaya (Total produk di Store UMKM)
+  db.collection("produk").onSnapshot(s => { 
+    const elUMKM = document.getElementById('statUMKM');
+    if(elUMKM) elUMKM.innerText = s.size > 0 ? s.size.toLocaleString('id-ID') : '0'; 
+  }); 
 }
 function loadData(){ db.collection("laporan").orderBy("waktu","desc").limit(5).onSnapshot(s => { let h=""; s.forEach(d => { const v=d.data(); h+=`<li><b>${v.nama}</b><br>${v.masalah}</li>`; }); document.getElementById('data').innerHTML=h||'Kosong'; }); }
 function loadReward(u){
