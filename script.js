@@ -323,6 +323,29 @@ const Navigation = {
       console.error('[Navigation] showResetPassword error:', error);
     }
   }
+
+  showView: function(id) {
+  try {
+    document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
+    document.getElementById('view-' + id).classList.add('active');
+    window.scrollTo(0, 0);
+
+    const nav = document.querySelectorAll('.nav-item');
+    nav.forEach(n => n.classList.remove('active'));
+
+    // TAMBAHKAN LOGIKA INI:
+    if (id === 'qr-aspirasi') {
+      generateAspirasiQR(); // Panggil fungsi pembuat QR saat menu dibuka
+    }
+    
+    // Logika navigasi yang sudah ada
+    if (id === 'beranda') nav[0].classList.add('active');
+    if (id === 'store') nav[1].classList.add('active');
+    if (id === 'dashboard') nav[2].classList.add('active');
+  } catch (error) {
+    console.error('[Navigation] showView error:', error);
+  }
+},
 };
 
 // ==========================================
@@ -1415,6 +1438,45 @@ function copyAspirasiLink() {
     alert("Link Lapor Banteng berhasil disalin!");
   });
 }
+
+function generateAspirasiQR() {
+  const auth = firebase.auth(); // Mengambil auth langsung
+  if (!auth.currentUser) {
+    alert("Silakan login terlebih dahulu");
+    return;
+  }
+
+  const uid = auth.currentUser.uid;
+  // Pastikan domain ini sesuai dengan link tujuan warga melapor nantinya
+  const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
+  
+  const linkEl = document.getElementById('aspirasiLink');
+  const qrEl = document.getElementById("qrcode");
+
+  if (linkEl) linkEl.innerText = finalUrl;
+  
+  if (qrEl) {
+    qrEl.innerHTML = ""; // Bersihkan QR lama agar tidak menumpuk
+    new QRCode(qrEl, {
+      text: finalUrl,
+      width: 180,
+      height: 180,
+      colorDark : "#E31E25", // Warna Merah PDI
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+  }
+}
+
+// Fungsi pembantu untuk tombol salin
+function copyAspirasiLink() {
+  const link = document.getElementById('aspirasiLink').innerText;
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(() => {
+    alert("Link Lapor Banteng berhasil disalin!");
+  });
+}
+
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
