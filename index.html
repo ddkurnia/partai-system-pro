@@ -4561,48 +4561,60 @@ function loadProduk() {
 }
 
 function openProductDetail(docId) {
-  try {
-    db.collection('produk').doc(docId).get().then(function(doc) {
-      if (!doc.exists) return;
-      var p = doc.data();
-      var t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
-      var avatar = p.avatarKader || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.namaKader || 'K');
-      var wa = p.whatsapp || '';
-      var waClean = wa.replace(/^0/, '62');
-      var waMsg = encodeURIComponent('Halo, saya tertarik dengan produk "' + (p.nama || '') + '" yang dijual di Store UMKM PDI Perjuangan Kep. Meranti. Apakah masih tersedia?');
-      var waLink = 'https://wa.me/' + waClean + '?text=' + waMsg;
-      var kategori = p.kategori && p.kategori !== '-' ? '<div class="pd-modal-cat">' + p.kategori + '</div>' : '';
-      var metaBerat = p.berat ? '<div class="pd-modal-meta-item"><i class="fas fa-weight-hanging"></i> ' + p.berat + ' gram</div>' : '';
-      var metaWa = wa ? '<div class="pd-modal-meta-item"><i class="fab fa-whatsapp"></i> ' + wa + '</div>' : '';
+  var modal = document.getElementById('pdModal');
+  if (!modal) return;
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
 
-      document.getElementById('pdModalContent').innerHTML =
-        '<div style="position:relative;margin:0 -20px;">' +
-          '<img src="' + p.foto + '" class="pd-modal-img" onerror="this.src=\'https://placehold.co/400x300/f1f5f9/94a3b8?text=Foto+Produk\'">' +
-          '<button class="pd-modal-close" onclick="closeProductDetail()">&times;</button>' +
-        '</div>' +
-        kategori +
-        '<div class="pd-modal-name">' + p.nama + '</div>' +
-        '<div class="pd-modal-price">Rp ' + p.harga.toLocaleString('id-ID') + '</div>' +
-        '<div class="pd-modal-meta">' + metaBerat + metaWa + '</div>' +
-        '<div class="pd-modal-seller">' +
-          '<img src="' + avatar + '" onerror="this.src=\'https://ui-avatars.com/api/?name=K\'">' +
-          '<div><div class="pd-modal-seller-name">' + (p.namaKader || 'Kader') + '</div><div class="pd-modal-seller-date"><i class="fas fa-clock" style="margin-right:3px"></i> ' + t + '</div></div>' +
-        '</div>' +
-        '<div class="pd-modal-desc-label">Deskripsi Produk</div>' +
-        '<div class="pd-modal-desc">' + (p.deskripsi || '-') + '</div>';
+  // Tampilkan loading sementara data dimuat
+  document.getElementById('pdModalContent').innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--text-muted)"><i class="fas fa-spinner fa-spin" style="font-size:2rem;display:block;margin-bottom:12px"></i>Memuat detail produk...</div>';
+  document.getElementById('pdModalWaBtn').innerHTML = '';
 
-      document.getElementById('pdModalWaBtn').innerHTML = wa
-        ? '<button class="pd-modal-wa" onclick="window.open(\'' + waLink + '\',\'_blank\')"><i class="fab fa-whatsapp" style="font-size:1.2rem"></i> Hubungi via WhatsApp</button>'
-        : '';
+  db.collection('produk').doc(docId).get().then(function(doc) {
+    if (!doc.exists) {
+      document.getElementById('pdModalContent').innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--text-muted)"><i class="fas fa-box-open" style="font-size:2rem;display:block;margin-bottom:12px"></i>Produk tidak ditemukan</div>';
+      return;
+    }
+    var p = doc.data();
+    var t = p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+    var avatar = p.avatarKader || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.namaKader || 'K');
+    var wa = p.whatsapp || '';
+    var waClean = wa.replace(/^0/, '62');
+    var waMsg = encodeURIComponent('Halo, saya tertarik dengan produk "' + (p.nama || '') + '" yang dijual di Store UMKM PDI Perjuangan Kep. Meranti. Apakah masih tersedia?');
+    var waLink = 'https://wa.me/' + waClean + '?text=' + waMsg;
+    var kategori = p.kategori && p.kategori !== '-' ? '<div class="pd-modal-cat">' + p.kategori + '</div>' : '';
+    var metaBerat = p.berat ? '<div class="pd-modal-meta-item"><i class="fas fa-weight-hanging"></i> ' + p.berat + ' gram</div>' : '';
+    var metaWa = wa ? '<div class="pd-modal-meta-item"><i class="fab fa-whatsapp"></i> ' + wa + '</div>' : '';
 
-      document.getElementById('pdModal').classList.add('show');
-      document.body.style.overflow = 'hidden';
-    });
-  } catch(e) { console.error('[openProductDetail]', e); }
+    document.getElementById('pdModalContent').innerHTML =
+      '<div style="position:relative;margin:0 -20px;">' +
+        '<img src="' + p.foto + '" class="pd-modal-img" onerror="this.src=\'https://placehold.co/400x300/f1f5f9/94a3b8?text=Foto+Produk\'">' +
+        '<button class="pd-modal-close" onclick="closeProductDetail()">&times;</button>' +
+      '</div>' +
+      kategori +
+      '<div class="pd-modal-name">' + p.nama + '</div>' +
+      '<div class="pd-modal-price">Rp ' + p.harga.toLocaleString('id-ID') + '</div>' +
+      '<div class="pd-modal-meta">' + metaBerat + metaWa + '</div>' +
+      '<div class="pd-modal-seller">' +
+        '<img src="' + avatar + '" onerror="this.src=\'https://ui-avatars.com/api/?name=K\'">' +
+        '<div><div class="pd-modal-seller-name">' + (p.namaKader || 'Kader') + '</div><div class="pd-modal-seller-date"><i class="fas fa-clock" style="margin-right:3px"></i> ' + t + '</div></div>' +
+      '</div>' +
+      '<div class="pd-modal-desc-label">Deskripsi Produk</div>' +
+      '<div class="pd-modal-desc">' + (p.deskripsi || '-') + '</div>';
+
+    document.getElementById('pdModalWaBtn').innerHTML = wa
+      ? '<button class="pd-modal-wa" onclick="window.open(\'' + waLink + '\',\'_blank\')"><i class="fab fa-whatsapp" style="font-size:1.2rem"></i> Hubungi via WhatsApp</button>'
+      : '';
+  }).catch(function(err) {
+    console.error('[openProductDetail] Firestore error:', err);
+    document.getElementById('pdModalContent').innerHTML = '<div style="text-align:center;padding:60px 0;color:var(--text-muted)"><i class="fas fa-exclamation-triangle" style="font-size:2rem;display:block;margin-bottom:12px;color:#F59E0B"></i>Gagal memuat detail produk</div>';
+  });
 }
 
 function closeProductDetail() {
-  document.getElementById('pdModal').classList.remove('show');
+  var modal = document.getElementById('pdModal');
+  if (!modal) return;
+  modal.classList.remove('show');
   document.body.style.overflow = '';
 }
 
