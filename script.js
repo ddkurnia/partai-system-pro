@@ -1398,103 +1398,54 @@ function showAuth() {
 }
 
 function generateAspirasiQR() {
-  const auth = App.safeRun('Firebase', 'getAuth');
-  if (!auth.currentUser) return;
+  try {
+    const user = App.safeRun('Globals', 'get', 'currentUserData');
+    const auth = App.safeRun('Firebase', 'getAuth');
 
-  const uid = auth.currentUser.uid;
-  // Ganti URL ini dengan domain hosting Anda nantinya
-  const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
-  
-  document.getElementById('aspirasiLink').innerText = finalUrl;
-  
-  // Membersihkan QR lama sebelum generate baru
-  document.getElementById("qrcode").innerHTML = "";
-  
-  new QRCode(document.getElementById("qrcode"), {
-    text: finalUrl,
-    width: 180,
-    height: 180,
-    colorDark : "#000000",
-    colorLight : "#ffffff",
-    correctLevel : QRCode.CorrectLevel.H
-  });
-}
+    if (!user || !auth.currentUser) {
+      console.warn("User belum siap");
+      return;
+    }
 
-// Fungsi salin link
-function copyAspirasiLink() {
-  const link = document.getElementById('aspirasiLink').innerText;
-  navigator.clipboard.writeText(link).then(() => {
-    alert("Link Lapor Banteng berhasil disalin!");
-  });
-}
+    const uid = auth.currentUser.uid;
+    const url = `https://pdimeranti.web.app/lapor?ref=${uid}`;
 
-function generateAspirasiQR() {
-  const auth = firebase.auth(); // Mengambil auth langsung
-// ==========================================
-// FITUR LAPOR BANTENG (QR CODE) - VERSI API
-// ==========================================
-function generateAspirasiQR() {
-  const auth = App.safeRun('Firebase', 'getAuth'); 
-  // Pastikan user sudah login
-  if (!auth || !auth.currentUser) return;
+    // SAFE ELEMENT
+    const elNama = document.getElementById("qrNama");
+    const elJabatan = document.getElementById("qrJabatan");
+    const elWilayah = document.getElementById("qrWilayah");
+    const elFoto = document.getElementById("qrFoto");
+    const container = document.getElementById("qrAspirasi");
 
-  const uid = auth.currentUser.uid;
-  const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
-  
-  // 1. Tampilkan Link Teks
-  const linkEl = document.getElementById('aspirasiLink');
-  if (linkEl) linkEl.innerText = finalUrl;
-  
-  // 2. Tampilkan Gambar QR Code menggunakan QR API Server
-  const qrImg = document.getElementById("qrcode-img");
-  if (qrImg) {
-    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(finalUrl)}&color=E31E25`;
-    qrImg.src = qrApiUrl;
-    qrImg.style.display = "block";
+    if (!container) {
+      console.error("Container QR tidak ada");
+      return;
+    }
+
+    // SET DATA
+    if (elNama) elNama.innerText = user.nama || "-";
+    if (elJabatan) elJabatan.innerText = user.jabatan || "-";
+    if (elWilayah) elWilayah.innerText = user.kecamatan || "-";
+
+    if (elFoto) {
+      elFoto.src = user.photoURL || 
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}`;
+    }
+
+    // CLEAR + GENERATE
+    container.innerHTML = "";
+
+    new QRCode(container, {
+      text: url,
+      width: 180,
+      height: 180
+    });
+
+    console.log("QR OK:", url);
+
+  } catch (err) {
+    console.error("QR ERROR:", err);
   }
-}
-
-function copyAspirasiLink() {
-  const link = document.getElementById('aspirasiLink').innerText;
-  if (!link) return;
-  navigator.clipboard.writeText(link).then(() => {
-    alert("Link Lapor Banteng berhasil disalin!");
-  });
-}
-
-function generateAspirasiQR() {
-  const user = App.safeRun('Globals', 'get', 'currentUserData');
-  const auth = App.safeRun('Firebase', 'getAuth');
-
-  if (!user || !auth.currentUser) {
-    console.error("User belum siap");
-    return;
-  }
-
-  const uid = auth.currentUser.uid;
-
-  // 🔥 URL QR
-  const url = `https://domainkamu.com/form.html?ref=${uid}`;
-
-  // SET DATA USER
-  document.getElementById("qrNama").innerText = user.nama || "-";
-  document.getElementById("qrJabatan").innerText = user.jabatan || "-";
-  document.getElementById("qrWilayah").innerText = user.kecamatan || "-";
-
-  document.getElementById("qrFoto").src =
-    user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}`;
-
-  // GENERATE QR
-  const container = document.getElementById("qrAspirasi");
-  container.innerHTML = "";
-
-  new QRCode(container, {
-    text: url,
-    width: 180,
-    height: 180
-  });
-
-  console.log("QR Generated:", url);
 }
 
   function printQRPro() {
