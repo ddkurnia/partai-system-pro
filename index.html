@@ -4335,7 +4335,7 @@ function openBeritaByIndex(idx, source) {
 
   dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> ' + formatWaktu(w);
   titleEl.textContent = judul;
-  contentEl.textContent = isi || 'Tidak ada konten.';
+  contentEl.innerHTML = isi ? linkify(isi) : 'Tidak ada konten.';
 
   popup.classList.add('show');
   document.body.style.overflow = 'hidden';
@@ -4424,6 +4424,7 @@ function loadBerita() {
 }
 
 function loadPengumuman() {
+function loadPengumuman() {
   db.collection("pengumuman").orderBy("createdAt", "desc").onSnapshot(function(snap) {
     var el = document.getElementById('pengumumanList');
     if (!el) return;
@@ -4437,16 +4438,34 @@ function loadPengumuman() {
       var judul = v.judul || 'Pengumuman';
       var isi = v.isi || '';
       var tgl = formatWaktu(getBeritaWaktu(v));
+      
+      // --> TERAPKAN FUNGSI LINKIFY DI SINI <--
+      var isiDenganLink = linkify(isi);
+
       html += '<li style="padding:14px;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-card);margin-top:10px">';
       html += '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#EA580C,#C2410C);display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;font-size:0.85rem"><i class="fas fa-bullhorn"></i></div>';
       html += '<div style="flex:1;min-width:0">';
       html += '<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:3px"><i class="fas fa-calendar-alt" style="margin-right:3px"></i>' + tgl + '</div>';
       html += '<div style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:3px">' + judul + '</div>';
-      html += '<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5">' + isi + '</div>';
+      // Tampilkan isi yang sudah di-linkify
+      html += '<div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5;word-break:break-word;">' + isiDenganLink + '</div>';
       html += '</div></li>';
     });
     el.innerHTML = html;
   }, function(err) { console.error('Error pengumuman:', err); });
+}
+
+  // ==========================================
+// FUNGSI HELPER: UBAH URL JADI LINK (LINKIFY)
+// ==========================================
+function linkify(inputText) {
+  if (!inputText) return '';
+  // Regex untuk mendeteksi URL yang diawali http atau https
+  var urlRegex = /(https?:\/\/[^\s]+)/g;
+  return inputText.replace(urlRegex, function(url) {
+    // Membungkus URL dengan tag <a>, target="_blank" agar buka tab/aplikasi baru
+    return '<a href="' + url + '" target="_blank" style="color:#3B82F6; text-decoration:underline; font-weight:600;">' + url + '</a>';
+  });
 }
 
 // ==========================================
