@@ -2164,9 +2164,10 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
       <p style="font-size:0.85rem; color:var(--text-muted);">Jadikan diri Anda pusat aspirasi warga Meranti.</p>
     </div>
 
-        <div id="qrcode-container" style="background:white; padding:15px; display:inline-block; border-radius:20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px;">
+            <div id="qrcode-container" style="background:white; padding:15px; display:inline-block; border-radius:20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-bottom: 20px;">
       <img id="qrcode-img" src="" alt="QR Code Aspirasi" style="width: 180px; height: 180px; display: none;">
     </div>
+
 
     <div style="background:var(--bg-body); padding:15px; border-radius:12px; border:1px dashed var(--border-color); margin-bottom:20px;">
       <small style="display:block; margin-bottom:5px; font-weight:700;">Link Aspirasi Personal Anda:</small>
@@ -2970,7 +2971,53 @@ function loadTheme() { if (localStorage.getItem("theme") === "dark") { document.
 // ==========================================
 // 5. NAVIGATION
 // ==========================================
-function showView(id) { if(isGuestMode && id !== 'beranda') { guestGoLogin(); return; } document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active')); document.getElementById('view-'+id).classList.add('active'); window.scrollTo(0,0); const nav = document.querySelectorAll('.nav-item'); nav.forEach(n => n.classList.remove('active')); if(id==='beranda') nav[0].classList.add('active'); if(id==='store') nav[1].classList.add('active'); if(id==='dashboard') nav[2].classList.add('active'); }
+function showView(id) { 
+  if(isGuestMode && id !== 'beranda') { guestGoLogin(); return; } 
+  document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active')); 
+  document.getElementById('view-'+id).classList.add('active'); 
+  window.scrollTo(0,0); 
+  
+  const nav = document.querySelectorAll('.nav-item'); 
+  nav.forEach(n => n.classList.remove('active')); 
+  
+  if(id==='beranda') nav[0].classList.add('active'); 
+  if(id==='store') nav[1].classList.add('active'); 
+  if(id==='dashboard') nav[2].classList.add('active'); 
+  
+  // ---> INI PEMICU QR-NYA <---
+  if(id === 'qr-aspirasi') {
+    generateAspirasiQR();
+  }
+}
+
+// ---> INI FUNGSI PEMBUAT QR CODE-NYA (VERSI API) <---
+function generateAspirasiQR() {
+  if (!auth || !auth.currentUser) return;
+
+  const uid = auth.currentUser.uid;
+  const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
+  
+  const linkEl = document.getElementById('aspirasiLink');
+  if (linkEl) linkEl.innerText = finalUrl;
+  
+  const qrImg = document.getElementById("qrcode-img");
+  if (qrImg) {
+    // Memanggil gambar langsung dari API
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(finalUrl)}&color=E31E25`;
+    qrImg.src = qrApiUrl;
+    qrImg.style.display = "block";
+  }
+}
+
+// Fungsi copy link
+function copyAspirasiLink() {
+  const link = document.getElementById('aspirasiLink').innerText;
+  if (!link) return;
+  navigator.clipboard.writeText(link).then(() => {
+    alert("Link Lapor Banteng berhasil disalin!");
+  });
+}
+
 function showDashboardSection(sec) { document.querySelectorAll('[id^="dash-"]').forEach(e => e.style.display = 'none'); document.getElementById('dash-'+sec).style.display = 'block'; if(sec === 'peta' && !map) initMap(); }
 function navigateToDashboard() { if(isGuestMode) { guestGoLogin(); return; } if(auth.currentUser) { showView('dashboard'); } else { openAuthModal(); } }
 function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
