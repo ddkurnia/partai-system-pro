@@ -1954,11 +1954,11 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
   </div>
 
   <!-- WELCOME -->
-  <div class="welcome-card">
-    <div class="welcome-icon"><i class="fas fa-hand-peace"></i></div>
+    <div class="welcome-card">
+    <div class="welcome-icon" style="background: linear-gradient(135deg, var(--primary), #8B0000);"><i class="fas fa-fist-raised"></i></div>
     <div class="welcome-text">
-      <h3 id="welcomeUserName">Selamat Datang, Kader!</h3>
-      <p>Akses seluruh informasi, program kerja, dan layanan partai dalam satu genggaman.</p>
+      <h3 id="welcomeUserName">Merdeka, Kader!</h3>
+      <p>Satu komando, satu barisan. Pantau pergerakan, viralkan program partai, dan tunjukkan dedikasimu sebagai kader militan sejati.</p>
     </div>
   </div>
 
@@ -2966,7 +2966,46 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-function renderUserInfo() { if(!currentUserData) return; const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama); document.getElementById('user').innerHTML = `<div style="display:flex;align-items:center;gap:15px"><img src="${p}" style="width:60px;height:60px;border-radius:50%;border:3px solid var(--border-color)"><div><span style="font-size:1.2rem;font-weight:800">${currentUserData.nama}</span><div style="font-size:0.9rem;color:var(--gold)"><i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin</div></div></div><div style="display:flex;gap:10px;margin-top:15px"><button class="btn-secondary" onclick="openEditModal()">Edit Profil</button><button class="btn-logout" onclick="logout()">Keluar</button></div>`; const wEl = document.getElementById('welcomeUserName'); if(wEl && currentUserData.nama) { const nama = currentUserData.nama; const capitalized = nama.charAt(0).toUpperCase() + nama.slice(1); wEl.textContent = 'Selamat Datang, ' + capitalized + '!'; } }
+function renderUserInfo() { 
+  if(!currentUserData) return; 
+  
+  // 1. Tampilan Profil di Dashboard
+  const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama)+'&background=E31E25&color=fff'; 
+  const jabatan = currentUserData.jabatan || 'Kader';
+  const kecamatan = currentUserData.kecamatan || 'Belum diatur';
+  const desa = currentUserData.desa || '';
+  const wilayah = desa ? `${desa}, ${kecamatan}` : kecamatan;
+
+  document.getElementById('user').innerHTML = `
+    <div style="background:linear-gradient(135deg, var(--bg-card), rgba(227,30,37,0.03)); border:1px solid var(--border-color); border-radius:18px; padding:20px; box-shadow:0 5px 15px rgba(0,0,0,0.05); margin-bottom:20px; position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-20px; right:-20px; font-size:8rem; opacity:0.03; color:var(--primary);"><i class="fas fa-bullseye"></i></div>
+      <div style="display:flex;align-items:center;gap:15px; position:relative; z-index:1;">
+        <img src="${p}" style="width:70px;height:70px;border-radius:50%;border:3px solid var(--primary); object-fit:cover; background:white;">
+        <div style="flex:1;">
+          <span style="font-size:1.1rem;font-weight:800; color:var(--text-main); display:block; margin-bottom:2px;">${currentUserData.nama}</span>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-id-badge" style="width:14px; text-align:center;"></i> ${jabatan} PDI Perjuangan</div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-map-marker-alt" style="width:14px; text-align:center; color:var(--primary);"></i> ${wilayah}</div>
+          <div style="display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg, #FEF3C7, #FDE68A); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800; color:#B45309;">
+            <i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px; position:relative; z-index:1;">
+        <button class="btn-secondary" onclick="openEditModal()" style="padding:10px; font-size:0.85rem;"><i class="fas fa-edit"></i> Edit Profil</button>
+        <button class="btn-logout" onclick="logout()" style="padding:10px; font-size:0.85rem; margin-top:0;"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+      </div>
+    </div>
+  `; 
+  
+  // 2. Teks Sapaan di Beranda
+  const wEl = document.getElementById('welcomeUserName'); 
+  if(wEl && currentUserData.nama) { 
+    const namaLengkap = currentUserData.nama.trim().split(' ')[0]; 
+    const capitalized = namaLengkap.charAt(0).toUpperCase() + namaLengkap.slice(1).toLowerCase(); 
+    wEl.textContent = 'Merdeka, ' + capitalized + '! ✊'; 
+  } 
+}
+
 function openEditModal() { document.getElementById('editNama').value = currentUserData.nama || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nama||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
 function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 async function saveProfile() { const nama = document.getElementById('editNama').value; const hp = document.getElementById('editHp').value; if(!nama) return alert("Nama wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nama, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
