@@ -1452,40 +1452,28 @@ function copyAspirasiLink() {
 function generateAspirasiQR() {
   const auth = firebase.auth(); // Mengambil auth langsung
 // ==========================================
-// FITUR LAPOR BANTENG (QR CODE)
+// FITUR LAPOR BANTENG (QR CODE) - VERSI API
 // ==========================================
 function generateAspirasiQR() {
-  // Gunakan metode arsitektur aplikasi Anda untuk mengambil user
   const auth = App.safeRun('Firebase', 'getAuth'); 
-  if (!auth || !auth.currentUser) {
-    console.log("User belum login");
-    return;
-  }
+  if (!auth || !auth.currentUser) return;
 
   const uid = auth.currentUser.uid;
-  // URL ini nanti disesuaikan dengan domain hosting web Anda
+  // Domain tujuan warga melapor
   const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
   
+  // 1. Tampilkan Link Teks
   const linkEl = document.getElementById('aspirasiLink');
-  const qrEl = document.getElementById("qrcode");
-
   if (linkEl) linkEl.innerText = finalUrl;
   
-  if (qrEl) {
-    // Bersihkan kotak agar QR tidak menumpuk saat menu diklik berkali-kali
-    qrEl.innerHTML = ""; 
+  // 2. Tampilkan Gambar QR Code menggunakan API
+  const qrImg = document.getElementById("qrcode-img");
+  if (qrImg) {
+    // Kita gunakan warna merah PDI (E31E25)
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(finalUrl)}&color=E31E25`;
     
-    // Trik "setTimeout" agar library menggambar QR SETELAH animasi halaman terbuka
-    setTimeout(() => {
-      new QRCode(qrEl, {
-        text: finalUrl,
-        width: 180,
-        height: 180,
-        colorDark : "#E31E25",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-      });
-    }, 150); 
+    qrImg.src = qrApiUrl;
+    qrImg.style.display = "block"; // Munculkan gambarnya
   }
 }
 
