@@ -4424,7 +4424,6 @@ function loadBerita() {
 }
 
 function loadPengumuman() {
-function loadPengumuman() {
   db.collection("pengumuman").orderBy("createdAt", "desc").onSnapshot(function(snap) {
     var el = document.getElementById('pengumumanList');
     if (!el) return;
@@ -4454,7 +4453,6 @@ function loadPengumuman() {
     el.innerHTML = html;
   }, function(err) { console.error('Error pengumuman:', err); });
 }
-
   // ==========================================
 // FUNGSI HELPER: UBAH URL JADI LINK (LINKIFY)
 // ==========================================
@@ -4467,7 +4465,6 @@ function linkify(inputText) {
     return '<a href="' + url + '" target="_blank" style="color:#3B82F6; text-decoration:underline; font-weight:600;">' + url + '</a>';
   });
 }
-
 // ==========================================
 // INIT
 // ==========================================
