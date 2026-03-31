@@ -3717,7 +3717,7 @@ async function tsUploadImage(file) {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', 'partai_upload');
-  const res = await fetch('https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload', { method: 'POST', body: formData });
+  const res = await fetch('https://api.cloudinary.com/v1_1/dnpdjhdgr/image/upload', { method: 'POST', body: formData });
   const data = await res.json();
   return data.secure_url;
 }
@@ -4426,7 +4426,7 @@ async function tambahProduk() {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'partai_upload');
-    const res = await fetch('https://api.cloudinary.com/v1_1/dpdq2a9us/image/upload', { method: 'POST', body: formData });
+    const res = await fetch('https://api.cloudinary.com/v1_1/dnpdjhdgr/image/upload', { method: 'POST', body: formData });
     const img = await res.json();
 
     await db.collection('produk').add({
