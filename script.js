@@ -1385,6 +1385,36 @@ function showAuth() {
   document.getElementById("authScreen").style.display = "flex";
 }
 
+function generateAspirasiQR() {
+  const auth = App.safeRun('Firebase', 'getAuth');
+  if (!auth.currentUser) return;
+
+  const uid = auth.currentUser.uid;
+  // Ganti URL ini dengan domain hosting Anda nantinya
+  const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
+  
+  document.getElementById('aspirasiLink').innerText = finalUrl;
+  
+  // Membersihkan QR lama sebelum generate baru
+  document.getElementById("qrcode").innerHTML = "";
+  
+  new QRCode(document.getElementById("qrcode"), {
+    text: finalUrl,
+    width: 180,
+    height: 180,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+}
+
+// Fungsi salin link
+function copyAspirasiLink() {
+  const link = document.getElementById('aspirasiLink').innerText;
+  navigator.clipboard.writeText(link).then(() => {
+    alert("Link Lapor Banteng berhasil disalin!");
+  });
+}
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
