@@ -10,10 +10,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-<!-- Leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -241,7 +237,216 @@ button { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--p
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* DASHBOARD SPECIFIC */
-#dash-peta { height: 300px; border-radius: 18px; overflow: hidden; border: 1px solid var(--border-color); }
+
+/* ID CARD PROFIL */
+.id-card {
+  position: relative;
+  background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(227,30,37,0.15);
+  margin-bottom: 20px;
+}
+.id-card-top {
+  background: linear-gradient(135deg, #E31E25 0%, #B91C1C 60%, #7F1D1D 100%);
+  padding: 22px 20px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.id-card-top::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.id-card-top::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -20px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.id-card-top-logo {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 18px; position: relative; z-index: 1;
+}
+.id-card-top-logo img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); }
+.id-card-top-logo span { font-size: 0.68rem; font-weight: 800; color: rgba(255,255,255,0.85); letter-spacing: 0.5px; text-transform: uppercase; }
+.id-card-avatar-wrap {
+  position: relative; z-index: 1;
+  display: flex; justify-content: center;
+}
+.id-card-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 4px solid #1a1a1a;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  object-fit: cover;
+  background: #333;
+}
+.id-card-avatar-placeholder {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 4px solid #1a1a1a;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  background: linear-gradient(135deg, #333, #444);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; font-weight: 900; color: var(--primary);
+}
+.id-card-body {
+  padding: 0 20px 20px;
+  text-align: center;
+  position: relative;
+  margin-top: -10px;
+}
+.id-card-name {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.id-card-jabatan {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: linear-gradient(135deg, var(--primary), #B91C1C);
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 0.65rem; font-weight: 700; color: white;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(227,30,37,0.3);
+}
+.id-card-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+.id-card-info-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.id-card-info-item i {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.id-card-info-item .info-val {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.3;
+  display: block;
+}
+.id-card-info-item .info-lbl {
+  font-size: 0.58rem;
+  color: #94a3b8;
+  margin-top: 2px;
+  display: block;
+}
+.id-card-poin-bar {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  margin-top: 14px;
+  padding: 8px 14px;
+  border-radius: 12px;
+}
+.id-card-poin-bar i { color: #B45309; font-size: 0.9rem; }
+.id-card-poin-bar span { font-size: 0.78rem; font-weight: 800; color: #B45309; }
+.id-card-actions {
+  display: flex; gap: 8px; margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.id-card-actions button {
+  flex: 1; padding: 10px; border-radius: 12px;
+  font-size: 0.78rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  box-shadow: none; cursor: pointer;
+}
+.id-card-actions .btn-edit-card {
+  background: rgba(255,255,255,0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.id-card-actions .btn-edit-card:hover { background: rgba(255,255,255,0.14); }
+.id-card-actions .btn-logout-card {
+  background: rgba(239,68,68,0.12);
+  color: #fca5a5;
+  border: 1px solid rgba(239,68,68,0.15);
+}
+.id-card-actions .btn-logout-card:hover { background: rgba(239,68,68,0.22); }
+
+/* EDIT PROFILE MODAL */
+.edit-profile-modal { padding: 0 !important; max-width: 420px; }
+.edit-profile-header {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  padding: 28px 20px 50px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.edit-profile-header::before {
+  content: '';
+  position: absolute; top: -20px; right: -20px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: rgba(227,30,37,0.08);
+}
+.edit-profile-header h3 {
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  position: relative; z-index: 1;
+}
+.edit-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-top: -35px;
+  z-index: 2;
+}
+.edit-avatar-img {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-card);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  object-fit: cover;
+  background: var(--border-color);
+}
+.edit-avatar-placeholder {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-card);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, #E31E25, #B91C1C);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; font-weight: 900; color: white;
+}
+.edit-avatar-badge {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: 3px solid var(--bg-card);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.edit-avatar-badge:hover { transform: scale(1.1); }
+.edit-profile-body { padding: 24px; }
+.upload-hint {
+  font-size: 0.68rem; color: var(--text-muted); text-align: center;
+  margin-top: 8px;
+}
+
 .task-item { background: var(--bg-card); padding: 15px; border-radius: 12px; margin-top: 10px; border-left: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
 .task-item.is-done { opacity: 0.6; border-left-color: #10B981; }
 .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
@@ -2666,27 +2871,57 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
 
   <!-- Edit Modal -->
   <div id="editModal" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal()">&times;</button>
-      <h3 style="margin-bottom:20px;">Edit Profil</h3>
-      <div style="text-align:center; margin-bottom:20px;"><div class="profile-avatar" style="width:80px; height:80px; margin:0 auto; border-radius:50%; overflow:hidden; background:var(--border-color); display:flex; align-items:center; justify-content:center; color:var(--primary); font-size:2rem" id="previewAvatar"><span>A</span></div></div>
-      <label class="form-label">Nama</label>
-      <input type="text" id="editNama" placeholder="Nama">
-      <label class="form-label">No. HP</label>
-      <input type="text" id="editHp" placeholder="HP">
-      <button onclick="saveProfile()"><i class="fas fa-save"></i> Simpan</button>
+    <div class="modal-card edit-profile-modal">
+      <button class="modal-close" onclick="closeModal()" style="z-index:10;background:rgba(255,255,255,0.15);color:white;border:none;">&times;</button>
+      <div class="edit-profile-header">
+        <h3><i class="fas fa-user-edit" style="margin-right:6px;"></i> Edit Profil</h3>
+      </div>
+      <div style="display:flex;justify-content:center;margin-top:-35px;position:relative;z-index:2;">
+        <div class="edit-avatar-wrap">
+          <div id="editAvatarPreview"></div>
+          <div class="edit-avatar-badge" onclick="document.getElementById('editFotoInput').click()"><i class="fas fa-camera"></i></div>
+        </div>
+      </div>
+      <p class="upload-hint" style="margin-top:-2px;margin-bottom:12px;">Klik ikon kamera untuk upload foto</p>
+      <input type="file" id="editFotoInput" accept="image/*" style="display:none" onchange="previewEditFoto(this)">
+      <div class="edit-profile-body">
+        <label class="form-label">Nama Lengkap</label>
+        <input type="text" id="editNama" placeholder="Nama Lengkap">
+        <label class="form-label">No. HP / WhatsApp</label>
+        <input type="text" id="editHp" placeholder="08xxxxxxxxxx">
+        <label class="form-label">Jabatan di Partai</label>
+        <select id="editJabatan" style="cursor:pointer;">
+          <option value="">-- Pilih Jabatan --</option>
+          <option value="Kader">Kader</option>
+          <option value="Pengurus Ranting">Pengurus Ranting</option>
+          <option value="Pengurus Anak Ranting">Pengurus Anak Ranting</option>
+          <option value="Sekretaris Ranting">Sekretaris Ranting</option>
+          <option value="Ketua Ranting">Ketua Ranting</option>
+          <option value="Pengurus PAC">Pengurus PAC</option>
+          <option value="Sekretaris PAC">Sekretaris PAC</option>
+          <option value="Ketua PAC">Ketua PAC</option>
+          <option value="Pengurus DPC">Pengurus DPC</option>
+          <option value="Sekretaris DPC">Sekretaris DPC</option>
+          <option value="Ketua DPC">Ketua DPC</option>
+          <option value="Wakil Ketua DPC">Wakil Ketua DPC</option>
+          <option value="Bendahara DPC">Bendahara DPC</option>
+          <option value="Koordinator Desa">Koordinator Desa</option>
+          <option value="Saksi Pemilu">Saksi Pemilu</option>
+          <option value="Relawan">Relawan</option>
+        </select>
+        <div id="editUploadStatus" style="display:none; text-align:center; padding:8px; margin-top:8px; border-radius:10px; font-size:0.75rem; font-weight:600;"></div>
+        <button id="btnSaveProfile" onclick="saveProfile()" style="margin-top:18px;"><i class="fas fa-save"></i> Simpan Profil</button>
+      </div>
     </div>
   </div>
 
   <div class="section-title">Menu Dashboard</div>
   <div class="menu-grid">
-    <div class="menu-item" onclick="showDashboardSection('peta')"><div class="menu-icon c-blue"><i class="fas fa-map-marked-alt"></i></div><span class="menu-text">Peta</span></div>
     <div class="menu-item" onclick="showDashboardSection('tugas')"><div class="menu-icon c-purple"><i class="fas fa-tasks"></i></div><span class="menu-text">Tugas</span></div>
     <div class="menu-item" onclick="showDashboardSection('laporan')"><div class="menu-icon c-orange"><i class="fas fa-file-alt"></i></div><span class="menu-text">Laporan</span></div>
     <div class="menu-item" onclick="showDashboardSection('reward')"><div class="menu-icon c-green"><i class="fas fa-trophy"></i></div><span class="menu-text">Reward</span></div>
+    <div class="menu-item" onclick="showDashboardSection('leaderboard')"><div class="menu-icon c-blue"><i class="fas fa-medal"></i></div><span class="menu-text">Leaderboard</span></div>
   </div>
-
-  <div id="dash-peta" class="card" style="margin-top:20px"></div>
   <div id="dash-tugas" class="card" style="display:none; margin-top:20px">
     <div class="ts-header"><i class="fas fa-tasks"></i> Tugas & Misi Kader</div>
     <div class="ts-sub" id="tsPeriode"></div>
@@ -2919,8 +3154,6 @@ const db = firebase.firestore();
 // ==========================================
 let currentUserData = null;
 let unsubUser = null;
-let mapMarkers = {};
-let map = null;
 let slideIndex = 0;
 let analyticsChart = null;
 let distribusiChart = null;
@@ -3027,7 +3260,7 @@ function copyAspirasiLink() {
   });
 }
 
-function showDashboardSection(sec) { document.querySelectorAll('[id^="dash-"]').forEach(e => e.style.display = 'none'); document.getElementById('dash-'+sec).style.display = 'block'; if(sec === 'peta' && !map) initMap(); }
+function showDashboardSection(sec) { document.querySelectorAll('[id^="dash-"]').forEach(e => e.style.display = 'none'); document.getElementById('dash-'+sec).style.display = 'block'; }
 function navigateToDashboard() { if(isGuestMode) { guestGoLogin(); return; } if(auth.currentUser) { showView('dashboard'); } else { openAuthModal(); } }
 function openAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
 function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; }
@@ -3047,57 +3280,181 @@ setTimeout(updateSlide, 4000);
 auth.onAuthStateChanged(user => {
   if(user){
     showApp();
-    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); if(map) updateMyPresence(user.uid, currentUserData.nama); }, err => console.error(err));
-    closeAuthModal(); initMap(); updateMyLocation(user); listenToOtherUsers(); loadData(); loadLeaderboard(); initTugasDashboard(user.uid); loadReward(user.uid); loadStats();
+    unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); }, err => console.error(err));
+    closeAuthModal(); loadData(); loadLeaderboard(); initTugasDashboard(user.uid); loadReward(user.uid); loadStats();
   } else {
     showAuth();
-    document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(mapMarkers) { Object.values(mapMarkers).forEach(m => map.removeLayer(m)); mapMarkers = {}; } if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
+    document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
   }
 });
 
-function renderUserInfo() { 
-  if(!currentUserData) return; 
-  
-  // 1. Tampilan Profil di Dashboard
-  const p = currentUserData.photoURL || 'https://ui-avatars.com/api/?name='+encodeURIComponent(currentUserData.nama)+'&background=E31E25&color=fff'; 
+function renderUserInfo() {
+  if(!currentUserData) return;
+
+  const p = currentUserData.photoURL || '';
+  const nama = currentUserData.nama || 'Kader';
   const jabatan = currentUserData.jabatan || 'Kader';
+  const hp = currentUserData.hp || currentUserData.nohp || '-';
   const kecamatan = currentUserData.kecamatan || 'Belum diatur';
   const desa = currentUserData.desa || '';
   const wilayah = desa ? `${desa}, ${kecamatan}` : kecamatan;
+  const initial = nama.trim().substring(0, 1).toUpperCase();
 
   document.getElementById('user').innerHTML = `
-    <div style="background:linear-gradient(135deg, var(--bg-card), rgba(227,30,37,0.03)); border:1px solid var(--border-color); border-radius:18px; padding:20px; box-shadow:0 5px 15px rgba(0,0,0,0.05); margin-bottom:20px; position:relative; overflow:hidden;">
-      <div style="position:absolute; top:-20px; right:-20px; font-size:8rem; opacity:0.03; color:var(--primary);"><i class="fas fa-bullseye"></i></div>
-      <div style="display:flex;align-items:center;gap:15px; position:relative; z-index:1;">
-        <img src="${p}" style="width:70px;height:70px;border-radius:50%;border:3px solid var(--primary); object-fit:cover; background:white;">
-        <div style="flex:1;">
-          <span style="font-size:1.1rem;font-weight:800; color:var(--text-main); display:block; margin-bottom:2px;">${currentUserData.nama}</span>
-          <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-id-badge" style="width:14px; text-align:center;"></i> ${jabatan} PDI Perjuangan</div>
-          <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;"><i class="fas fa-map-marker-alt" style="width:14px; text-align:center; color:var(--primary);"></i> ${wilayah}</div>
-          <div style="display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg, #FEF3C7, #FDE68A); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800; color:#B45309;">
-            <i class="fas fa-coins"></i> ${currentUserData.poin || 0} Poin
-          </div>
+    <div class="id-card">
+      <div class="id-card-top">
+        <div class="id-card-top-logo">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Logo_PDI_Perjuangan.svg/1200px-Logo_PDI_Perjuangan.svg.png" alt="Logo" onerror="this.style.display='none'">
+          <span>PDI Perjuangan</span>
+        </div>
+        <div class="id-card-avatar-wrap">
+          ${p ? `<img src="${p}" class="id-card-avatar" onerror="this.outerHTML='<div class=\\'id-card-avatar-placeholder\\'>${initial}</div>'">` : `<div class="id-card-avatar-placeholder">${initial}</div>`}
         </div>
       </div>
-      <div style="display:flex;gap:10px;margin-top:20px; position:relative; z-index:1;">
-        <button class="btn-secondary" onclick="openEditModal()" style="padding:10px; font-size:0.85rem;"><i class="fas fa-edit"></i> Edit Profil</button>
-        <button class="btn-logout" onclick="logout()" style="padding:10px; font-size:0.85rem; margin-top:0;"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+      <div class="id-card-body">
+        <div class="id-card-name">${nama}</div>
+        <div class="id-card-jabatan"><i class="fas fa-id-badge"></i> ${jabatan}</div>
+        <div class="id-card-info">
+          <div class="id-card-info-item">
+            <i class="fas fa-phone-alt"></i>
+            <span class="info-val">${hp}</span>
+            <span class="info-lbl">Kontak</span>
+          </div>
+          <div class="id-card-info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="info-val">${wilayah}</span>
+            <span class="info-lbl">Wilayah</span>
+          </div>
+          <div class="id-card-info-item">
+            <i class="fas fa-envelope"></i>
+            <span class="info-val">${auth.currentUser.email || '-'}</span>
+            <span class="info-lbl">Email</span>
+          </div>
+          <div class="id-card-info-item">
+            <i class="fas fa-calendar-check"></i>
+            <span class="info-val">${currentUserData.status || 'Aktif'}</span>
+            <span class="info-lbl">Status</span>
+          </div>
+        </div>
+        <div class="id-card-poin-bar">
+          <i class="fas fa-coins"></i>
+          <span>${currentUserData.poin || 0} Poin Perjuangan</span>
+        </div>
+        <div class="id-card-actions">
+          <button class="btn-edit-card" onclick="openEditModal()"><i class="fas fa-edit"></i> Edit Profil</button>
+          <button class="btn-logout-card" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+        </div>
       </div>
     </div>
-  `; 
-  
-  // 2. Teks Sapaan di Beranda
-  const wEl = document.getElementById('welcomeUserName'); 
-  if(wEl && currentUserData.nama) { 
-    const namaLengkap = currentUserData.nama.trim().split(' ')[0]; 
-    const capitalized = namaLengkap.charAt(0).toUpperCase() + namaLengkap.slice(1).toLowerCase(); 
-    wEl.textContent = 'Merdeka, ' + capitalized + '! ✊'; 
-  } 
+  `;
+
+  // Sapaan Beranda
+  const wEl = document.getElementById('welcomeUserName');
+  if(wEl && currentUserData.nama) {
+    const namaLengkap = currentUserData.nama.trim().split(' ')[0];
+    const capitalized = namaLengkap.charAt(0).toUpperCase() + namaLengkap.slice(1).toLowerCase();
+    wEl.textContent = 'Merdeka, ' + capitalized + '! ✊';
+  }
 }
 
-function openEditModal() { document.getElementById('editNama').value = currentUserData.nama || ""; document.getElementById('editHp').value = currentUserData.hp || ""; document.getElementById('previewAvatar').innerHTML = currentUserData.photoURL ? `<img src="${currentUserData.photoURL}" style="width:100%;height:100%;object-fit:cover">` : `<span>${(currentUserData.nama||'A').substring(0,1)}</span>`; document.getElementById('editModal').style.display = 'flex'; }
+let editFotoDataUrl = null;
+
+function previewEditFoto(input) {
+  if(!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if(file.size > 2 * 1024 * 1024) { alert('Ukuran foto maksimal 2MB'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    editFotoDataUrl = e.target.result;
+    const preview = document.getElementById('editAvatarPreview');
+    preview.innerHTML = `<img src="${editFotoDataUrl}" class="edit-avatar-img">`;
+    document.getElementById('editUploadStatus').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function openEditModal() {
+  document.getElementById('editNama').value = currentUserData.nama || '';
+  document.getElementById('editHp').value = currentUserData.hp || currentUserData.nohp || '';
+  document.getElementById('editJabatan').value = currentUserData.jabatan || '';
+  editFotoDataUrl = null;
+
+  const p = currentUserData.photoURL || '';
+  const initial = (currentUserData.nama || 'A').substring(0, 1).toUpperCase();
+  const preview = document.getElementById('editAvatarPreview');
+  if(p) {
+    preview.innerHTML = `<img src="${p}" class="edit-avatar-img">`;
+  } else {
+    preview.innerHTML = `<div class="edit-avatar-placeholder">${initial}</div>`;
+  }
+
+  document.getElementById('editFotoInput').value = '';
+  document.getElementById('editUploadStatus').style.display = 'none';
+  document.getElementById('editModal').style.display = 'flex';
+}
+
 function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-async function saveProfile() { const nama = document.getElementById('editNama').value; const hp = document.getElementById('editHp').value; if(!nama) return alert("Nama wajib!"); try { await db.collection('users').doc(auth.currentUser.uid).update({ nama, hp }); alert("Tersimpan!"); closeModal(); } catch(e) { alert("Gagal."); } }
+
+async function saveProfile() {
+  const nama = document.getElementById('editNama').value.trim();
+  const hp = document.getElementById('editHp').value.trim();
+  const jabatan = document.getElementById('editJabatan').value;
+
+  if(!nama) return alert('Nama wajib diisi!');
+
+  const btn = document.getElementById('btnSaveProfile');
+  const statusEl = document.getElementById('editUploadStatus');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+  try {
+    let photoURL = currentUserData.photoURL || '';
+
+    // Upload foto jika ada yang dipilih
+    if(editFotoDataUrl) {
+      statusEl.style.display = 'block';
+      statusEl.style.background = '#FEF3C7';
+      statusEl.style.color = '#B45309';
+      statusEl.textContent = 'Mengupload foto...';
+
+      const formData = new FormData();
+      formData.append('file', editFotoDataUrl);
+      formData.append('upload_preset', 'partai_upload');
+
+      const res = await fetch('https://api.cloudinary.com/v1_1/dnpdjhdgr/image/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const imgData = await res.json();
+
+      if(imgData.secure_url) {
+        photoURL = imgData.secure_url;
+        statusEl.style.background = '#D1FAE5';
+        statusEl.style.color = '#059669';
+        statusEl.textContent = 'Foto berhasil diupload!';
+      } else {
+        statusEl.style.display = 'none';
+      }
+    }
+
+    // Simpan ke Firestore
+    const updateData = { nama, hp };
+    if(jabatan) updateData.jabatan = jabatan;
+    if(photoURL) updateData.photoURL = photoURL;
+
+    await db.collection('users').doc(auth.currentUser.uid).update(updateData);
+
+    editFotoDataUrl = null;
+    alert('Profil berhasil disimpan!');
+    closeModal();
+  } catch(e) {
+    console.error('Save profile error:', e);
+    alert('Gagal menyimpan: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> Simpan Profil';
+  }
+}
 
 // ==========================================
 // 8. AUTH ACTIONS
@@ -3135,15 +3492,6 @@ function signup(){
 function login(){ auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value).then(user => { if(!user.user.emailVerified) alert("Email belum verifikasi."); closeAuthModal(); showView('dashboard'); }).catch(e => alert(e.message)); }
 function resetPassword() { const email = document.getElementById('resetEmail').value; if(!email) return alert("Email?"); auth.sendPasswordResetEmail(email).then(() => alert("Link terkirim!")).catch(e => alert(e.message)); }
 function logout(){ auth.signOut(); }
-
-// ==========================================
-// 9. MAP
-// ==========================================
-function initMap() { if (map) return; map = L.map('dash-peta').setView([0.99, 102.7], 12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); }
-function getUserIcon(isMe) { return L.divIcon({ className: '', html: `<div style="background:${isMe ? '#E31E25' : '#10B981'}; width:20px; height:20px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [20, 20] }); }
-function updateMyLocation(user) { if(!navigator.geolocation) return; navigator.geolocation.watchPosition(pos => { updateMyPresence(user.uid, currentUserData?.nama || "Kader", pos.coords.latitude, pos.coords.longitude); listenToOtherUsers(); }, err => {}, { enableHighAccuracy: true }); }
-function updateMyPresence(uid, nama, lat, lng) { if(!lat || !lng) return; db.collection('presence').doc(uid).set({ lat, lng, lastSeen: new Date(), nama }, { merge: true }); }
-function listenToOtherUsers() { db.collection('presence').onSnapshot(snap => { snap.docChanges().forEach(c => { const d = c.doc.data(); const uid = c.doc.id; const isMe = (uid === auth.currentUser.uid); if (mapMarkers[uid]) { mapMarkers[uid].setLatLng([d.lat, d.lng]); } else { mapMarkers[uid] = L.marker([d.lat, d.lng], { icon: getUserIcon(isMe) }).addTo(map).bindPopup(`<b>${isMe ? 'Anda' : d.nama}</b>`); } }); }); }
 
 // ==========================================
 // 10. TUGAS (MISI & REWARD INTEGRATION)
