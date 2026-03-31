@@ -234,7 +234,7 @@ const Wilayah = {
 const Navigation = {
   init: function() {},
 
-  showView: function(id) {
+    showView: function(id) {
     try {
       document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
       document.getElementById('view-' + id).classList.add('active');
@@ -246,6 +246,16 @@ const Navigation = {
       if (id === 'beranda') nav[0].classList.add('active');
       if (id === 'store') nav[1].classList.add('active');
       if (id === 'dashboard') nav[2].classList.add('active');
+      
+      // ===== TAMBAHKAN KODE INI =====
+      // Panggil fungsi QR khusus jika menu QR Aspirasi diklik
+      if (id === 'qr-aspirasi') {
+        if (typeof generateAspirasiQR === 'function') {
+          generateAspirasiQR();
+        }
+      }
+      // ==============================
+
     } catch (error) {
       console.error('[Navigation] showView error:', error);
     }
@@ -1441,13 +1451,19 @@ function copyAspirasiLink() {
 
 function generateAspirasiQR() {
   const auth = firebase.auth(); // Mengambil auth langsung
-  if (!auth.currentUser) {
-    alert("Silakan login terlebih dahulu");
+// ==========================================
+// FITUR LAPOR BANTENG (QR CODE)
+// ==========================================
+function generateAspirasiQR() {
+  // Gunakan metode arsitektur aplikasi Anda untuk mengambil user
+  const auth = App.safeRun('Firebase', 'getAuth'); 
+  if (!auth || !auth.currentUser) {
+    console.log("User belum login");
     return;
   }
 
   const uid = auth.currentUser.uid;
-  // Pastikan domain ini sesuai dengan link tujuan warga melapor nantinya
+  // URL ini nanti disesuaikan dengan domain hosting web Anda
   const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
   
   const linkEl = document.getElementById('aspirasiLink');
@@ -1456,19 +1472,23 @@ function generateAspirasiQR() {
   if (linkEl) linkEl.innerText = finalUrl;
   
   if (qrEl) {
-    qrEl.innerHTML = ""; // Bersihkan QR lama agar tidak menumpuk
-    new QRCode(qrEl, {
-      text: finalUrl,
-      width: 180,
-      height: 180,
-      colorDark : "#E31E25", // Warna Merah PDI
-      colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.H
-    });
+    // Bersihkan kotak agar QR tidak menumpuk saat menu diklik berkali-kali
+    qrEl.innerHTML = ""; 
+    
+    // Trik "setTimeout" agar library menggambar QR SETELAH animasi halaman terbuka
+    setTimeout(() => {
+      new QRCode(qrEl, {
+        text: finalUrl,
+        width: 180,
+        height: 180,
+        colorDark : "#E31E25",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+    }, 150); 
   }
 }
 
-// Fungsi pembantu untuk tombol salin
 function copyAspirasiLink() {
   const link = document.getElementById('aspirasiLink').innerText;
   if (!link) return;
