@@ -1398,90 +1398,62 @@ function showAuth() {
 }
 
 function generateAspirasiQR() {
-  try {
-    const user = App.safeRun('Globals', 'get', 'currentUserData');
-    const auth = App.safeRun('Firebase', 'getAuth');
+  const auth = App.safeRun('Firebase', 'getAuth');
+  if (!auth.currentUser) return;
 
-    if (!user || !auth.currentUser) {
-      console.warn("User belum siap");
-      return;
-    }
-
-    const uid = auth.currentUser.uid;
-    const url = `https://pdimeranti.web.app/lapor?ref=${uid}`;
-
-    // SAFE ELEMENT
-    const elNama = document.getElementById("qrNama");
-    const elJabatan = document.getElementById("qrJabatan");
-    const elWilayah = document.getElementById("qrWilayah");
-    const elFoto = document.getElementById("qrFoto");
-    const container = document.getElementById("qrAspirasi");
-
-    if (!container) {
-      console.error("Container QR tidak ada");
-      return;
-    }
-
-    // SET DATA
-    if (elNama) elNama.innerText = user.nama || "-";
-    if (elJabatan) elJabatan.innerText = user.jabatan || "-";
-    if (elWilayah) elWilayah.innerText = user.kecamatan || "-";
-
-    if (elFoto) {
-      elFoto.src = user.photoURL || 
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}`;
-    }
-
-    // CLEAR + GENERATE
-    container.innerHTML = "";
-
-    new QRCode(container, {
-      text: url,
-      width: 180,
-      height: 180
-    });
-
-    console.log("QR OK:", url);
-
-  } catch (err) {
-    console.error("QR ERROR:", err);
-  }
+  const uid = auth.currentUser.uid;
+  // Ganti URL ini dengan domain hosting Anda nantinya
+  const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
+  
+  document.getElementById('aspirasiLink').innerText = finalUrl;
+  
+  // Membersihkan QR lama sebelum generate baru
+  document.getElementById("qrcode").innerHTML = "";
+  
+  new QRCode(document.getElementById("qrcode"), {
+    text: finalUrl,
+    width: 180,
+    height: 180,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
 }
 
-  function printQRPro() {
-  const content = document.getElementById("qrCardPro").outerHTML;
+// Fungsi salin link
+function copyAspirasiLink() {
+  const link = document.getElementById('aspirasiLink').innerText;
+  navigator.clipboard.writeText(link).then(() => {
+    alert("Link Lapor Banteng berhasil disalin!");
+  });
+}
 
-  const w = window.open('', '', 'width=400,height=700');
-  w.document.write(`
+// ==========================================
+// PRINT QR CARD
+// ==========================================
+function printQRPro() {
+  try {
+    const content = document.getElementById("qrCardPro");
+    if (!content) { alert("Elemen kartu QR tidak ditemukan"); return; }
+    const w = window.open('', '', 'width=400,height=700');
+    w.document.write(`
     <html>
       <head>
-        <title>Kartu QR</title>
+        <title>Kartu QR Aspirasi</title>
         <style>
-          body { font-family: sans-serif; text-align:center; }
+          body { font-family: sans-serif; text-align:center; margin:0; padding:20px; }
+          img { max-width:100%; }
         </style>
       </head>
-      <body>${content}</body>
+      <body>${content.outerHTML}</body>
     </html>
-  `);
-
-  w.document.close();
-  w.print();
+    `);
+    w.document.close();
+    w.print();
+  } catch (error) {
+    console.error('[printQRPro] error:', error);
+  }
 }
-// ==========================================
-// GLOBAL ERROR HANDLER
-// ==========================================
-window.onerror = function(message, source, lineno, colno, error) {
-  console.error('[Global Error]', { message, source, line: lineno, column: colno, error });
-  return false;
-};
-
-// ==========================================
-// INIT ON LOAD
-// ==========================================
-window.onload = function() {
-  App.init();
-  App.safeRun('Wilayah', 'loadProvinces');
-};
 
 // ==========================================
 // GLOBAL ERROR HANDLER
