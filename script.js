@@ -250,10 +250,12 @@ const Navigation = {
       // ===== TAMBAHKAN KODE INI =====
       // Panggil fungsi QR khusus jika menu QR Aspirasi diklik
       if (id === 'qr-aspirasi') {
-        if (typeof generateAspirasiQR === 'function') {
-          generateAspirasiQR();
-        }
-      }
+  setTimeout(() => {
+    if (typeof generateAspirasiQR === 'function') {
+      generateAspirasiQR();
+    }
+  }, 200);
+}
       // ==============================
 
     } catch (error) {
@@ -1460,6 +1462,60 @@ function copyAspirasiLink() {
   });
 }
 
+function generateAspirasiQR() {
+  const user = App.safeRun('Globals', 'get', 'currentUserData');
+  const auth = App.safeRun('Firebase', 'getAuth');
+
+  if (!user || !auth.currentUser) {
+    console.error("User belum siap");
+    return;
+  }
+
+  const uid = auth.currentUser.uid;
+
+  // 🔥 URL QR
+  const url = `https://domainkamu.com/form.html?ref=${uid}`;
+
+  // SET DATA USER
+  document.getElementById("qrNama").innerText = user.nama || "-";
+  document.getElementById("qrJabatan").innerText = user.jabatan || "-";
+  document.getElementById("qrWilayah").innerText = user.kecamatan || "-";
+
+  document.getElementById("qrFoto").src =
+    user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}`;
+
+  // GENERATE QR
+  const container = document.getElementById("qrAspirasi");
+  container.innerHTML = "";
+
+  new QRCode(container, {
+    text: url,
+    width: 180,
+    height: 180
+  });
+
+  console.log("QR Generated:", url);
+}
+
+  function printQRPro() {
+  const content = document.getElementById("qrCardPro").outerHTML;
+
+  const w = window.open('', '', 'width=400,height=700');
+  w.document.write(`
+    <html>
+      <head>
+        <title>Kartu QR</title>
+        <style>
+          body { font-family: sans-serif; text-align:center; }
+        </style>
+      </head>
+      <body>${content}</body>
+    </html>
+  `);
+
+  w.document.close();
+  w.print();
+}
 // ==========================================
 // GLOBAL ERROR HANDLER
 // ==========================================
