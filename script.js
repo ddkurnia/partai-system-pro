@@ -333,29 +333,6 @@ const Navigation = {
       console.error('[Navigation] showResetPassword error:', error);
     }
   }
-
-  showView: function(id) {
-  try {
-    document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
-    document.getElementById('view-' + id).classList.add('active');
-    window.scrollTo(0, 0);
-
-    const nav = document.querySelectorAll('.nav-item');
-    nav.forEach(n => n.classList.remove('active'));
-
-    // TAMBAHKAN LOGIKA INI:
-    if (id === 'qr-aspirasi') {
-      generateAspirasiQR(); // Panggil fungsi pembuat QR saat menu dibuka
-    }
-    
-    // Logika navigasi yang sudah ada
-    if (id === 'beranda') nav[0].classList.add('active');
-    if (id === 'store') nav[1].classList.add('active');
-    if (id === 'dashboard') nav[2].classList.add('active');
-  } catch (error) {
-    console.error('[Navigation] showView error:', error);
-  }
-},
 };
 
 // ==========================================
@@ -1456,24 +1433,22 @@ function generateAspirasiQR() {
 // ==========================================
 function generateAspirasiQR() {
   const auth = App.safeRun('Firebase', 'getAuth'); 
+  // Pastikan user sudah login
   if (!auth || !auth.currentUser) return;
 
   const uid = auth.currentUser.uid;
-  // Domain tujuan warga melapor
   const finalUrl = `https://pdimeranti.web.app/lapor?ref=${uid}`;
   
   // 1. Tampilkan Link Teks
   const linkEl = document.getElementById('aspirasiLink');
   if (linkEl) linkEl.innerText = finalUrl;
   
-  // 2. Tampilkan Gambar QR Code menggunakan API
+  // 2. Tampilkan Gambar QR Code menggunakan QR API Server
   const qrImg = document.getElementById("qrcode-img");
   if (qrImg) {
-    // Kita gunakan warna merah PDI (E31E25)
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(finalUrl)}&color=E31E25`;
-    
     qrImg.src = qrApiUrl;
-    qrImg.style.display = "block"; // Munculkan gambarnya
+    qrImg.style.display = "block";
   }
 }
 
@@ -1484,6 +1459,22 @@ function copyAspirasiLink() {
     alert("Link Lapor Banteng berhasil disalin!");
   });
 }
+
+// ==========================================
+// GLOBAL ERROR HANDLER
+// ==========================================
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error('[Global Error]', { message, source, line: lineno, column: colno, error });
+  return false;
+};
+
+// ==========================================
+// INIT ON LOAD
+// ==========================================
+window.onload = function() {
+  App.init();
+  App.safeRun('Wilayah', 'loadProvinces');
+};
 
 // ==========================================
 // GLOBAL ERROR HANDLER
