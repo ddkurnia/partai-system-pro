@@ -1955,6 +1955,36 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
     </div>
   </div>
 
+  <!-- QR ASPIRASI PRO -->
+<div id="view-qr-aspirasi" class="view-section">
+  <div class="card">
+
+    <div id="qrCardPro">
+
+      <h3 style="text-align:center">KARTU ASPIRASI</h3>
+
+      <div style="display:flex;gap:10px;align-items:center;margin-top:10px">
+        <img id="qrFoto" style="width:60px;height:60px;border-radius:50%">
+        <div>
+          <b id="qrNama"></b><br>
+          <small id="qrJabatan"></small><br>
+          <small id="qrWilayah"></small>
+        </div>
+      </div>
+
+      <div id="qrAspirasi" style="margin-top:15px;text-align:center"></div>
+
+      <p style="text-align:center;font-size:12px">
+        Scan untuk kirim aspirasi
+      </p>
+
+    </div>
+
+    <button onclick="printQRPro()">Print QR</button>
+
+  </div>
+</div>
+
   <!-- WELCOME -->
     <div class="welcome-card">
     <div class="welcome-icon" style="background: linear-gradient(135deg, var(--primary), #8B0000);"><i class="fas fa-fist-raised"></i></div>
