@@ -738,7 +738,47 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   .pd-modal-img { max-height: 220px; border-radius: 12px; }
 }
 
-/* Rules Modal */
+/* FAQ STYLES */
+.faq-item {
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.faq-item:hover { border-color: rgba(227,30,37,0.3); }
+.faq-item.open { border-color: rgba(227,30,37,0.4); box-shadow: 0 4px 16px rgba(227,30,37,0.08); }
+.faq-q {
+  display: flex; align-items: center; gap: 4px;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-size: 0.82rem; font-weight: 700; color: var(--text-main);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.faq-q span { flex: 1; line-height: 1.4; }
+.faq-arrow {
+  font-size: 0.72rem; color: var(--text-muted);
+  transition: transform 0.3s ease;
+  flex-shrink: 0; margin-left: 4px;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); color: var(--primary); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.3s;
+  padding: 0 16px;
+  font-size: 0.8rem; color: var(--text-muted); line-height: 1.7;
+}
+.faq-item.open .faq-a {
+  max-height: 500px;
+  padding: 0 16px 14px;
+}
+
+/* BANTUAN HOVER FIX DARK MODE */
+body.dark-mode .faq-item { background: rgba(255,255,255,0.03); }
+
+
 .st-rules-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.6);
   backdrop-filter: blur(4px); z-index: 3000;
@@ -2480,6 +2520,8 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 </div>
 
       <div class="menu-item" onclick="navigateToDashboard()"><div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div><span class="menu-text">Dashboard</span></div>
+      <div class="menu-item" onclick="showView('faq')"><div class="menu-icon c-orange"><i class="fas fa-question-circle"></i></div><span class="menu-text">FAQ</span></div>
+      <div class="menu-item" onclick="showView('bantuan')"><div class="menu-icon c-blue"><i class="fas fa-headset"></i></div><span class="menu-text">Bantuan</span></div>
     </div>
   </div>
 
@@ -2519,7 +2561,191 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 <div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong></p></div></div>
 <div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
 <div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
-<div id="view-bantuan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-hands-helping" style="color:#06B6D4"></i> Bantuan</h3></div></div>
+<div id="view-bantuan" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:5px"><i class="fas fa-headset" style="color:#06B6D4"></i> Pusat Bantuan</h3>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:20px">Ada kendala? Tim kami siap membantu kamu.</p>
+
+    <!-- Kontak Utama -->
+    <div style="background:linear-gradient(135deg,#E31E25,#B91C1C);border-radius:16px;padding:18px;color:white;margin-bottom:16px;display:flex;align-items:center;gap:14px;">
+      <div style="width:48px;height:48px;background:rgba(255,255,255,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0"><i class="fab fa-whatsapp"></i></div>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:0.92rem;margin-bottom:2px">Admin DPC PDI Perjuangan</div>
+        <div style="font-size:0.75rem;opacity:0.9">Respon cepat · Senin–Sabtu, 08.00–17.00 WIB</div>
+      </div>
+      <a href="https://wa.me/6281234567890?text=Halo Admin, saya butuh bantuan terkait App Kader PDI Perjuangan Meranti." style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;border-radius:10px;padding:8px 14px;font-size:0.72rem;font-weight:700;text-decoration:none;white-space:nowrap;">Chat WA</a>
+    </div>
+
+    <!-- Kategori Bantuan -->
+    <div style="font-size:0.78rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Pilih Topik Bantuan</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+
+      <!-- Item Akun -->
+      <div onclick="openBantuanChat('Masalah Akun & Login')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
+        <div style="width:40px;height:40px;background:rgba(227,30,37,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#E31E25;font-size:1rem;flex-shrink:0"><i class="fas fa-user-lock"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">Akun & Login</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Lupa password, email tidak bisa masuk, akun terkunci</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>
+      </div>
+
+      <!-- Item Poin & Reward -->
+      <div onclick="openBantuanChat('Masalah Poin & Reward')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
+        <div style="width:40px;height:40px;background:rgba(245,158,11,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#D97706;font-size:1rem;flex-shrink:0"><i class="fas fa-coins"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">Poin & Reward</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Poin tidak bertambah, penukaran reward, status reward</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>
+      </div>
+
+      <!-- Item Tugas & Misi -->
+      <div onclick="openBantuanChat('Masalah Tugas & Misi')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
+        <div style="width:40px;height:40px;background:rgba(124,58,237,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#7C3AED;font-size:1rem;flex-shrink:0"><i class="fas fa-tasks"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">Tugas & Misi</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Checkin gagal, bukti posting ditolak, cooldown, verifikasi</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>
+      </div>
+
+      <!-- Item Store UMKM -->
+      <div onclick="openBantuanChat('Masalah Store UMKM')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
+        <div style="width:40px;height:40px;background:rgba(13,148,136,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#0D9488;font-size:1rem;flex-shrink:0"><i class="fas fa-store"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">Store UMKM</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Upload produk gagal, produk tidak tampil, kontak penjual</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>
+      </div>
+
+      <!-- Item Notifikasi -->
+      <div onclick="openBantuanChat('Masalah Notifikasi App')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
+        <div style="width:40px;height:40px;background:rgba(37,99,235,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#2563EB;font-size:1rem;flex-shrink:0"><i class="fas fa-bell"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">Notifikasi</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Notifikasi tidak muncul, pengaturan notifikasi</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>
+      </div>
+
+      <!-- Item Lainnya -->
+      <div onclick="openBantuanChat('Pertanyaan Lainnya')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
+        <div style="width:40px;height:40px;background:rgba(100,116,139,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#64748B;font-size:1rem;flex-shrink:0"><i class="fas fa-ellipsis-h"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">Pertanyaan Lainnya</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Kendala lain yang belum tercantum di atas</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>
+      </div>
+
+    </div>
+
+    <!-- Info Sekretariat -->
+    <div style="margin-top:20px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;">
+      <div style="font-weight:800;font-size:0.82rem;color:var(--text-main);margin-bottom:10px"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:6px"></i>Sekretariat DPC</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.8">
+        <div><i class="fas fa-building" style="width:16px;color:var(--primary)"></i> DPC PDI Perjuangan Kab. Kepulauan Meranti</div>
+        <div><i class="fas fa-clock" style="width:16px;color:var(--primary)"></i> Senin–Jumat: 08.00–16.00 WIB</div>
+        <div><i class="fas fa-envelope" style="width:16px;color:var(--primary)"></i> pdiperjuangan.meranti@gmail.com</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;font-size:0.68rem;color:var(--text-muted)">Versi App: 2.0.0 &middot; &copy; 2026 DPC PDI Perjuangan Kab. Kepulauan Meranti</div>
+  </div>
+</div>
+
+<!-- VIEW: FAQ -->
+<div id="view-faq" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:5px"><i class="fas fa-question-circle" style="color:#EA580C"></i> FAQ — Pertanyaan Umum</h3>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:20px">Temukan jawaban atas pertanyaan yang sering ditanyakan kader.</p>
+
+    <!-- Kategori badges -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      <span onclick="filterFaq('semua')" id="faqCat-semua" style="background:var(--primary);color:white;padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer">Semua</span>
+      <span onclick="filterFaq('akun')" id="faqCat-akun" style="background:var(--bg-body);color:var(--text-muted);border:1px solid var(--border-color);padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer">Akun</span>
+      <span onclick="filterFaq('poin')" id="faqCat-poin" style="background:var(--bg-body);color:var(--text-muted);border:1px solid var(--border-color);padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer">Poin</span>
+      <span onclick="filterFaq('misi')" id="faqCat-misi" style="background:var(--bg-body);color:var(--text-muted);border:1px solid var(--border-color);padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer">Misi</span>
+      <span onclick="filterFaq('store')" id="faqCat-store" style="background:var(--bg-body);color:var(--text-muted);border:1px solid var(--border-color);padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer">Store</span>
+    </div>
+
+    <!-- FAQ List -->
+    <div id="faqList" style="display:flex;flex-direction:column;gap:10px">
+
+      <div class="faq-item" data-cat="akun" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-user-circle" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Bagaimana cara mendaftar sebagai kader?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Buka halaman Login, pilih <b>"Daftar Akun Baru"</b>. Isi formulir: nama lengkap, nomor WhatsApp, wilayah (provinsi hingga desa), jabatan, email, dan password minimal 6 karakter. Setelah mendaftar, cek email untuk verifikasi akun. Akun baru dapat langsung digunakan setelah email terverifikasi.</div>
+      </div>
+
+      <div class="faq-item" data-cat="akun" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-lock" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Lupa password, bagaimana cara mereset?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Pada halaman Login, klik <b>"Lupa Password?"</b>. Masukkan alamat email yang terdaftar, lalu klik <b>"Kirim Link Reset"</b>. Buka email kamu dan klik tautan reset yang dikirimkan. Buat password baru, lalu login kembali dengan password yang baru.</div>
+      </div>
+
+      <div class="faq-item" data-cat="akun" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-user-edit" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Cara mengubah foto profil dan data diri?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Masuk ke <b>Dashboard</b>, lalu klik <b>"Edit Profil"</b> pada kartu profil kamu. Kamu bisa mengubah nama, nomor HP, jabatan, dan foto profil. Foto dapat diupload dari galeri dengan ukuran maksimal 2MB. Klik <b>"Simpan Profil"</b> untuk menyimpan perubahan.</div>
+      </div>
+
+      <div class="faq-item" data-cat="akun" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-eye" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Apa perbedaan akun Kader dan akun Tamu?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Akun <b>Tamu</b> hanya bisa melihat beranda secara terbatas. Akun <b>Kader terdaftar</b> mendapat akses penuh: Dashboard, Misi & Reward, Store UMKM, QR Aspirasi, Notifikasi, dan semua fitur eksklusif. Segera daftar untuk menikmati semua fitur!</div>
+      </div>
+
+      <div class="faq-item" data-cat="poin" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-coins" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Bagaimana cara mendapatkan poin?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Poin bisa didapat dari: <b>Checkin harian</b> (+10 poin/hari), <b>Posting Facebook</b> resmi partai (+30 poin/posting, maks 5/minggu), <b>Posting TikTok</b> konten partai (+50 poin/video, maks 3/minggu), dan <b>Rekruitmen anggota</b> baru yang berhasil terdaftar dan aktif (+20–95 poin). Poin diakumulasi per kuartal (3 bulan).</div>
+      </div>
+
+      <div class="faq-item" data-cat="poin" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-gift" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Cara menukarkan poin dengan reward?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Masuk ke <b>Dashboard → Reward</b>. Lihat katalog reward yang tersedia. Pastikan poin mencukupi, lalu klik tombol <b>"Tukar"</b> pada reward yang diinginkan. Poin akan langsung dikurangi dan permohonan dikirim ke admin. Ambil reward di <b>Sekretariat DPC</b> setelah disetujui dalam 1–3 hari kerja.</div>
+      </div>
+
+      <div class="faq-item" data-cat="poin" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-redo" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Kapan poin direset? Apakah poin bisa hangus?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Poin di-reset setiap awal kuartal baru (Q1: Jan-Mar, Q2: Apr-Jun, Q3: Jul-Sep, Q4: Okt-Des). Poin <b>tidak dapat dipindahkan</b> ke periode berikutnya. Pastikan kamu menukarkan poin sebelum periode berakhir agar tidak hangus!</div>
+      </div>
+
+      <div class="faq-item" data-cat="misi" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-fingerprint" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Checkin harian gagal atau tidak terekam?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Checkin hanya bisa dilakukan <b>1 kali per hari</b>. Jika tombol tidak aktif, kemungkinan kamu sudah checkin hari ini. Jika belum dan tombol tetap tidak aktif, coba refresh/reload halaman, pastikan koneksi internet stabil. Jika masih bermasalah, hubungi admin via <b>Pusat Bantuan</b>.</div>
+      </div>
+
+      <div class="faq-item" data-cat="misi" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-clock" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Mengapa tombol posting sosmed ada cooldown?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Setiap posting sosmed (Facebook/TikTok) memiliki <b>cooldown 4 jam</b> antar pengiriman bukti. Ini untuk memastikan konten yang dikirim berkualitas dan tidak spam. Timer akan tampil saat masih dalam cooldown. Setelah timer habis, kamu bisa submit bukti posting berikutnya.</div>
+      </div>
+
+      <div class="faq-item" data-cat="misi" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-times-circle" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Bukti posting saya ditolak admin, kenapa?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Bukti bisa ditolak karena: link bukan dari Facebook/TikTok resmi, postingan tidak berstatus <b>Publik</b>, tidak menyertakan hashtag wajib (#PDIPerjuangan #PDIMeranti #KepulauanMeranti), screenshot tidak jelas, atau konten mengandung SARA/negatif. Pastikan semua syarat terpenuhi sebelum submit.</div>
+      </div>
+
+      <div class="faq-item" data-cat="store" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-upload" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Bagaimana cara upload produk UMKM?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Masuk ke menu <b>Store</b>, pilih tab <b>"Jual Produk"</b>. Baca dan setujui syarat & ketentuan, lalu isi formulir: nama produk, harga, berat, kategori, deskripsi (min. 20 karakter), nomor WhatsApp aktif, dan foto produk asli (maks 2MB). Klik <b>"Upload Produk"</b>. Produk akan tampil setelah berhasil diupload.</div>
+      </div>
+
+      <div class="faq-item" data-cat="store" onclick="toggleFaq(this)">
+        <div class="faq-q"><i class="fas fa-shopping-bag" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Bagaimana cara membeli produk di Store?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
+        <div class="faq-a">Buka menu <b>Store</b>, telusuri produk yang tersedia. Klik produk untuk melihat detail lengkap. Klik tombol <b>"Hubungi Penjual via WhatsApp"</b> untuk langsung negosiasi dan transaksi dengan penjual. Transaksi dilakukan langsung antara pembeli dan penjual, DPC tidak terlibat dalam proses jual-beli.</div>
+      </div>
+
+    </div>
+
+    <!-- Tombol ke Bantuan -->
+    <div style="margin-top:24px;text-align:center">
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:12px">Tidak menemukan jawaban yang kamu cari?</p>
+      <button onclick="showView('bantuan')" style="background:linear-gradient(135deg,#E31E25,#B91C1C);color:white;border:none;padding:12px 28px;border-radius:12px;font-size:0.85rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;width:auto">
+        <i class="fas fa-headset"></i> Hubungi Pusat Bantuan
+      </button>
+    </div>
+  </div>
+</div>
 <div id="view-kontak" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-phone-alt"></i> Kontak</h3></div></div>
 
 <!-- VIEW: QR ASPIRASI -->
@@ -3201,9 +3427,9 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
   <div class="section-title">Menu Dashboard</div>
   <div class="menu-grid">
     <div class="menu-item" onclick="showDashboardSection('tugas')"><div class="menu-icon c-purple"><i class="fas fa-tasks"></i></div><span class="menu-text">Tugas</span></div>
-    <div class="menu-item" onclick="showDashboardSection('laporan')"><div class="menu-icon c-orange"><i class="fas fa-file-alt"></i></div><span class="menu-text">Laporan</span></div>
     <div class="menu-item" onclick="showDashboardSection('reward')"><div class="menu-icon c-green"><i class="fas fa-trophy"></i></div><span class="menu-text">Reward</span></div>
-    <div class="menu-item" onclick="showDashboardSection('leaderboard')"><div class="menu-icon c-blue"><i class="fas fa-medal"></i></div><span class="menu-text">Leaderboard</span></div>
+    <div class="menu-item" onclick="showView('faq')"><div class="menu-icon c-orange"><i class="fas fa-question-circle"></i></div><span class="menu-text">FAQ</span></div>
+    <div class="menu-item" onclick="showView('bantuan')"><div class="menu-icon c-blue"><i class="fas fa-headset"></i></div><span class="menu-text">Bantuan</span></div>
   </div>
   <div id="dash-tugas" class="card" style="display:none; margin-top:20px">
     <div class="ts-header"><i class="fas fa-tasks"></i> Tugas & Misi Kader</div>
@@ -3316,7 +3542,7 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
     </div>
 
   </div>
-  <div id="dash-laporan" class="card" style="display:none; margin-top:20px"><h3>Laporan Kader</h3><textarea id="masalah" placeholder="Tulis laporan..."></textarea><input type="file" id="foto"><button onclick="kirimLaporan()">Kirim Laporan</button><ul id="data" style="margin-top:15px"></ul></div>
+
   <div id="dash-reward" style="display:none; margin-top:20px">
     <!-- Poin Summary -->
     <div class="rw-summary-card">
@@ -5908,7 +6134,47 @@ function openBeritaFromNotif(v) {
 
 // --- TOAST REMOVED: cukup bell badge + bunyi, tanpa popup ---
 
-// --- CHECK-IN HARIAN ---
+// ==========================================
+// FAQ & PUSAT BANTUAN
+// ==========================================
+function toggleFaq(el) {
+  const isOpen = el.classList.contains('open');
+  // Tutup semua yang lain
+  document.querySelectorAll('.faq-item.open').forEach(f => f.classList.remove('open'));
+  // Toggle yang diklik
+  if (!isOpen) el.classList.add('open');
+}
+
+function filterFaq(cat) {
+  // Update active badge
+  document.querySelectorAll('[id^="faqCat-"]').forEach(b => {
+    b.style.background = 'var(--bg-body)';
+    b.style.color = 'var(--text-muted)';
+    b.style.border = '1px solid var(--border-color)';
+  });
+  const active = document.getElementById('faqCat-' + cat);
+  if (active) {
+    active.style.background = 'var(--primary)';
+    active.style.color = 'white';
+    active.style.border = '1px solid var(--primary)';
+  }
+  // Filter items
+  document.querySelectorAll('.faq-item').forEach(item => {
+    if (cat === 'semua' || item.dataset.cat === cat) {
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+      item.classList.remove('open');
+    }
+  });
+}
+
+function openBantuanChat(topik) {
+  const pesan = encodeURIComponent('Halo Admin PDI Perjuangan Meranti, saya butuh bantuan terkait: *' + topik + '*\n\nNama: \nMasalah: ');
+  window.open('https://wa.me/6281234567890?text=' + pesan, '_blank');
+}
+
+
 function checkDailyCheckin() {
   if (!auth || !auth.currentUser) return;
   var reminder = document.getElementById('checkinReminder');
