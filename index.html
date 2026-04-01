@@ -124,13 +124,20 @@ header {
   font-size: 0.58rem; font-weight: 800;
   min-width: 18px; height: 18px;
   border-radius: 10px;
-  align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 0 4px;
   border: 2px solid var(--bg-card);
-  animation: notifPulse 2s infinite;
-  display: none;
+  opacity: 0; visibility: hidden;
+  transform: scale(0.5);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
 }
-.notif-badge.show { display: flex; }
+.notif-badge.show {
+  opacity: 1; visibility: visible;
+  transform: scale(1);
+  animation: notifPulse 2s infinite;
+  pointer-events: auto;
+}
 @keyframes notifPulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.15); }
@@ -2351,7 +2358,7 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
     <div class="header-right">
        <div class="notif-bell" id="notifBell" onclick="toggleNotifPanel()">
          <i class="fas fa-bell"></i>
-         <span class="notif-badge" id="notifBadge">0</span>
+         <span class="notif-badge" id="notifBadge"></span>
        </div>
        <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
          <i class="fas fa-moon"></i>
