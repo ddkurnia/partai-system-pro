@@ -148,15 +148,21 @@ body.notif-open .bottom-nav { display: none !important; }
 .notif-panel {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100vh;
+  width: 100%; height: 100%;
   background: var(--bg-card);
   z-index: 99999;
   overflow: hidden;
   display: flex; flex-direction: column;
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  visibility: hidden;
+  pointer-events: none;
 }
-.notif-panel.open { transform: translateY(0); }
+.notif-panel.open {
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
 .notif-panel-backdrop { display: none !important; }
 
 .notif-panel-header {
