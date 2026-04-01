@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-messaging-compat.js"></script>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -101,6 +102,178 @@ header {
   transition: all 0.3s;
 }
 .theme-toggle:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* NOTIFICATION BELL */
+.notif-bell {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.3s;
+}
+.notif-bell:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.notif-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: #EF4444; color: white;
+  font-size: 0.58rem; font-weight: 800;
+  min-width: 18px; height: 18px;
+  border-radius: 10px;
+  align-items: center; justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-card);
+  animation: notifPulse 2s infinite;
+  display: none;
+}
+.notif-badge.show { display: flex; }
+@keyframes notifPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* NOTIFICATION PANEL */
+.notif-panel {
+  position: fixed; top: 0; right: -100%; width: 100%; max-width: 420px;
+  height: 100vh; background: var(--bg-card);
+  z-index: 6000;
+  box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+  transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.notif-panel.open { right: 0; }
+.notif-panel-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 5999; display: none; backdrop-filter: blur(3px);
+}
+.notif-panel-backdrop.show { display: block; }
+.notif-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+.notif-panel-header h3 {
+  font-size: 1rem; font-weight: 800; color: var(--text-main);
+  display: flex; align-items: center; gap: 8px;
+}
+.notif-panel-header h3 i { color: var(--primary); }
+.notif-panel-actions { display: flex; gap: 8px; }
+.notif-btn-markall {
+  background: rgba(227,30,37,0.08); color: var(--primary);
+  border: none; border-radius: 8px; padding: 6px 12px;
+  font-size: 0.68rem; font-weight: 700; cursor: pointer;
+  transition: background 0.2s;
+}
+.notif-btn-markall:hover { background: rgba(227,30,37,0.18); }
+.notif-btn-close {
+  background: var(--bg-body); border: 1px solid var(--border-color);
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-muted); font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.notif-btn-close:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.notif-filter-bar {
+  display: flex; gap: 6px; padding: 12px 20px;
+  overflow-x: auto; flex-shrink: 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.notif-filter-bar::-webkit-scrollbar { display: none; }
+.notif-filter-btn {
+  background: var(--bg-body); border: 1px solid var(--border-color);
+  border-radius: 20px; padding: 5px 14px;
+  font-size: 0.68rem; font-weight: 600;
+  color: var(--text-muted); cursor: pointer;
+  white-space: nowrap; transition: all 0.2s;
+}
+.notif-filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.notif-filter-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+.notif-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
+.notif-list::-webkit-scrollbar { width: 4px; }
+.notif-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+.notif-item {
+  display: flex; gap: 12px; padding: 14px 12px;
+  border-radius: 14px; cursor: pointer;
+  transition: background 0.2s; margin-bottom: 4px;
+  position: relative;
+}
+.notif-item:hover { background: var(--bg-body); }
+.notif-item.unread { background: rgba(227,30,37,0.03); }
+.notif-item.unread::before {
+  content: ''; position: absolute; left: 4px; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 50%; background: var(--primary);
+}
+.notif-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0;
+}
+.notif-icon.berita { background: rgba(37,99,235,0.1); color: #2563EB; }
+.notif-icon.produk { background: rgba(20,184,166,0.1); color: #0D9488; }
+.notif-icon.pengumuman { background: rgba(234,88,12,0.1); color: #EA580C; }
+.notif-icon.checkin { background: rgba(16,185,129,0.1); color: #10B981; }
+.notif-icon.reward { background: rgba(124,58,237,0.1); color: #7C3AED; }
+.notif-icon.aspirasi { background: rgba(245,158,11,0.1); color: #F59E0B; }
+.notif-icon.system { background: rgba(100,116,139,0.1); color: #64748B; }
+.notif-body { flex: 1; min-width: 0; }
+.notif-title { font-size: 0.78rem; font-weight: 700; color: var(--text-main); line-height: 1.3; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.notif-desc { font-size: 0.7rem; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 4px; }
+.notif-time { font-size: 0.6rem; color: var(--text-muted); opacity: 0.7; }
+.notif-empty {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+}
+.notif-empty i { font-size: 2.5rem; display: block; margin-bottom: 12px; color: var(--border-color); }
+.notif-empty p { font-size: 0.82rem; }
+
+/* IN-APP TOAST NOTIFICATION */
+.notif-toast {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-120px);
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: 16px; padding: 12px 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  z-index: 7000; display: flex; align-items: center; gap: 12px;
+  max-width: 380px; width: calc(100% - 40px);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  cursor: pointer;
+}
+.notif-toast.show { transform: translateX(-50%) translateY(0); }
+.notif-toast-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.notif-toast-body { flex: 1; min-width: 0; }
+.notif-toast-title { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
+.notif-toast-desc { font-size: 0.68rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notif-toast-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; padding: 4px; }
+
+/* CHECK-IN REMINDER BANNER */
+.checkin-reminder {
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white; border-radius: 14px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  margin: 12px 16px; cursor: pointer;
+  box-shadow: 0 4px 15px rgba(16,185,129,0.3);
+ transition: transform 0.2s, box-shadow 0.2s;
+}
+.checkin-reminder:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+.checkin-reminder i { font-size: 1.4rem; }
+.checkin-reminder-text { flex: 1; }
+.checkin-reminder-text strong { font-size: 0.82rem; display: block; margin-bottom: 2px; }
+.checkin-reminder-text span { font-size: 0.7rem; opacity: 0.9; }
+.checkin-reminder-btn {
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+  color: white; border-radius: 10px; padding: 8px 16px;
+  font-size: 0.72rem; font-weight: 700; cursor: pointer;
+  white-space: nowrap; transition: background 0.2s;
+}
+.checkin-reminder-btn:hover { background: rgba(255,255,255,0.35); }
+.checkin-reminder.hidden { display: none; }
 
 /* CONTAINER */
 .container { max-width: 500px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 25px; }
@@ -2176,6 +2349,10 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
       </div>
     </div>
     <div class="header-right">
+       <div class="notif-bell" id="notifBell" onclick="toggleNotifPanel()">
+         <i class="fas fa-bell"></i>
+         <span class="notif-badge" id="notifBadge">0</span>
+       </div>
        <div class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
          <i class="fas fa-moon"></i>
        </div>
@@ -2186,10 +2363,52 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
   </div>
 </header>
 
+<!-- NOTIFICATION PANEL -->
+<div class="notif-panel-backdrop" id="notifBackdrop" onclick="toggleNotifPanel()"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-header">
+    <h3><i class="fas fa-bell"></i> Notifikasi</h3>
+    <div class="notif-panel-actions">
+      <button class="notif-btn-markall" onclick="markAllNotifRead()"><i class="fas fa-check-double"></i> Tandai Semua</button>
+      <button class="notif-btn-close" onclick="toggleNotifPanel()"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+  <div class="notif-filter-bar" id="notifFilterBar">
+    <button class="notif-filter-btn active" onclick="filterNotif('semua')">Semua</button>
+    <button class="notif-filter-btn" onclick="filterNotif('berita')">Berita</button>
+    <button class="notif-filter-btn" onclick="filterNotif('produk')">Produk</button>
+    <button class="notif-filter-btn" onclick="filterNotif('pengumuman')">Pengumuman</button>
+    <button class="notif-filter-btn" onclick="filterNotif('checkin')">Check-in</button>
+    <button class="notif-filter-btn" onclick="filterNotif('reward')">Reward</button>
+  </div>
+  <div class="notif-list" id="notifList">
+    <div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Belum ada notifikasi</p></div>
+  </div>
+</div>
+
+<!-- IN-APP TOAST -->
+<div class="notif-toast" id="notifToast">
+  <div class="notif-toast-icon" id="notifToastIcon"></div>
+  <div class="notif-toast-body">
+    <div class="notif-toast-title" id="notifToastTitle"></div>
+    <div class="notif-toast-desc" id="notifToastDesc"></div>
+  </div>
+  <button class="notif-toast-close" onclick="hideToast()"><i class="fas fa-times"></i></button>
+</div>
+
 <div class="container">
 
 <!-- VIEW 1: BERANDA UTAMA -->
 <div id="view-beranda" class="view-section active">
+  <!-- CHECK-IN REMINDER -->
+  <div class="checkin-reminder hidden" id="checkinReminder" onclick="handleCheckinReminder()">
+    <i class="fas fa-calendar-check"></i>
+    <div class="checkin-reminder-text">
+      <strong>Jangan Lupa Check-in Harian!</strong>
+      <span>Check-in sekarang dan raih poin perjuangan</span>
+    </div>
+    <button class="checkin-reminder-btn" onclick="event.stopPropagation(); handleCheckinReminder()">Check-in</button>
+  </div>
   <!-- HERO -->
   <div class="hero-banner">
     <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
@@ -3206,6 +3425,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+const messaging = firebase.messaging();
 
 // ==========================================
 // 2. GLOBALS
@@ -3340,9 +3560,19 @@ auth.onAuthStateChanged(user => {
     showApp();
     unsubUser = db.collection("users").doc(user.uid).onSnapshot(doc => { currentUserData = doc.data(); renderUserInfo(); }, err => console.error(err));
     closeAuthModal(); loadData(); loadLeaderboard(); initTugasDashboard(user.uid); loadReward(user.uid); loadStats();
+    // Inisialisasi sistem notifikasi
+    loadNotifikasi();
+    initFCM();
   } else {
     showAuth();
-    document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser(); if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
+    document.getElementById('user').innerHTML = ''; currentUserData = null; if(unsubUser) unsubUser();
+    if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
+    // Bersihkan notifikasi saat logout
+    if(notifUnsub) { notifUnsub(); notifUnsub = null; }
+    notifData = [];
+    updateNotifBadge();
+    var reminder = document.getElementById('checkinReminder');
+    if (reminder) reminder.classList.add('hidden');
   }
 });
 
@@ -5112,6 +5342,472 @@ function getKaderGrade(poin) {
   }
 }
 // ==========================================
+// NOTIFIKASI SISTEM
+// ==========================================
+let notifData = [];
+let notifUnreadCount = 0;
+let notifFilter = 'semua';
+let notifUnsub = null;
+let fcmToken = null;
+let toastTimer = null;
+
+// --- ICON & STYLE MAP ---
+const NOTIF_MAP = {
+  berita:     { icon: 'fas fa-newspaper',    cls: 'berita',     label: 'Berita' },
+  produk:     { icon: 'fas fa-shopping-bag',  cls: 'produk',     label: 'Produk' },
+  pengumuman: { icon: 'fas fa-bullhorn',      cls: 'pengumuman', label: 'Pengumuman' },
+  checkin:    { icon: 'fas fa-calendar-check',cls: 'checkin',    label: 'Check-in' },
+  reward:     { icon: 'fas fa-trophy',        cls: 'reward',     label: 'Reward' },
+  aspirasi:   { icon: 'fas fa-hands-helping', cls: 'aspirasi',   label: 'Aspirasi' },
+  system:     { icon: 'fas fa-cog',           cls: 'system',     label: 'Sistem' }
+};
+
+function getNotifStyle(tipe) { return NOTIF_MAP[tipe] || NOTIF_MAP.system; }
+
+// --- FORMAT WAKTU RELATIF ---
+function timeAgo(timestamp) {
+  if (!timestamp) return '';
+  var date;
+  if (timestamp.toDate) { date = timestamp.toDate(); }
+  else if (timestamp.seconds) { date = new Date(timestamp.seconds * 1000); }
+  else { date = new Date(timestamp); }
+  var now = Date.now();
+  var diff = now - date.getTime();
+  var mins = Math.floor(diff / 60000);
+  var hrs = Math.floor(diff / 3600000);
+  var days = Math.floor(diff / 86400000);
+  if (mins < 1) return 'Baru saja';
+  if (mins < 60) return mins + ' menit lalu';
+  if (hrs < 24) return hrs + ' jam lalu';
+  if (days < 7) return days + ' hari lalu';
+  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// --- LOAD NOTIFIKASI DARI FIRESTORE ---
+// FIRESTORE INDEX REQUIRED: Collection "notifikasi", Fields: userId (ASC), createdAt (DESC)
+// Buat index di Firebase Console > Firestore > Indexes atau buka link error dari console.
+function loadNotifikasi() {
+  if (!auth || !auth.currentUser) return;
+  var uid = auth.currentUser.uid;
+
+  if (notifUnsub) notifUnsub();
+
+  // Listen: notifikasi untuk user ini + notifikasi broadcast (uid kosong)
+  notifUnsub = db.collection('notifikasi')
+    .where('userId', 'in', [uid, 'broadcast'])
+    .orderBy('createdAt', 'desc')
+    .limit(50)
+    .onSnapshot(function(snap) {
+      notifData = [];
+      snap.forEach(function(doc) {
+        var d = doc.data();
+        d._id = doc.id;
+        notifData.push(d);
+      });
+      renderNotifList();
+      updateNotifBadge();
+      // Cek check-in harian
+      checkDailyCheckin();
+    }, function(err) {
+      console.error('[Notifikasi] Firestore error:', err);
+    });
+}
+
+// --- RENDER LIST NOTIFIKASI ---
+function renderNotifList() {
+  var el = document.getElementById('notifList');
+  if (!el) return;
+
+  var filtered = notifFilter === 'semua'
+    ? notifData
+    : notifData.filter(function(n) { return n.tipe === notifFilter; });
+
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Belum ada notifikasi</p></div>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(n) {
+    var style = getNotifStyle(n.tipe);
+    var unreadClass = n.dibaca === false ? ' unread' : '';
+    html += '<div class="notif-item' + unreadClass + '" onclick="handleNotifClick(\'' + n._id + '\')">' +
+      '<div class="notif-icon ' + style.cls + '"><i class="' + style.icon + '"></i></div>' +
+      '<div class="notif-body">' +
+        '<div class="notif-title">' + (n.judul || 'Notifikasi') + '</div>' +
+        '<div class="notif-desc">' + (n.isi || '') + '</div>' +
+        '<div class="notif-time"><i class="fas fa-clock" style="margin-right:3px"></i>' + timeAgo(n.createdAt) + '</div>' +
+      '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+// --- UPDATE BADGE ---
+function updateNotifBadge() {
+  var count = 0;
+  var uid = auth ? auth.currentUser ? auth.currentUser.uid : null : null;
+  notifData.forEach(function(n) {
+    if (n.dibaca === false && (n.userId === uid || n.userId === 'broadcast')) count++;
+  });
+  notifUnreadCount = count;
+  var badge = document.getElementById('notifBadge');
+  if (!badge) return;
+  badge.textContent = count > 99 ? '99+' : count;
+  if (count > 0) { badge.classList.add('show'); }
+  else { badge.classList.remove('show'); }
+}
+
+// --- TOGGLE PANEL ---
+function toggleNotifPanel() {
+  var panel = document.getElementById('notifPanel');
+  var backdrop = document.getElementById('notifBackdrop');
+  if (!panel) return;
+  var isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    backdrop.classList.remove('show');
+    document.body.style.overflow = '';
+  } else {
+    panel.classList.add('open');
+    backdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// --- FILTER ---
+function filterNotif(tipe) {
+  notifFilter = tipe;
+  document.querySelectorAll('.notif-filter-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+    if (btn.textContent.toLowerCase().indexOf(tipe) !== -1 || (tipe === 'semua' && btn.textContent === 'Semua')) {
+      btn.classList.add('active');
+    }
+  });
+  // Also match by exact tipe
+  document.querySelectorAll('.notif-filter-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  document.querySelectorAll('.notif-filter-btn').forEach(function(btn) {
+    var btnText = btn.textContent.trim().toLowerCase();
+    if (tipe === 'semua' && btnText === 'semua') btn.classList.add('active');
+    else if (tipe === 'berita' && btnText === 'berita') btn.classList.add('active');
+    else if (tipe === 'produk' && btnText === 'produk') btn.classList.add('active');
+    else if (tipe === 'pengumuman' && btnText === 'pengumuman') btn.classList.add('active');
+    else if (tipe === 'checkin' && btnText === 'check-in') btn.classList.add('active');
+    else if (tipe === 'reward' && btnText === 'reward') btn.classList.add('active');
+  });
+  renderNotifList();
+}
+
+// --- MARK ALL READ ---
+function markAllNotifRead() {
+  if (!auth || !auth.currentUser) return;
+  var uid = auth.currentUser.uid;
+  var batch = db.batch();
+  var updated = 0;
+
+  notifData.forEach(function(n) {
+    if (n.dibaca === false && (n.userId === uid || n.userId === 'broadcast')) {
+      var ref = db.collection('notifikasi').doc(n._id);
+      batch.update(ref, { dibaca: true });
+      n.dibaca = true;
+      updated++;
+    }
+  });
+
+  if (updated > 0) {
+    batch.commit().then(function() {
+      renderNotifList();
+      updateNotifBadge();
+    }).catch(function(err) { console.error('[Notifikasi] Mark all error:', err); });
+  }
+}
+
+// --- HANDLE NOTIF CLICK ---
+function handleNotifClick(notifId) {
+  // Mark as read
+  var notif = notifData.find(function(n) { return n._id === notifId; });
+  if (notif && notif.dibaca === false) {
+    db.collection('notifikasi').doc(notifId).update({ dibaca: true });
+    notif.dibaca = true;
+    renderNotifList();
+    updateNotifBadge();
+  }
+  if (!notif) return;
+
+  // Navigate based on type
+  toggleNotifPanel();
+  var tipe = notif.tipe || 'system';
+  if (tipe === 'berita') { showView('berita'); }
+  else if (tipe === 'produk') { showView('store'); }
+  else if (tipe === 'pengumuman') { showView('pengumuman'); }
+  else if (tipe === 'checkin') {
+    navigateToDashboard();
+    setTimeout(function() { showDashboardSection('tugas'); }, 300);
+  }
+  else if (tipe === 'reward') {
+    navigateToDashboard();
+    setTimeout(function() { showDashboardSection('misi-reward'); }, 300);
+  }
+  else if (tipe === 'aspirasi') { showView('qr-aspirasi'); }
+}
+
+// --- IN-APP TOAST ---
+function showToast(title, desc, tipe) {
+  var toast = document.getElementById('notifToast');
+  var iconEl = document.getElementById('notifToastIcon');
+  var titleEl = document.getElementById('notifToastTitle');
+  var descEl = document.getElementById('notifToastDesc');
+  if (!toast) return;
+
+  var style = getNotifStyle(tipe);
+  iconEl.className = 'notif-toast-icon ' + style.cls;
+  iconEl.innerHTML = '<i class="' + style.icon + '"></i>';
+  titleEl.textContent = title;
+  descEl.textContent = desc;
+  toast.classList.add('show');
+
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { hideToast(); }, 5000);
+}
+
+function hideToast() {
+  var toast = document.getElementById('notifToast');
+  if (toast) toast.classList.remove('show');
+  if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+}
+
+// --- CHECK-IN HARIAN ---
+function checkDailyCheckin() {
+  if (!auth || !auth.currentUser) return;
+  var reminder = document.getElementById('checkinReminder');
+  if (!reminder) return;
+
+  var uid = auth.currentUser.uid;
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  var tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  db.collection('tugasKader')
+    .where('userId', '==', uid)
+    .where('tipe', '==', 'checkin')
+    .where('createdAt', '>=', firebase.firestore.Timestamp.fromDate(today))
+    .where('createdAt', '<', firebase.firestore.Timestamp.fromDate(tomorrow))
+    .get().then(function(snap) {
+      if (snap.empty) {
+        reminder.classList.remove('hidden');
+      } else {
+        reminder.classList.add('hidden');
+      }
+    }).catch(function() { reminder.classList.add('hidden'); });
+}
+
+function handleCheckinReminder() {
+  navigateToDashboard();
+  setTimeout(function() {
+    showDashboardSection('tugas');
+    // Auto do checkin
+    if (typeof tsDoCheckin === 'function') {
+      setTimeout(function() { tsDoCheckin(); }, 500);
+    }
+  }, 300);
+}
+
+// --- FCM: REQUEST PERMISSION & TOKEN ---
+async function initFCM() {
+  if (!('Notification' in window)) {
+    console.log('[FCM] Browser tidak mendukung notifikasi');
+    return;
+  }
+
+  try {
+    if (!messaging.isSupported()) {
+      console.log('[FCM] FCM tidak didukung di browser ini');
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.log('[FCM] Izin notifikasi ditolak:', permission);
+      return;
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        console.log('[FCM] Service worker terdaftar');
+        fcmToken = await messaging.getToken({
+          vapidKey: 'BJzrH_-R4L8nZgQ4zM_NZfTk3NMR0BBM1wHaR6EFOh6KJRhbFJQCWqYWGFLEqG8Z3FhLMvqIo6Gk8k6gDLDP_1s',
+          serviceWorkerRegistration: registration
+        });
+        console.log('[FCM] Token:', fcmToken.substring(0, 20) + '...');
+
+        // Save token to Firestore
+        if (auth && auth.currentUser) {
+          await db.collection('users').doc(auth.currentUser.uid).set({
+            fcmToken: fcmToken,
+            fcmTokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        }
+      } catch (swErr) {
+        console.log('[FCM] Service worker gagal (non-HTTPS?):', swErr.message);
+        // Fallback: get token without service worker (foreground only)
+        try {
+          fcmToken = await messaging.getToken();
+          console.log('[FCM] Token (no SW):', fcmToken.substring(0, 20) + '...');
+          if (auth && auth.currentUser) {
+            await db.collection('users').doc(auth.currentUser.uid).set({
+              fcmToken: fcmToken,
+              fcmTokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+          }
+        } catch (tokenErr) {
+          console.log('[FCM] Gagal mendapatkan token:', tokenErr.message);
+        }
+      }
+    }
+
+    // Listen for foreground messages
+    messaging.onMessage(function(payload) {
+      console.log('[FCM] Foreground message:', payload);
+      var data = payload.data || {};
+      var title = data.title || payload.notification?.title || 'Notifikasi Baru';
+      var body = data.body || payload.notification?.body || '';
+      var tipe = data.tipe || 'system';
+      showToast(title, body, tipe);
+      // Play notification sound
+      playNotifSound();
+      // Vibrate
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    });
+
+    // Handle token refresh
+    messaging.onTokenRefresh(async function() {
+      try {
+        fcmToken = await messaging.getToken();
+        console.log('[FCM] Token refreshed');
+        if (auth && auth.currentUser) {
+          await db.collection('users').doc(auth.currentUser.uid).set({
+            fcmToken: fcmToken,
+            fcmTokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        }
+      } catch (err) { console.error('[FCM] Token refresh error:', err); }
+    });
+
+  } catch (err) {
+    console.error('[FCM] Init error:', err);
+  }
+}
+
+// --- NOTIFICATION SOUND ---
+function playNotifSound() {
+  try {
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var oscillator = audioCtx.createOscillator();
+    var gainNode = audioCtx.createGain();
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+    oscillator.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
+    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime + 0.2);
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.4);
+  } catch (e) { /* silent fail */ }
+}
+
+// --- BUAT NOTIFIKASI BARU KE FIRESTORE (untuk admin/pengguna) ---
+function createNotifikasi(data) {
+  // data: { userId, judul, isi, tipe, targetView }
+  // userId = 'broadcast' untuk semua user
+  if (!data.judul) return;
+  var doc = {
+    judul: data.judul,
+    isi: data.isi || '',
+    tipe: data.tipe || 'system',
+    userId: data.userId || 'broadcast',
+    dibaca: false,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  db.collection('notifikasi').add(doc).catch(function(err) {
+    console.error('[Notifikasi] Gagal membuat notifikasi:', err);
+  });
+}
+
+// --- LISTEN: BERITA BARU (untuk notifikasi real-time) ---
+function listenBeritaNew() {
+  var lastBeritaTime = null;
+  db.collection('berita').orderBy('createdAt', 'desc').limit(1).onSnapshot(function(snap) {
+    if (snap.empty) return;
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added' && lastBeritaTime !== null) {
+        var v = change.doc.data();
+        showToast('Berita Baru!', v.judul || 'Ada berita baru dari DPC', 'berita');
+        playNotifSound();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+    });
+    if (!snap.empty) { lastBeritaTime = Date.now(); }
+  });
+}
+
+// --- LISTEN: PRODUK BARU ---
+function listenProdukNew() {
+  var lastProdukTime = null;
+  db.collection('produk').orderBy('createdAt', 'desc').limit(1).onSnapshot(function(snap) {
+    if (snap.empty) return;
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added' && lastProdukTime !== null) {
+        var v = change.doc.data();
+        showToast('Produk Baru!', v.nama || 'Produk baru di Store UMKM', 'produk');
+        playNotifSound();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+    });
+    if (!snap.empty) { lastProdukTime = Date.now(); }
+  });
+}
+
+// --- LISTEN: PENGUMUMAN BARU ---
+function listenPengumumanNew() {
+  var lastPengumumanTime = null;
+  db.collection('pengumuman').orderBy('createdAt', 'desc').limit(1).onSnapshot(function(snap) {
+    if (snap.empty) return;
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added' && lastPengumumanTime !== null) {
+        var v = change.doc.data();
+        showToast('Pengumuman Baru!', v.judul || v.isi || 'Pengumuman dari DPC', 'pengumuman');
+        playNotifSound();
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      }
+    });
+    if (!snap.empty) { lastPengumumanTime = Date.now(); }
+  });
+}
+
+// --- CHECK-IN DAILY REMINDER TIMER ---
+let checkinReminderTimer = null;
+function startCheckinReminder() {
+  // Setiap 30 menit cek apakah sudah check-in hari ini
+  if (checkinReminderTimer) clearInterval(checkinReminderTimer);
+  checkinReminderTimer = setInterval(function() {
+    if (auth && auth.currentUser) {
+      checkDailyCheckin();
+    }
+  }, 30 * 60 * 1000); // 30 menit
+
+  // Juga cek segera saat pertama kali login
+  setTimeout(function() {
+    if (auth && auth.currentUser) checkDailyCheckin();
+  }, 3000);
+}
+
+// ==========================================
 // INIT
 // ==========================================
 window.onload = function() {
@@ -5121,6 +5817,11 @@ window.onload = function() {
   initAnalytics(); // Sekarang async - akan fetch API dulu baru listen Firestore
   loadBerita();
   loadPengumuman();
+  // Start real-time listeners for notifications
+  listenBeritaNew();
+  listenProdukNew();
+  listenPengumumanNew();
+  startCheckinReminder();
 };
 
 </script>
