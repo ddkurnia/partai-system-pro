@@ -79,7 +79,7 @@ header {
   margin: 0 auto;
 }
 .header-left { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-.logo { width: 45px; height: 45px; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 4px 10px rgba(227,30,37,0.15); border: 1px solid rgba(0,0,0,0.05); }
+.logo { width: 45px; height: 45px; border-radius: 12px; overflow: hidden; background: white; box-shadow: 0 4px 10px rgba(227,30,37,0.15); border: none; }
 .logo img { width: 100%; height: 100%; object-fit: cover; }
 .header-text h1 { font-size: 1rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
 .header-text p { font-size: 0.7rem; color: var(--primary); font-weight: 700; }
@@ -87,8 +87,8 @@ header {
 /* Header Right */
 .header-right { display: flex; align-items: center; gap: 10px; }
 .theme-toggle {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: none;
   width: 40px;
   height: 40px;
   border-radius: 12px;
@@ -98,26 +98,24 @@ header {
   cursor: pointer;
   color: var(--text-main);
   font-size: 1.1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   transition: all 0.3s;
 }
-.theme-toggle:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.theme-toggle:hover { background: rgba(227,30,37,0.1); color: var(--primary); }
 
 /* NOTIFICATION BELL */
 .notif-bell {
   position: relative;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: none;
   width: 40px; height: 40px;
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   color: var(--text-main);
   font-size: 1.1rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   transition: all 0.3s;
 }
-.notif-bell:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.notif-bell:hover { background: rgba(227,30,37,0.1); color: var(--primary); }
 .notif-badge {
   position: absolute; top: -4px; right: -4px;
   background: #EF4444; color: white;
