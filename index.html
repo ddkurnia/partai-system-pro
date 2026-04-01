@@ -140,20 +140,20 @@ header {
   50% { transform: scale(1.15); }
 }
 
-/* NOTIFICATION PANEL */
+/* NOTIFICATION PANEL - FULL SCREEN */
 .notif-panel {
-  position: fixed; top: 0; right: -100%; width: 100%; max-width: 420px;
-  height: 100vh; background: var(--bg-card);
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg-card);
   z-index: 6000;
-  box-shadow: -8px 0 30px rgba(0,0,0,0.15);
-  transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
   display: flex; flex-direction: column;
   overflow: hidden;
 }
-.notif-panel.open { right: 0; }
+.notif-panel.open { transform: translateY(0); }
 .notif-panel-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-  z-index: 5999; display: none; backdrop-filter: blur(3px);
+  z-index: 5999; display: none;
 }
 .notif-panel-backdrop.show { display: block; }
 .notif-panel-header {
@@ -162,26 +162,26 @@ header {
   flex-shrink: 0;
 }
 .notif-panel-header h3 {
-  font-size: 1rem; font-weight: 800; color: var(--text-main);
+  font-size: 1.1rem; font-weight: 800; color: var(--text-main);
   display: flex; align-items: center; gap: 8px;
 }
 .notif-panel-header h3 i { color: var(--primary); }
-.notif-panel-actions { display: flex; gap: 8px; }
+.notif-panel-actions { display: flex; gap: 8px; align-items: center; }
 .notif-btn-markall {
-  background: rgba(227,30,37,0.08); color: var(--primary);
+  background: transparent; color: var(--primary);
   border: none; border-radius: 8px; padding: 6px 12px;
-  font-size: 0.68rem; font-weight: 700; cursor: pointer;
+  font-size: 0.72rem; font-weight: 700; cursor: pointer;
   transition: background 0.2s;
 }
-.notif-btn-markall:hover { background: rgba(227,30,37,0.18); }
+.notif-btn-markall:hover { background: rgba(227,30,37,0.08); }
 .notif-btn-close {
-  background: var(--bg-body); border: 1px solid var(--border-color);
-  width: 32px; height: 32px; border-radius: 8px;
+  background: transparent; border: none;
+  width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: var(--text-muted); font-size: 0.85rem;
+  cursor: pointer; color: var(--text-main); font-size: 1.2rem;
   transition: all 0.2s;
 }
-.notif-btn-close:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.notif-btn-close:hover { background: rgba(0,0,0,0.05); }
 .notif-filter-bar {
   display: flex; gap: 6px; padding: 12px 20px;
   overflow-x: auto; flex-shrink: 0;
@@ -197,22 +197,41 @@ header {
 }
 .notif-filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 .notif-filter-btn:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
-.notif-list { flex: 1; overflow-y: auto; padding: 0; }
+.notif-list { flex: 1; overflow-y: auto; padding: 0; -webkit-overflow-scrolling: touch; }
 .notif-list::-webkit-scrollbar { width: 4px; }
 .notif-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+.notif-item-wrapper {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+.notif-delete-btn {
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 80px;
+  background: #EF4444;
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700;
+  cursor: pointer;
+  z-index: 1;
+}
 .notif-item {
   display: flex; gap: 12px; padding: 14px 16px;
-  background: transparent; border-radius: 0;
-  cursor: pointer; transition: background 0.2s; margin-bottom: 0;
-  position: relative;
+  background: var(--bg-card); border-radius: 0;
+  cursor: pointer; margin-bottom: 0;
+  position: relative; z-index: 2;
+  transition: transform 0.25s ease;
   border-bottom: 1px solid var(--border-color);
+  -webkit-user-select: none; user-select: none;
 }
-.notif-item:last-child { border-bottom: none; }
-.notif-item:hover { background: rgba(0,0,0,0.03); }
-.notif-item.unread { background: rgba(227,30,37,0.03); }
+.notif-item-wrapper:last-child .notif-item { border-bottom: none; }
+.notif-item.swiped { transform: translateX(-80px); }
+.notif-item:hover { background: var(--bg-card); }
 .notif-item.unread::before {
   content: ''; position: absolute; left: 4px; top: 50%; transform: translateY(-50%);
   width: 6px; height: 6px; border-radius: 50%; background: var(--primary);
+  z-index: 3;
 }
 .notif-icon {
   width: 42px; height: 42px; border-radius: 12px;
@@ -5432,15 +5451,122 @@ function renderNotifList() {
   filtered.forEach(function(n) {
     var style = getNotifStyle(n.tipe);
     var unreadClass = n.dibaca === false ? ' unread' : '';
-    html += '<div class="notif-item' + unreadClass + '" onclick="handleNotifClick(\'' + n._id + '\')">' +
-      '<div class="notif-icon ' + style.cls + '"><i class="' + style.icon + '"></i></div>' +
-      '<div class="notif-body">' +
-        '<div class="notif-title">' + (n.judul || 'Notifikasi') + '</div>' +
-        '<div class="notif-desc">' + (n.isi || '') + '</div>' +
-        '<div class="notif-time"><i class="fas fa-clock" style="margin-right:3px"></i>' + timeAgo(n.createdAt) + '</div>' +
+    html += '<div class="notif-item-wrapper" data-notif-id="' + n._id + '">' +
+      '<div class="notif-delete-btn" onclick="deleteNotifItem(this)"><i class="fas fa-trash-alt" style="margin-right:4px"></i>Hapus</div>' +
+      '<div class="notif-item' + unreadClass + '" onclick="handleNotifClick(\'' + n._id + '\')">' +
+        '<div class="notif-icon ' + style.cls + '"><i class="' + style.icon + '"></i></div>' +
+        '<div class="notif-body">' +
+          '<div class="notif-title">' + (n.judul || 'Notifikasi') + '</div>' +
+          '<div class="notif-desc">' + (n.isi || '') + '</div>' +
+          '<div class="notif-time"><i class="fas fa-clock" style="margin-right:3px"></i>' + timeAgo(n.createdAt) + '</div>' +
+        '</div>' +
       '</div></div>';
   });
   el.innerHTML = html;
+  initSwipeToDelete();
+}
+
+// --- SWIPE TO DELETE ---
+let swipeCurrentItem = null;
+
+function initSwipeToDelete() {
+  document.querySelectorAll('.notif-item').forEach(function(item) {
+    item.addEventListener('touchstart', onSwipeStart, { passive: true });
+    item.addEventListener('touchmove', onSwipeMove, { passive: false });
+    item.addEventListener('touchend', onSwipeEnd, { passive: true });
+  });
+}
+
+function onSwipeStart(e) {
+  // Tutup item lain yang sedang terbuka
+  if (swipeCurrentItem && swipeCurrentItem !== this) {
+    swipeCurrentItem.classList.remove('swiped');
+  }
+  this._swipeStartX = e.touches[0].clientX;
+  this._swipeStartY = e.touches[0].clientY;
+  this._swiping = false;
+}
+
+function onSwipeMove(e) {
+  if (this._swipeStartX === undefined) return;
+  var moveX = e.touches[0].clientX;
+  var moveY = e.touches[0].clientY;
+  var diffX = this._swipeStartX - moveX;
+  var diffY = Math.abs(this._swipeStartY - moveY);
+
+  // Jika gerakan vertikal lebih dominan, abaikan (biar scroll normal)
+  if (!this._swiping && diffY > diffX && diffY > 10) {
+    this._swiping = false;
+    return;
+  }
+
+  if (diffX > 10) {
+    this._swiping = true;
+    e.preventDefault(); // Cegah scroll saat swipe horizontal
+  }
+
+  if (this._swiping) {
+    var translateX = Math.max(-80, Math.min(0, -diffX));
+    this.style.transition = 'none';
+    this.style.transform = 'translateX(' + translateX + 'px)';
+  }
+}
+
+function onSwipeEnd(e) {
+  if (this._swipeStartX === undefined) return;
+  var moveX = e.changedTouches[0].clientX;
+  var diffX = this._swipeStartX - moveX;
+
+  this.style.transition = 'transform 0.25s ease';
+  this.style.transform = '';
+
+  if (diffX > 50) {
+    this.classList.add('swiped');
+    swipeCurrentItem = this;
+  } else {
+    this.classList.remove('swiped');
+    swipeCurrentItem = null;
+  }
+  this._swipeStartX = undefined;
+  this._swiping = false;
+}
+
+function deleteNotifItem(btn) {
+  var wrapper = btn.closest('.notif-item-wrapper');
+  if (!wrapper) return;
+  var notifId = wrapper.getAttribute('data-notif-id') || '';
+
+  // Animasi hapus
+  wrapper.style.transition = 'transform 0.3s ease, opacity 0.3s ease, max-height 0.3s ease';
+  wrapper.style.transform = 'translateX(-100%)';
+  wrapper.style.opacity = '0';
+  wrapper.style.maxHeight = wrapper.offsetHeight + 'px';
+
+  setTimeout(function() {
+    wrapper.style.maxHeight = '0';
+    wrapper.style.padding = '0';
+    wrapper.style.margin = '0';
+    wrapper.style.overflow = 'hidden';
+  }, 150);
+
+  setTimeout(function() {
+    wrapper.remove();
+
+    // Update data lokal
+    notifData = notifData.filter(function(n) { return n._id !== notifId; });
+    updateNotifBadge();
+
+    // Hapus dari Firestore juga
+    if (notifId && auth && auth.currentUser) {
+      db.collection('notifikasi').doc(notifId).delete().catch(function() {});
+    }
+
+    // Jika list kosong, tampilkan empty state
+    var list = document.getElementById('notifList');
+    if (list && list.querySelectorAll('.notif-item-wrapper').length === 0) {
+      list.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Belum ada notifikasi</p></div>';
+    }
+  }, 400);
 }
 
 // --- UPDATE BADGE ---
