@@ -738,7 +738,312 @@ li { padding: 10px; background: var(--bg-card); border-radius: 10px; margin-top:
   .pd-modal-img { max-height: 220px; border-radius: 12px; }
 }
 
-/* FAQ STYLES */
+/* ==========================================
+   TENTANG PDI — STYLES
+   ========================================== */
+
+/* Hero */
+.tpdi-hero {
+  background: linear-gradient(145deg, #1a1a1a 0%, #2d0000 50%, #1a1a1a 100%);
+  border-radius: 20px;
+  padding: 30px 20px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.tpdi-hero::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 150px; height: 150px; border-radius: 50%;
+  background: rgba(227,30,37,0.12);
+}
+.tpdi-hero::after {
+  content: '';
+  position: absolute; bottom: -30px; left: -30px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: rgba(227,30,37,0.08);
+}
+.tpdi-hero-logo {
+  position: relative; z-index: 1;
+  width: 72px; height: 72px;
+  background: white; border-radius: 50%;
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(227,30,37,0.4);
+  padding: 4px;
+}
+.tpdi-hero-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+.tpdi-hero-title { color: white; font-size: 1.3rem; font-weight: 900; letter-spacing: -0.3px; position: relative; z-index: 1; }
+.tpdi-hero-sub { color: rgba(255,255,255,0.7); font-size: 0.78rem; font-weight: 600; margin-top: 4px; position: relative; z-index: 1; }
+.tpdi-hero-motto {
+  display: inline-block;
+  margin-top: 12px;
+  background: rgba(227,30,37,0.25);
+  border: 1px solid rgba(227,30,37,0.4);
+  color: #fca5a5;
+  font-size: 0.7rem; font-weight: 700; font-style: italic;
+  padding: 5px 14px; border-radius: 20px;
+  position: relative; z-index: 1;
+}
+
+/* Tabs */
+.tpdi-tabs {
+  display: flex; gap: 0;
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 4px;
+  margin: 12px 0;
+  border: 1px solid var(--border-color);
+}
+.tpdi-tab {
+  flex: 1; padding: 10px 6px;
+  background: transparent; border: none;
+  border-radius: 10px;
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  width: auto;
+  box-shadow: none;
+}
+.tpdi-tab.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 3px 10px rgba(227,30,37,0.3);
+}
+.tpdi-tab i { font-size: 0.75rem; }
+
+/* Panels */
+.tpdi-panel { display: none; flex-direction: column; gap: 14px; }
+.tpdi-panel.active { display: flex; }
+
+/* Section cards */
+.tpdi-section-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+.tpdi-section-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px;
+}
+.tpdi-section-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1rem; flex-shrink: 0;
+}
+.tpdi-section-label { font-size: 0.62rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; }
+.tpdi-section-title { font-size: 0.85rem; font-weight: 800; color: var(--text-main); line-height: 1.3; }
+.tpdi-section-body { font-size: 0.8rem; color: var(--text-muted); line-height: 1.75; margin: 0; }
+
+/* Misi list */
+.tpdi-misi-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.tpdi-misi-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 0.79rem; color: var(--text-main); line-height: 1.5;
+  padding: 0; background: none; border: none; border-radius: 0; margin: 0;
+}
+.tpdi-misi-list li::before {
+  content: '';
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary);
+  flex-shrink: 0; margin-top: 6px;
+}
+
+/* Info grid */
+.tpdi-info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.tpdi-info-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px; padding: 12px;
+  text-align: center;
+}
+.tpdi-info-item i { font-size: 1.1rem; color: var(--primary); margin-bottom: 6px; display: block; }
+.tpdi-info-val { font-size: 0.82rem; font-weight: 800; color: var(--text-main); }
+.tpdi-info-lbl { font-size: 0.62rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Struktur: Level label */
+.tpdi-struct-level-label {
+  font-size: 0.72rem; font-weight: 800; color: var(--primary);
+  text-transform: uppercase; letter-spacing: 0.6px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 0 4px;
+  border-bottom: 2px solid rgba(227,30,37,0.15);
+  margin-bottom: 12px;
+}
+
+/* Struktur: Pimpinan DPC */
+.tpdi-pimpinan-row { display: flex; flex-direction: column; gap: 10px; }
+.tpdi-pimpinan-card {
+  background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+  border-radius: 16px; padding: 16px;
+  display: flex; align-items: center; gap: 14px;
+  border: 1px solid rgba(227,30,37,0.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.tpdi-pimpinan-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 3px solid rgba(227,30,37,0.5);
+  object-fit: cover; flex-shrink: 0;
+  background: #333;
+}
+.tpdi-pimpinan-placeholder {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 3px solid rgba(227,30,37,0.5);
+  background: linear-gradient(135deg,#E31E25,#B91C1C);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 900; color: white;
+  flex-shrink: 0;
+}
+.tpdi-pimpinan-nama { font-size: 0.9rem; font-weight: 800; color: white; }
+.tpdi-pimpinan-jabatan {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(227,30,37,0.25); color: #fca5a5;
+  font-size: 0.65rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px; margin: 4px 0;
+}
+.tpdi-pimpinan-hp { font-size: 0.7rem; color: rgba(255,255,255,0.5); }
+.tpdi-pimpinan-wa {
+  margin-left: auto; flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(37,211,102,0.15);
+  border: 1px solid rgba(37,211,102,0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: #25D366; font-size: 1rem; text-decoration: none;
+  transition: background 0.2s;
+}
+.tpdi-pimpinan-wa:hover { background: rgba(37,211,102,0.3); }
+
+/* Struktur: Sekretariat */
+.tpdi-struct-row { display: flex; flex-direction: column; gap: 8px; }
+.tpdi-sekr-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary);
+  border-radius: 12px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.tpdi-sekr-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: rgba(227,30,37,0.1);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--primary); font-size: 0.85rem; flex-shrink: 0;
+}
+.tpdi-sekr-nama { font-size: 0.82rem; font-weight: 700; color: var(--text-main); }
+.tpdi-sekr-jabatan { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
+
+/* Struktur: Bidang */
+.tpdi-bidang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tpdi-bidang-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 12px 10px;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  text-align: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tpdi-bidang-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+.tpdi-bidang-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.9rem;
+}
+.tpdi-bidang-nama { font-size: 0.68rem; font-weight: 700; color: var(--text-main); line-height: 1.3; }
+
+/* Struktur: PAC */
+.tpdi-pac-list { display: flex; flex-direction: column; gap: 8px; }
+.tpdi-pac-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.tpdi-pac-num {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg,#E31E25,#B91C1C);
+  color: white; font-size: 0.7rem; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.tpdi-pac-info { flex: 1; }
+.tpdi-pac-kec { font-size: 0.82rem; font-weight: 700; color: var(--text-main); }
+.tpdi-pac-ketua { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
+.tpdi-pac-status {
+  font-size: 0.6rem; font-weight: 700;
+  padding: 3px 9px; border-radius: 10px;
+}
+.tpdi-pac-status.aktif { background: #D1FAE5; color: #059669; }
+.tpdi-pac-status.nonaktif { background: #FEE2E2; color: #DC2626; }
+
+/* Kontak: Alamat */
+.tpdi-alamat-detail { font-size: 0.8rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 12px; }
+.tpdi-maps-link {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg,#E31E25,#B91C1C);
+  color: white; text-decoration: none;
+  font-size: 0.78rem; font-weight: 700;
+  padding: 10px 18px; border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(227,30,37,0.3);
+  transition: all 0.2s;
+}
+.tpdi-maps-link:hover { box-shadow: 0 5px 18px rgba(227,30,37,0.4); }
+
+/* Kontak: Kontak list */
+.tpdi-kontak-list { display: flex; flex-direction: column; gap: 10px; }
+.tpdi-kontak-item {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+  background: var(--bg-body);
+  border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+.tpdi-kontak-item:hover { border-color: rgba(227,30,37,0.3); }
+.tpdi-kontak-icon {
+  width: 38px; height: 38px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.9rem; flex-shrink: 0;
+}
+.tpdi-kontak-lbl { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
+.tpdi-kontak-val { font-size: 0.82rem; font-weight: 700; color: var(--text-main); }
+
+/* Sosmed */
+.tpdi-sosmed-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tpdi-sosmed-item {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: var(--bg-body); border: 1px solid var(--border-color);
+  border-radius: 12px; padding: 14px 8px;
+  text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+}
+.tpdi-sosmed-item:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+.tpdi-sosmed-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1.1rem;
+}
+.tpdi-sosmed-platform { font-size: 0.7rem; font-weight: 800; color: var(--text-main); }
+.tpdi-sosmed-nama { font-size: 0.62rem; color: var(--text-muted); text-align: center; word-break: break-all; }
+
+/* Jam Operasional */
+.tpdi-jam-list { display: flex; flex-direction: column; gap: 8px; }
+.tpdi-jam-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-body); border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+.tpdi-jam-hari { font-size: 0.8rem; font-weight: 600; color: var(--text-main); }
+.tpdi-jam-waktu { font-size: 0.78rem; font-weight: 700; }
+.tpdi-jam-waktu.buka { color: #059669; }
+.tpdi-jam-waktu.tutup { color: #DC2626; }
+
+/* ========================================== */
+
 .faq-item {
   background: var(--bg-body);
   border: 1px solid var(--border-color);
@@ -2505,21 +2810,12 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
     <div class="menu-grid">
       <div class="menu-item" onclick="showView('berita')"><div class="menu-icon c-blue"><i class="fas fa-newspaper"></i></div><span class="menu-text">Berita</span></div>
       <div class="menu-item" onclick="showView('pengumuman')"><div class="menu-icon c-orange"><i class="fas fa-bullhorn"></i></div><span class="menu-text">Info</span></div>
-      <div class="menu-item" onclick="showView('struktur')"><div class="menu-icon c-purple"><i class="fas fa-sitemap"></i></div><span class="menu-text">Struktur</span></div>
-      <div class="menu-item" onclick="showView('usulan')"><div class="menu-icon c-green"><i class="fas fa-lightbulb"></i></div><span class="menu-text">Usulan</span></div>
+      <div class="menu-item" onclick="showView('tentang-pdi')"><div class="menu-icon c-red"><i class="fas fa-landmark"></i></div><span class="menu-text">Tentang PDI</span></div>
       <div class="menu-item" onclick="showView('store')"><div class="menu-icon c-teal"><i class="fas fa-store"></i></div><span class="menu-text">Store</span></div>
       <div class="menu-item" onclick="showView('galeri')"><div class="menu-icon c-pink"><i class="fas fa-images"></i></div><span class="menu-text">Galeri</span></div>
-      <div class="menu-item" onclick="showView('kontak')"><div class="menu-icon c-gray"><i class="fas fa-phone-alt"></i></div><span class="menu-text">Kontak</span></div>
       <div class="menu-item" onclick="showView('statistik')"><div class="menu-icon c-yellow"><i class="fas fa-chart-pie"></i></div><span class="menu-text">Statistik</span></div>
-      <div class="menu-item" onclick="showView('misi-reward')"><div class="menu-icon c-red"><i class="fas fa-trophy"></i></div><span class="menu-text">Misi & Reward</span></div>
-      <div class="menu-item" onclick="showView('qr-aspirasi')">
-  <div class="menu-icon" style="background: linear-gradient(135deg, #ffffff, #f1f5f9); border: 1px solid #e2e8f0;">
-    <i class="fas fa-qrcode" style="color: #E31E25"></i>
-  </div>
-  <span class="menu-text">QR Aspirasi</span>
-</div>
-
-      <div class="menu-item" onclick="navigateToDashboard()"><div class="menu-icon c-red"><i class="fas fa-user-shield"></i></div><span class="menu-text">Dashboard</span></div>
+      <div class="menu-item" onclick="showView('misi-reward')"><div class="menu-icon c-green"><i class="fas fa-trophy"></i></div><span class="menu-text">Misi & Reward</span></div>
+      <div class="menu-item" onclick="showView('qr-aspirasi')"><div class="menu-icon" style="background:linear-gradient(135deg,#ffffff,#f1f5f9);border:1px solid #e2e8f0;"><i class="fas fa-qrcode" style="color:#E31E25"></i></div><span class="menu-text">QR Aspirasi</span></div>
       <div class="menu-item" onclick="showView('faq')"><div class="menu-icon c-orange"><i class="fas fa-question-circle"></i></div><span class="menu-text">FAQ</span></div>
       <div class="menu-item" onclick="showView('bantuan')"><div class="menu-icon c-blue"><i class="fas fa-headset"></i></div><span class="menu-text">Bantuan</span></div>
     </div>
@@ -2558,9 +2854,307 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 <!-- VIEWS UMUM -->
 <div id="view-berita" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-newspaper" style="color:#3B82F6"></i> Berita & Kabar</h3><p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px">Informasi terkini seputar kegiatan partai. <span style="font-size:0.68rem;color:var(--success);font-weight:700;display:inline-flex;align-items:center;gap:3px;margin-left:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>Realtime</span></p><div id="beritaList" style="display:flex;flex-direction:column;gap:12px"><p style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0">Memuat berita...</p></div></div></div>
 <div id="view-pengumuman" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-bullhorn" style="color:#EA580C"></i> Pengumuman</h3><p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px">Informasi resmi dari DPC PDI Perjuangan. <span style="font-size:0.68rem;color:var(--success);font-weight:700;display:inline-flex;align-items:center;gap:3px;margin-left:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--success)"></span>Realtime</span></p><ul id="pengumumanList"><li style="text-align:center;color:var(--text-muted);font-size:0.82rem;padding:20px 0">Memuat pengumuman...</li></ul></div></div>
-<div id="view-struktur" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-sitemap" style="color:#7C3AED"></i> Struktur Organisasi</h3><p style="text-align:center; padding:20px 0"><strong>DPC PDI Perjuangan<br>Kabupaten Kepulauan Meranti</strong></p></div></div>
-<div id="view-usulan" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-lightbulb" style="color:#10B981"></i> Usulan Program</h3><textarea id="usulanText" placeholder="Tulis usulan..."></textarea><input id="usulanNama" placeholder="Nama Pengusul"><button onclick="kirimUsulan()"><i class="fas fa-paper-plane"></i> Kirim</button></div></div>
+<div id="view-struktur" class="view-section" style="display:none"></div>
+<div id="view-usulan" class="view-section" style="display:none"></div>
+<div id="view-kontak" class="view-section" style="display:none"></div>
 <div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
+
+<!-- ============================================================ -->
+<!--  VIEW: TENTANG PDI PERJUANGAN KAB. KEPULAUAN MERANTI        -->
+<!--  ADMIN: Edit data di blok <script id="adminConfigTentang">  -->
+<!--  di bawah view ini.                                          -->
+<!-- ============================================================ -->
+<div id="view-tentang-pdi" class="view-section">
+
+  <!-- HERO BANNER -->
+  <div class="tpdi-hero">
+    <div class="tpdi-hero-logo">
+      <img src="https://partai.kedaimedia.com/logo-pdi.png" alt="Logo PDI" onerror="this.src='https://ui-avatars.com/api/?name=PDI&background=E31E25&color=fff&size=80'">
+    </div>
+    <div class="tpdi-hero-title">PDI Perjuangan</div>
+    <div class="tpdi-hero-sub">DPC Kabupaten Kepulauan Meranti</div>
+    <div class="tpdi-hero-motto">"Merdeka — Berdaulat — Bermartabat"</div>
+  </div>
+
+  <!-- TAB NAV -->
+  <div class="tpdi-tabs">
+    <button class="tpdi-tab active" id="tab-tentang" onclick="switchTpdiTab('tentang')"><i class="fas fa-info-circle"></i> Tentang</button>
+    <button class="tpdi-tab" id="tab-struktur" onclick="switchTpdiTab('struktur')"><i class="fas fa-sitemap"></i> Struktur</button>
+    <button class="tpdi-tab" id="tab-kontak" onclick="switchTpdiTab('kontak')"><i class="fas fa-address-book"></i> Kontak</button>
+  </div>
+
+  <!-- ===== TAB 1: TENTANG ===== -->
+  <div id="tpdi-panel-tentang" class="tpdi-panel active">
+
+    <!-- Visi -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#E31E25,#B91C1C)"><i class="fas fa-eye"></i></div>
+        <div>
+          <div class="tpdi-section-label">Visi Partai</div>
+          <div class="tpdi-section-title" id="tpdi-visi-judul"></div>
+        </div>
+      </div>
+      <p class="tpdi-section-body" id="tpdi-visi-isi"></p>
+    </div>
+
+    <!-- Misi -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#1a1a1a,#333)"><i class="fas fa-bullseye"></i></div>
+        <div>
+          <div class="tpdi-section-label">Misi Partai</div>
+          <div class="tpdi-section-title">Garis Perjuangan DPC Meranti</div>
+        </div>
+      </div>
+      <ul class="tpdi-misi-list" id="tpdi-misi-list"></ul>
+    </div>
+
+    <!-- Sejarah -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#B91C1C,#7F1D1D)"><i class="fas fa-scroll"></i></div>
+        <div>
+          <div class="tpdi-section-label">Sejarah Singkat</div>
+          <div class="tpdi-section-title" id="tpdi-sejarah-judul"></div>
+        </div>
+      </div>
+      <p class="tpdi-section-body" id="tpdi-sejarah-isi"></p>
+    </div>
+
+    <!-- Info Partai -->
+    <div class="tpdi-info-grid" id="tpdi-info-grid"></div>
+
+  </div>
+
+  <!-- ===== TAB 2: STRUKTUR ===== -->
+  <div id="tpdi-panel-struktur" class="tpdi-panel">
+
+    <!-- Ketua & Wakil -->
+    <div class="tpdi-struct-level-label"><i class="fas fa-crown"></i> Pimpinan DPC</div>
+    <div class="tpdi-pimpinan-row" id="tpdi-pimpinan-row"></div>
+
+    <!-- Sekretariat -->
+    <div class="tpdi-struct-level-label" style="margin-top:20px"><i class="fas fa-briefcase"></i> Sekretariat</div>
+    <div class="tpdi-struct-row" id="tpdi-sekretariat-row"></div>
+
+    <!-- Bidang-bidang -->
+    <div class="tpdi-struct-level-label" style="margin-top:20px"><i class="fas fa-th-large"></i> Bidang & Komisi</div>
+    <div class="tpdi-bidang-grid" id="tpdi-bidang-grid"></div>
+
+    <!-- PAC Kecamatan -->
+    <div class="tpdi-struct-level-label" style="margin-top:20px"><i class="fas fa-map-marker-alt"></i> PAC Kecamatan</div>
+    <div class="tpdi-pac-list" id="tpdi-pac-list"></div>
+
+  </div>
+
+  <!-- ===== TAB 3: KONTAK ===== -->
+  <div id="tpdi-panel-kontak" class="tpdi-panel">
+
+    <!-- Alamat Sekretariat -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#E31E25,#B91C1C)"><i class="fas fa-map-marker-alt"></i></div>
+        <div>
+          <div class="tpdi-section-label">Sekretariat DPC</div>
+          <div class="tpdi-section-title" id="tpdi-alamat-nama"></div>
+        </div>
+      </div>
+      <div class="tpdi-alamat-detail" id="tpdi-alamat-detail"></div>
+      <a id="tpdi-maps-btn" href="#" target="_blank" class="tpdi-maps-link">
+        <i class="fas fa-directions"></i> Buka di Google Maps
+      </a>
+    </div>
+
+    <!-- Kontak Langsung -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#25D366,#128C7E)"><i class="fas fa-phone-alt"></i></div>
+        <div>
+          <div class="tpdi-section-label">Hubungi Kami</div>
+          <div class="tpdi-section-title">Kontak Langsung</div>
+        </div>
+      </div>
+      <div class="tpdi-kontak-list" id="tpdi-kontak-list"></div>
+    </div>
+
+    <!-- Media Sosial Resmi -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#1877F2,#0C5DC7)"><i class="fas fa-share-alt"></i></div>
+        <div>
+          <div class="tpdi-section-label">Media Sosial Resmi</div>
+          <div class="tpdi-section-title">Follow & Pantau Kegiatan</div>
+        </div>
+      </div>
+      <div class="tpdi-sosmed-list" id="tpdi-sosmed-list"></div>
+    </div>
+
+    <!-- Jam Operasional -->
+    <div class="tpdi-section-card">
+      <div class="tpdi-section-head">
+        <div class="tpdi-section-icon" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><i class="fas fa-clock"></i></div>
+        <div>
+          <div class="tpdi-section-label">Jam Operasional</div>
+          <div class="tpdi-section-title">Sekretariat DPC</div>
+        </div>
+      </div>
+      <div class="tpdi-jam-list" id="tpdi-jam-list"></div>
+    </div>
+
+  </div>
+</div>
+<!-- END view-tentang-pdi -->
+
+<!-- ================================================================ -->
+<!--                                                                  -->
+<!--   ██████╗  █████╗ ████████╗ █████╗     ██╗      ██████╗ ██████╗ -->
+<!--  ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗    ██║     ██╔═══██╗██╔════╝ -->
+<!--  ██║  ██║███████║   ██║   ███████║    ██║     ██║   ██║██║  ███╗ -->
+<!--  ██║  ██║██╔══██║   ██║   ██╔══██║    ██║     ██║   ██║██║   ██║ -->
+<!--  ██████╔╝██║  ██║   ██║   ██║  ██║    ███████╗╚██████╔╝╚██████╔╝ -->
+<!--  ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝    ╚══════╝ ╚═════╝  ╚═════╝ -->
+<!--                                                                  -->
+<!--  ADMIN CONFIG — "TENTANG PDI PERJUANGAN KAB. KEPULAUAN MERANTI"  -->
+<!--  Edit bagian ini untuk memperbarui konten halaman Tentang PDI.   -->
+<!--  Tidak perlu menyentuh kode lain di luar blok ini.               -->
+<!--                                                                  -->
+<!-- ================================================================ -->
+<script id="adminConfigTentang">
+/* ================================================================
+   PANDUAN ADMIN:
+   - Edit nilai di dalam tanda kutip "..." atau [...] di bawah ini
+   - Simpan file → refresh browser → perubahan langsung tampil
+   - Jangan hapus titik koma (;) atau tanda kurung kurawal ({})
+   ================================================================ */
+
+const TENTANG_PDI = {
+
+  /* ---- VISI ---- */
+  visi: {
+    judul: "Terwujudnya Indonesia yang Berdaulat, Mandiri, dan Berkepribadian",
+    isi: "PDI Perjuangan DPC Kabupaten Kepulauan Meranti berkomitmen mewujudkan visi nasional partai di tingkat daerah — membangun Kepulauan Meranti yang berdaulat secara politik, mandiri secara ekonomi, dan berkepribadian dalam kebudayaan Melayu yang luhur."
+  },
+
+  /* ---- MISI (array, tambah/kurangi sesuai kebutuhan) ---- */
+  misi: [
+    "Mengawal kebijakan daerah agar berpihak kepada rakyat kecil, petani, nelayan, dan pelaku UMKM Meranti.",
+    "Memperkuat basis kader yang militan, disiplin, dan berwawasan kebangsaan di seluruh kecamatan.",
+    "Mendorong pembangunan infrastruktur, pendidikan, dan kesehatan yang merata hingga pelosok kepulauan.",
+    "Mempertahankan kekayaan budaya Melayu Kepulauan Meranti sebagai identitas dan kebanggaan daerah.",
+    "Memperkuat ekonomi kerakyatan melalui pemberdayaan UMKM, koperasi, dan sektor kelautan.",
+    "Membangun komunikasi partai yang modern, transparan, dan responsif melalui teknologi digital."
+  ],
+
+  /* ---- SEJARAH ---- */
+  sejarah: {
+    judul: "DPC PDI Perjuangan Kab. Kepulauan Meranti",
+    isi: "DPC PDI Perjuangan Kabupaten Kepulauan Meranti berdiri seiring dengan terbentuknya Kabupaten Kepulauan Meranti pada tahun 2009 sebagai pemekaran dari Kabupaten Bengkalis. Sejak awal pendiriannya, DPC telah aktif mengorganisir kader di 9 kecamatan yang tersebar di gugusan kepulauan, menjadikan PDI Perjuangan sebagai kekuatan politik yang konsisten memperjuangkan aspirasi rakyat Meranti dalam setiap momen demokrasi."
+  },
+
+  /* ---- INFO SINGKAT ---- */
+  info: [
+    { icon: "fas fa-calendar-alt",  label: "Berdiri",         nilai: "2009" },
+    { icon: "fas fa-map-marked-alt",label: "Wilayah",         nilai: "9 Kecamatan" },
+    { icon: "fas fa-users",         label: "Total Kader",     nilai: "Lihat Statistik" },
+    { icon: "fas fa-trophy",        label: "Periode Kepengurusan", nilai: "2024 — 2029" }
+  ],
+
+  /* ---- STRUKTUR: PIMPINAN DPC ---- */
+  pimpinan: [
+    {
+      foto: "",   /* URL foto, kosongkan "" untuk inisial otomatis */
+      nama: "H. [Nama Ketua DPC]",
+      jabatan: "Ketua DPC",
+      hp: "0812-XXXX-XXXX"
+    },
+    {
+      foto: "",
+      nama: "[Nama Wakil Ketua I]",
+      jabatan: "Wakil Ketua I",
+      hp: "0813-XXXX-XXXX"
+    },
+    {
+      foto: "",
+      nama: "[Nama Wakil Ketua II]",
+      jabatan: "Wakil Ketua II",
+      hp: "0812-XXXX-XXXX"
+    }
+  ],
+
+  /* ---- STRUKTUR: SEKRETARIAT ---- */
+  sekretariat: [
+    { nama: "[Nama Sekretaris DPC]",       jabatan: "Sekretaris DPC",       icon: "fas fa-pen-nib" },
+    { nama: "[Nama Wakil Sekretaris]",     jabatan: "Wakil Sekretaris",      icon: "fas fa-pen-nib" },
+    { nama: "[Nama Bendahara DPC]",        jabatan: "Bendahara DPC",         icon: "fas fa-wallet" },
+    { nama: "[Nama Wakil Bendahara]",      jabatan: "Wakil Bendahara",       icon: "fas fa-wallet" }
+  ],
+
+  /* ---- STRUKTUR: BIDANG & KOMISI ---- */
+  bidang: [
+    { nama: "Bidang Pemenangan Pemilu",       icon: "fas fa-vote-yea",       warna: "#E31E25" },
+    { nama: "Bidang Organisasi & Keanggotaan",icon: "fas fa-users-cog",      warna: "#1a1a1a" },
+    { nama: "Bidang Politik & Pemerintahan",  icon: "fas fa-landmark",       warna: "#B91C1C" },
+    { nama: "Bidang Perempuan & Anak",        icon: "fas fa-female",         warna: "#EC4899" },
+    { nama: "Bidang Pemuda & Olahraga",       icon: "fas fa-running",        warna: "#2563EB" },
+    { nama: "Bidang Ekonomi & UMKM",          icon: "fas fa-store",          warna: "#0D9488" },
+    { nama: "Bidang Hukum & HAM",             icon: "fas fa-balance-scale",  warna: "#7C3AED" },
+    { nama: "Bidang Kebudayaan & Pariwisata", icon: "fas fa-theater-masks",  warna: "#D97706" },
+    { nama: "Bidang Lingkungan Hidup",        icon: "fas fa-leaf",           warna: "#059669" },
+    { nama: "Bidang Komunikasi & Digital",    icon: "fas fa-wifi",           warna: "#0891B2" }
+  ],
+
+  /* ---- STRUKTUR: PAC KECAMATAN ---- */
+  pac: [
+    { kecamatan: "Tebing Tinggi",        ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Tebing Tinggi Barat",  ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Tebing Tinggi Timur",  ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Rangsang",             ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Rangsang Barat",       ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Rangsang Pesisir",     ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Merbau",               ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Pulau Merbau",         ketua: "[Nama Ketua PAC]",  status: "Aktif" },
+    { kecamatan: "Tasik Putri Puyu",     ketua: "[Nama Ketua PAC]",  status: "Aktif" }
+  ],
+
+  /* ---- KONTAK: ALAMAT SEKRETARIAT ---- */
+  sekretariatAlamat: {
+    nama: "Sekretariat DPC PDI Perjuangan",
+    jalan: "Jl. [Nama Jalan], No. [No]",
+    kelurahan: "Kel. [Kelurahan], Kec. Tebing Tinggi",
+    kota: "Kabupaten Kepulauan Meranti, Riau",
+    kodePos: "28753",
+    mapsUrl: "https://maps.google.com/?q=Kepulauan+Meranti+Riau"  /* Ganti dengan link koordinat sebenarnya */
+  },
+
+  /* ---- KONTAK: NOMOR & EMAIL ---- */
+  kontak: [
+    { ikon: "fab fa-whatsapp",  warna: "#25D366", label: "WhatsApp Admin",        nilai: "+62 812-XXXX-XXXX", url: "https://wa.me/6281200000000" },
+    { ikon: "fas fa-phone",     warna: "#2563EB", label: "Telepon Sekretariat",   nilai: "(0763) XXX-XXXX",   url: "tel:0763000000" },
+    { ikon: "fas fa-envelope",  warna: "#E31E25", label: "Email Resmi",           nilai: "dpc.pdip.meranti@gmail.com", url: "mailto:dpc.pdip.meranti@gmail.com" }
+  ],
+
+  /* ---- KONTAK: MEDIA SOSIAL ---- */
+  sosmed: [
+    { ikon: "fab fa-facebook-f",  warna: "#1877F2", label: "Facebook",  nama: "PDI Perjuangan Meranti",  url: "https://facebook.com/pdiperjuanganmeranti" },
+    { ikon: "fab fa-instagram",   warna: "#E1306C", label: "Instagram",  nama: "@pdiperjuangan_meranti",  url: "https://instagram.com/pdiperjuangan_meranti" },
+    { ikon: "fab fa-youtube",     warna: "#FF0000", label: "YouTube",    nama: "DPC PDI Perjuangan Meranti", url: "https://youtube.com/@pdipmeranti" },
+    { ikon: "fab fa-tiktok",      warna: "#000000", label: "TikTok",     nama: "@pdipmeranti",            url: "https://tiktok.com/@pdipmeranti" }
+  ],
+
+  /* ---- JAM OPERASIONAL ---- */
+  jamOperasional: [
+    { hari: "Senin – Jumat",  jam: "08.00 – 16.00 WIB", buka: true },
+    { hari: "Sabtu",          jam: "08.00 – 12.00 WIB", buka: true },
+    { hari: "Minggu & Libur Nasional", jam: "Tutup",    buka: false }
+  ]
+
+}; /* END TENTANG_PDI */
+</script>
+<!-- ================================================================ -->
+<!--  AKHIR ADMIN CONFIG — jangan edit di bawah baris ini             -->
+<!-- ================================================================ -->
+
 <div id="view-bantuan" class="view-section">
   <div class="card">
     <h3 style="margin-bottom:5px"><i class="fas fa-headset" style="color:#06B6D4"></i> Pusat Bantuan</h3>
@@ -6135,8 +6729,151 @@ function openBeritaFromNotif(v) {
 // --- TOAST REMOVED: cukup bell badge + bunyi, tanpa popup ---
 
 // ==========================================
-// FAQ & PUSAT BANTUAN
+// TENTANG PDI — RENDER & TAB
 // ==========================================
+function switchTpdiTab(tab) {
+  document.querySelectorAll('.tpdi-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tpdi-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('tpdi-panel-' + tab).classList.add('active');
+}
+
+function renderTentangPDI() {
+  if (typeof TENTANG_PDI === 'undefined') return;
+  const D = TENTANG_PDI;
+
+  // --- TAB TENTANG ---
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const setHTML = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+
+  setTxt('tpdi-visi-judul', D.visi.judul);
+  setTxt('tpdi-visi-isi', D.visi.isi);
+  setTxt('tpdi-sejarah-judul', D.sejarah.judul);
+  setTxt('tpdi-sejarah-isi', D.sejarah.isi);
+
+  // Misi list
+  const misiEl = document.getElementById('tpdi-misi-list');
+  if (misiEl) misiEl.innerHTML = D.misi.map(m => `<li>${m}</li>`).join('');
+
+  // Info grid
+  const infoEl = document.getElementById('tpdi-info-grid');
+  if (infoEl) {
+    infoEl.innerHTML = D.info.map(i => `
+      <div class="tpdi-info-item">
+        <i class="${i.icon}"></i>
+        <div class="tpdi-info-val">${i.nilai}</div>
+        <div class="tpdi-info-lbl">${i.label}</div>
+      </div>`).join('');
+  }
+
+  // --- TAB STRUKTUR ---
+  // Pimpinan
+  const pimEl = document.getElementById('tpdi-pimpinan-row');
+  if (pimEl) {
+    pimEl.innerHTML = D.pimpinan.map(p => {
+      const init = p.nama.replace(/H\.\s?/i,'').trim().charAt(0).toUpperCase();
+      const avatar = p.foto
+        ? `<img src="${p.foto}" class="tpdi-pimpinan-avatar" onerror="this.outerHTML='<div class=\\'tpdi-pimpinan-placeholder\\'>${init}</div>'">`
+        : `<div class="tpdi-pimpinan-placeholder">${init}</div>`;
+      const waHref = p.hp ? `https://wa.me/${p.hp.replace(/\D/g,'')}` : '#';
+      return `
+        <div class="tpdi-pimpinan-card">
+          ${avatar}
+          <div style="flex:1">
+            <div class="tpdi-pimpinan-nama">${p.nama}</div>
+            <div class="tpdi-pimpinan-jabatan"><i class="fas fa-id-badge"></i> ${p.jabatan}</div>
+            <div class="tpdi-pimpinan-hp"><i class="fas fa-phone-alt" style="margin-right:4px;font-size:0.6rem"></i>${p.hp}</div>
+          </div>
+          <a href="${waHref}" target="_blank" class="tpdi-pimpinan-wa" title="Chat WA"><i class="fab fa-whatsapp"></i></a>
+        </div>`;
+    }).join('');
+  }
+
+  // Sekretariat
+  const sekEl = document.getElementById('tpdi-sekretariat-row');
+  if (sekEl) {
+    sekEl.innerHTML = D.sekretariat.map(s => `
+      <div class="tpdi-sekr-card">
+        <div class="tpdi-sekr-icon"><i class="${s.icon}"></i></div>
+        <div>
+          <div class="tpdi-sekr-nama">${s.nama}</div>
+          <div class="tpdi-sekr-jabatan">${s.jabatan}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Bidang
+  const bidEl = document.getElementById('tpdi-bidang-grid');
+  if (bidEl) {
+    bidEl.innerHTML = D.bidang.map(b => `
+      <div class="tpdi-bidang-card">
+        <div class="tpdi-bidang-icon" style="background:${b.warna}"><i class="${b.icon}"></i></div>
+        <div class="tpdi-bidang-nama">${b.nama}</div>
+      </div>`).join('');
+  }
+
+  // PAC
+  const pacEl = document.getElementById('tpdi-pac-list');
+  if (pacEl) {
+    pacEl.innerHTML = D.pac.map((p, i) => `
+      <div class="tpdi-pac-item">
+        <div class="tpdi-pac-num">${i + 1}</div>
+        <div class="tpdi-pac-info">
+          <div class="tpdi-pac-kec"><i class="fas fa-map-marker-alt" style="color:var(--primary);font-size:0.65rem;margin-right:4px"></i>PAC Kec. ${p.kecamatan}</div>
+          <div class="tpdi-pac-ketua">Ketua: ${p.ketua}</div>
+        </div>
+        <span class="tpdi-pac-status ${p.status.toLowerCase()}">${p.status}</span>
+      </div>`).join('');
+  }
+
+  // --- TAB KONTAK ---
+  const adr = D.sekretariatAlamat;
+  setTxt('tpdi-alamat-nama', adr.nama);
+  setHTML('tpdi-alamat-detail',
+    `<div><i class="fas fa-map-pin" style="color:var(--primary);width:18px"></i> ${adr.jalan}</div>
+     <div><i class="fas fa-home" style="color:var(--primary);width:18px"></i> ${adr.kelurahan}</div>
+     <div><i class="fas fa-city" style="color:var(--primary);width:18px"></i> ${adr.kota} ${adr.kodePos}</div>`
+  );
+  const mapsBtn = document.getElementById('tpdi-maps-btn');
+  if (mapsBtn) mapsBtn.href = adr.mapsUrl;
+
+  const kontakEl = document.getElementById('tpdi-kontak-list');
+  if (kontakEl) {
+    kontakEl.innerHTML = D.kontak.map(k => `
+      <a href="${k.url}" target="_blank" class="tpdi-kontak-item">
+        <div class="tpdi-kontak-icon" style="background:${k.warna}"><i class="${k.ikon}"></i></div>
+        <div>
+          <div class="tpdi-kontak-lbl">${k.label}</div>
+          <div class="tpdi-kontak-val">${k.nilai}</div>
+        </div>
+        <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--text-muted);font-size:0.7rem"></i>
+      </a>`).join('');
+  }
+
+  const sosmedEl = document.getElementById('tpdi-sosmed-list');
+  if (sosmedEl) {
+    sosmedEl.innerHTML = D.sosmed.map(s => `
+      <a href="${s.url}" target="_blank" class="tpdi-sosmed-item">
+        <div class="tpdi-sosmed-icon" style="background:${s.warna}"><i class="${s.ikon}"></i></div>
+        <div class="tpdi-sosmed-platform">${s.label}</div>
+        <div class="tpdi-sosmed-nama">${s.nama}</div>
+      </a>`).join('');
+  }
+
+  const jamEl = document.getElementById('tpdi-jam-list');
+  if (jamEl) {
+    jamEl.innerHTML = D.jamOperasional.map(j => `
+      <div class="tpdi-jam-item">
+        <span class="tpdi-jam-hari">${j.hari}</span>
+        <span class="tpdi-jam-waktu ${j.buka ? 'buka' : 'tutup'}">${j.jam}</span>
+      </div>`).join('');
+  }
+}
+
+// Render saat DOM siap
+document.addEventListener('DOMContentLoaded', renderTentangPDI);
+
+
 function toggleFaq(el) {
   const isOpen = el.classList.contains('open');
   // Tutup semua yang lain
