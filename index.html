@@ -215,6 +215,7 @@ body.notif-open .bottom-nav { display: none !important; }
   position: relative;
   overflow: hidden;
   background: var(--bg-card);
+  isolation: isolate;
 }
 .notif-delete-btn {
   position: absolute;
@@ -229,6 +230,13 @@ body.notif-open .bottom-nav { display: none !important; }
   gap: 3px;
   letter-spacing: 0.3px;
   -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.notif-delete-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 .notif-delete-btn i { font-size: 0.95rem; }
 
@@ -5606,6 +5614,18 @@ function renderNotifList() {
 let swipeCurrentItem = null;
 const SWIPE_THRESHOLD = 70; // harus sama dengan lebar .notif-delete-btn
 
+function _getDeleteBtn(item) {
+  var wrapper = item.closest('.notif-item-wrapper');
+  return wrapper ? wrapper.querySelector('.notif-delete-btn') : null;
+}
+
+function _showDeleteBtn(btn) {
+  if (btn) { btn.style.transition = 'opacity 0.2s ease'; btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+}
+function _hideDeleteBtn(btn) {
+  if (btn) { btn.style.transition = 'opacity 0.2s ease'; btn.style.opacity = '0'; btn.style.pointerEvents = 'none'; }
+}
+
 function initSwipeToDelete() {
   document.querySelectorAll('.notif-item').forEach(function(item) {
     item.addEventListener('touchstart', onSwipeStart, { passive: true });
@@ -5618,6 +5638,7 @@ function onSwipeStart(e) {
   // Tutup item lain yang sedang terbuka
   if (swipeCurrentItem && swipeCurrentItem !== this) {
     swipeCurrentItem.classList.remove('swiped');
+    _hideDeleteBtn(_getDeleteBtn(swipeCurrentItem));
   }
   this._swipeStartX = e.touches[0].clientX;
   this._swipeStartY = e.touches[0].clientY;
@@ -5646,6 +5667,14 @@ function onSwipeMove(e) {
     var translateX = Math.max(-SWIPE_THRESHOLD, Math.min(0, -diffX));
     this.style.transition = 'none';
     this.style.transform = 'translateX(' + translateX + 'px)';
+    // Tampilkan delete button secara progresif saat di-swipe
+    var progress = Math.abs(translateX) / SWIPE_THRESHOLD;
+    var delBtn = _getDeleteBtn(this);
+    if (delBtn) {
+      delBtn.style.transition = 'none';
+      delBtn.style.opacity = progress > 0.3 ? String(progress) : '0';
+      delBtn.style.pointerEvents = progress > 0.5 ? 'auto' : 'none';
+    }
   }
 }
 
@@ -5653,6 +5682,7 @@ function onSwipeEnd(e) {
   if (this._swipeStartX === undefined) return;
   var moveX = e.changedTouches[0].clientX;
   var diffX = this._swipeStartX - moveX;
+  var delBtn = _getDeleteBtn(this);
 
   this.style.transition = 'transform 0.25s ease';
   this.style.transform = '';
@@ -5660,9 +5690,11 @@ function onSwipeEnd(e) {
   if (diffX > 50) {
     this.classList.add('swiped');
     swipeCurrentItem = this;
+    _showDeleteBtn(delBtn);
   } else {
     this.classList.remove('swiped');
     swipeCurrentItem = null;
+    _hideDeleteBtn(delBtn);
   }
   this._swipeStartX = undefined;
   this._swiping = false;
@@ -5767,6 +5799,7 @@ function toggleNotifPanel() {
     // Tutup item yang sedang di-swipe saat buka panel
     if (swipeCurrentItem) {
       swipeCurrentItem.classList.remove('swiped');
+      _hideDeleteBtn(_getDeleteBtn(swipeCurrentItem));
       swipeCurrentItem = null;
     }
   }
@@ -5780,6 +5813,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!e.target.closest('.notif-item') && !e.target.closest('.notif-delete-btn')) {
         if (swipeCurrentItem) {
           swipeCurrentItem.classList.remove('swiped');
+          _hideDeleteBtn(_getDeleteBtn(swipeCurrentItem));
           swipeCurrentItem = null;
         }
       }
@@ -5794,14 +5828,82 @@ function markAllNotifRead() {
   updateNotifBadge();
 }
 
-// --- HANDLE NOTIF CLICK ---
+// --- HANDLE NOTIF CLICK → NAVIGASI KE KONTEN ---
 function handleNotifClick(notifId) {
-  // Jangan tutup panel - cukup mark as read dan update tampilan
+  // Jika item sedang di-swipe, tutup swipe dulu, jangan navigasi
+  if (swipeCurrentItem) {
+    swipeCurrentItem.classList.remove('swiped');
+    _hideDeleteBtn(_getDeleteBtn(swipeCurrentItem));
+    swipeCurrentItem = null;
+    return;
+  }
+
+  // Cari data notifikasi
+  var notif = notifData.find(function(n) { return n._id === notifId; });
+  if (!notif) return;
+
+  // Mark as read
   if (!isNotifRead(notifId)) {
     markNotifRead(notifId);
-    renderNotifList();
-    updateNotifBadge();
   }
+
+  // Tutup panel notifikasi dulu
+  var panel = document.getElementById('notifPanel');
+  if (panel && panel.classList.contains('open')) {
+    panel.classList.remove('open');
+    document.body.classList.remove('notif-open');
+  }
+
+  // Update badge setelah mark read
+  renderNotifList();
+  updateNotifBadge();
+
+  var src = notif._src;
+
+  if (src === 'berita') {
+    // Buka popup berita langsung dari data notifikasi
+    openBeritaFromNotif(notif);
+  } else if (src === 'produk') {
+    // Ekstrak Firestore doc ID dan buka detail produk
+    var docId = notifId.replace('produk_', '');
+    showView('store');
+    setTimeout(function() { openProductDetail(docId); }, 300);
+  } else if (src === 'pengumuman') {
+    // Navigasi ke halaman pengumuman
+    showView('pengumuman');
+  } else if (src === 'checkin') {
+    showView('dashboard');
+  } else {
+    showView('beranda');
+  }
+}
+
+// --- BUKA BERITA DARI NOTIFIKASI (tanpa index, langsung dari data) ---
+function openBeritaFromNotif(v) {
+  var judul = v.judul || 'Berita';
+  var isi = v.isi || '';
+  var foto = getBeritaFoto(v);
+  var w = getBeritaWaktu(v);
+
+  var popup = document.getElementById('beritaPopup');
+  if (!popup) { showView('berita'); return; }
+  var imgWrap = document.getElementById('beritaPopupImgWrap');
+  var dateEl = document.getElementById('beritaPopupDate');
+  var titleEl = document.getElementById('beritaPopupTitle');
+  var contentEl = document.getElementById('beritaPopupContent');
+
+  if (foto) {
+    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event,true)"><i class="fas fa-times"></i></button><img src="' + foto + '" referrerpolicy="no-referrer">';
+  } else {
+    imgWrap.innerHTML = '<button class="berita-popup-close" onclick="closeBeritaPopup(event,true)"><i class="fas fa-times"></i></button><div class="no-img"><i class="fas fa-newspaper"></i><span>Berita tanpa foto</span></div>';
+  }
+
+  dateEl.innerHTML = '<i class="fas fa-calendar-alt"></i> ' + formatWaktu(w);
+  titleEl.textContent = judul;
+  contentEl.innerHTML = isi ? linkify(isi) : 'Tidak ada konten.';
+
+  popup.classList.add('show');
+  document.body.style.overflow = 'hidden';
 }
 
 // --- TOAST REMOVED: cukup bell badge + bunyi, tanpa popup ---
@@ -5933,21 +6035,52 @@ async function initFCM() {
 }
 
 // --- NOTIFICATION SOUND ---
+let _notifAudioCtx = null;
+
+// Inisialisasi AudioContext saat pertama kali user interaksi
+function _ensureAudioCtx() {
+  try {
+    if (!_notifAudioCtx) {
+      _notifAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (_notifAudioCtx.state === 'suspended') {
+      _notifAudioCtx.resume();
+    }
+    return _notifAudioCtx;
+  } catch(e) { return null; }
+}
+
+// Inisialisasi saat user pertama kali tap/click (untuk iOS Safari & Chrome mobile)
+document.addEventListener('click', function() { _ensureAudioCtx(); }, { once: true });
+document.addEventListener('touchstart', function() { _ensureAudioCtx(); }, { once: true });
+
 function playNotifSound() {
   try {
-    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    var oscillator = audioCtx.createOscillator();
-    var gainNode = audioCtx.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-    oscillator.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
-    oscillator.frequency.setValueAtTime(880, audioCtx.currentTime + 0.2);
-    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-    oscillator.start(audioCtx.currentTime);
-    oscillator.stop(audioCtx.currentTime + 0.4);
+    var audioCtx = _ensureAudioCtx();
+    if (!audioCtx) return;
+
+    var playWhenReady = function() {
+      try {
+        var oscillator = audioCtx.createOscillator();
+        var gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+        oscillator.frequency.setValueAtTime(1100, audioCtx.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.4);
+      } catch(e) { /* silent fail */ }
+    };
+
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(playWhenReady).catch(function(){});
+    } else {
+      playWhenReady();
+    }
   } catch (e) { /* silent fail */ }
 }
 
