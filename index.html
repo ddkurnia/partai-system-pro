@@ -3575,6 +3575,9 @@ auth.onAuthStateChanged(user => {
     if(document.getElementById('view-dashboard').classList.contains('active')) { showView('beranda'); }
     // Bersihkan notifikasi saat logout
     if(notifUnsub) { notifUnsub(); notifUnsub = null; }
+    if(notifUnsubBerita) { notifUnsubBerita(); notifUnsubBerita = null; }
+    if(notifUnsubProduk) { notifUnsubProduk(); notifUnsubProduk = null; }
+    if(notifUnsubPengumuman) { notifUnsubPengumuman(); notifUnsubPengumuman = null; }
     notifData = [];
     updateNotifBadge();
     var reminder = document.getElementById('checkinReminder');
@@ -5354,6 +5357,9 @@ let notifData = [];
 let notifUnreadCount = 0;
 let notifFilter = 'semua';
 let notifUnsub = null;
+let notifUnsubBerita = null;
+let notifUnsubProduk = null;
+let notifUnsubPengumuman = null;
 let fcmToken = null;
 let toastTimer = null;
 
@@ -5389,34 +5395,114 @@ function timeAgo(timestamp) {
   return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-// --- LOAD NOTIFIKASI DARI FIRESTORE ---
-// FIRESTORE INDEX REQUIRED: Collection "notifikasi", Fields: userId (ASC), createdAt (DESC)
-// Buat index di Firebase Console > Firestore > Indexes atau buka link error dari console.
+// --- LOAD NOTIFIKASI DARI FIRESTORE (langsung dari sumber data) ---
 function loadNotifikasi() {
   if (!auth || !auth.currentUser) return;
-  var uid = auth.currentUser.uid;
 
   if (notifUnsub) notifUnsub();
+  if (notifUnsubBerita) notifUnsubBerita();
+  if (notifUnsubProduk) notifUnsubProduk();
+  if (notifUnsubPengumuman) notifUnsubPengumuman();
 
-  // Listen: notifikasi untuk user ini + notifikasi broadcast (uid kosong)
-  notifUnsub = db.collection('notifikasi')
-    .where('userId', 'in', [uid, 'broadcast'])
-    .orderBy('createdAt', 'desc')
-    .limit(50)
-    .onSnapshot(function(snap) {
-      notifData = [];
-      snap.forEach(function(doc) {
-        var d = doc.data();
-        d._id = doc.id;
-        notifData.push(d);
-      });
-      renderNotifList();
-      updateNotifBadge();
-      // Cek check-in harian
-      checkDailyCheckin();
-    }, function(err) {
-      console.error('[Notifikasi] Firestore error:', err);
+  // 1. Berita
+  notifUnsubBerita = db.collection('berita').orderBy('createdAt', 'desc').limit(20).onSnapshot(function(snap) {
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added') {
+        var d = change.doc.data();
+        d._id = 'berita_' + change.doc.id;
+        d._src = 'berita';
+        if (!notifData.find(function(n) { return n._id === d._id; })) {
+          notifData.push(d);
+        }
+      } else if (change.type === 'removed') {
+        notifData = notifData.filter(function(n) { return n._id !== 'berita_' + change.doc.id; });
+      }
     });
+    // Sync berita yang sudah ada
+    snap.forEach(function(doc) {
+      var id = 'berita_' + doc.id;
+      if (!notifData.find(function(n) { return n._id === id; })) {
+        var d = doc.data();
+        d._id = id;
+        d._src = 'berita';
+        notifData.push(d);
+      }
+    });
+    sortAndRenderNotif();
+  }, function(err) { console.error('[Notif] berita error:', err); });
+
+  // 2. Produk
+  notifUnsubProduk = db.collection('produk').orderBy('createdAt', 'desc').limit(20).onSnapshot(function(snap) {
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added') {
+        var d = change.doc.data();
+        d._id = 'produk_' + change.doc.id;
+        d._src = 'produk';
+        if (!notifData.find(function(n) { return n._id === d._id; })) {
+          notifData.push(d);
+          showToast('Produk Baru!', d.nama || 'Produk baru di Store UMKM', 'produk');
+          playNotifSound();
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        }
+      } else if (change.type === 'removed') {
+        notifData = notifData.filter(function(n) { return n._id !== 'produk_' + change.doc.id; });
+      }
+    });
+    snap.forEach(function(doc) {
+      var id = 'produk_' + doc.id;
+      if (!notifData.find(function(n) { return n._id === id; })) {
+        var d = doc.data();
+        d._id = id;
+        d._src = 'produk';
+        notifData.push(d);
+      }
+    });
+    sortAndRenderNotif();
+  }, function(err) { console.error('[Notif] produk error:', err); });
+
+  // 3. Pengumuman
+  notifUnsubPengumuman = db.collection('pengumuman').orderBy('createdAt', 'desc').limit(20).onSnapshot(function(snap) {
+    snap.docChanges().forEach(function(change) {
+      if (change.type === 'added') {
+        var d = change.doc.data();
+        d._id = 'pengumuman_' + change.doc.id;
+        d._src = 'pengumuman';
+        if (!notifData.find(function(n) { return n._id === d._id; })) {
+          notifData.push(d);
+          showToast('Pengumuman Baru!', d.judul || d.isi || 'Pengumuman dari DPC', 'pengumuman');
+          playNotifSound();
+          if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        }
+      } else if (change.type === 'removed') {
+        notifData = notifData.filter(function(n) { return n._id !== 'pengumuman_' + change.doc.id; });
+      }
+    });
+    snap.forEach(function(doc) {
+      var id = 'pengumuman_' + doc.id;
+      if (!notifData.find(function(n) { return n._id === id; })) {
+        var d = doc.data();
+        d._id = id;
+        d._src = 'pengumuman';
+        notifData.push(d);
+      }
+    });
+    sortAndRenderNotif();
+  }, function(err) { console.error('[Notif] pengumuman error:', err); });
+
+  // Cek check-in harian
+  checkDailyCheckin();
+}
+
+function sortAndRenderNotif() {
+  notifData.sort(function(a, b) {
+    var ta = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate().getTime() : 0) : 0;
+    var tb = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate().getTime() : 0) : 0;
+    return tb - ta;
+  });
+  // Limit 50
+  if (notifData.length > 50) notifData = notifData.slice(0, 50);
+  renderNotifList();
+  updateNotifBadge();
 }
 
 // --- RENDER LIST NOTIFIKASI ---
@@ -5424,26 +5510,42 @@ function renderNotifList() {
   var el = document.getElementById('notifList');
   if (!el) return;
 
-  var filtered = notifFilter === 'semua'
-    ? notifData
-    : notifData.filter(function(n) { return n.tipe === notifFilter; });
-
-  if (filtered.length === 0) {
+  if (notifData.length === 0) {
     el.innerHTML = '<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>Belum ada notifikasi</p></div>';
     return;
   }
 
   var html = '';
-  filtered.forEach(function(n) {
-    var style = getNotifStyle(n.tipe);
-    var unreadClass = n.dibaca === false ? ' unread' : '';
-    html += '<div class="notif-item-wrapper" data-notif-id="' + n._id + '">' +
+  notifData.forEach(function(n) {
+    var src = n._src || 'system';
+    var style = getNotifStyle(src);
+    var isRead = isNotifRead(n._id);
+    var unreadClass = isRead ? '' : ' unread';
+
+    // Judul & deskripsi sesuai tipe
+    var judul = '';
+    var isi = '';
+    if (src === 'berita') {
+      judul = n.judul || 'Berita';
+      isi = n.isi || '';
+    } else if (src === 'pengumuman') {
+      judul = n.judul || 'Pengumuman';
+      isi = n.isi || '';
+    } else if (src === 'produk') {
+      judul = n.nama || 'Produk Baru';
+      isi = 'Rp ' + (n.harga || 0).toLocaleString('id-ID') + (n.berat ? ' • ' + n.berat + ' gram' : '');
+    } else {
+      judul = n.judul || 'Notifikasi';
+      isi = n.isi || '';
+    }
+
+    html += '<div class="notif-item-wrapper" data-notif-id="' + n._id + '" data-src="' + src + '">' +
       '<div class="notif-delete-btn" onclick="deleteNotifItem(this)"><i class="fas fa-trash-alt" style="margin-right:4px"></i>Hapus</div>' +
       '<div class="notif-item' + unreadClass + '" onclick="handleNotifClick(\'' + n._id + '\')">' +
         '<div class="notif-icon ' + style.cls + '"><i class="' + style.icon + '"></i></div>' +
         '<div class="notif-body">' +
-          '<div class="notif-title">' + (n.judul || 'Notifikasi') + '</div>' +
-          '<div class="notif-desc">' + (n.isi || '') + '</div>' +
+          '<div class="notif-title">' + judul + '</div>' +
+          '<div class="notif-desc">' + isi + '</div>' +
           '<div class="notif-time"><i class="fas fa-clock" style="margin-right:3px"></i>' + timeAgo(n.createdAt) + '</div>' +
         '</div>' +
       '</div></div>';
@@ -5542,11 +5644,6 @@ function deleteNotifItem(btn) {
     notifData = notifData.filter(function(n) { return n._id !== notifId; });
     updateNotifBadge();
 
-    // Hapus dari Firestore juga
-    if (notifId && auth && auth.currentUser) {
-      db.collection('notifikasi').doc(notifId).delete().catch(function() {});
-    }
-
     // Jika list kosong, tampilkan empty state
     var list = document.getElementById('notifList');
     if (list && list.querySelectorAll('.notif-item-wrapper').length === 0) {
@@ -5555,12 +5652,29 @@ function deleteNotifItem(btn) {
   }, 400);
 }
 
+// --- LOCALSTORAGE: READ/UNREAD TRACKING ---
+function getNotifReadList() {
+  try { return JSON.parse(localStorage.getItem('notifReadIds') || '[]'); } catch(e) { return []; }
+}
+function isNotifRead(id) {
+  return getNotifReadList().indexOf(id) !== -1;
+}
+function markNotifRead(id) {
+  var list = getNotifReadList();
+  if (list.indexOf(id) === -1) {
+    list.push(id);
+    try { localStorage.setItem('notifReadIds', JSON.stringify(list)); } catch(e) {}
+  }
+}
+function markAllNotifReadStorage() {
+  notifData.forEach(function(n) { markNotifRead(n._id); });
+}
+
 // --- UPDATE BADGE ---
 function updateNotifBadge() {
   var count = 0;
-  var uid = auth ? auth.currentUser ? auth.currentUser.uid : null : null;
   notifData.forEach(function(n) {
-    if (n.dibaca === false && (n.userId === uid || n.userId === 'broadcast')) count++;
+    if (!isNotifRead(n._id)) count++;
   });
   notifUnreadCount = count;
   var badge = document.getElementById('notifBadge');
@@ -5586,55 +5700,28 @@ function toggleNotifPanel() {
 
 // --- MARK ALL READ ---
 function markAllNotifRead() {
-  if (!auth || !auth.currentUser) return;
-  var uid = auth.currentUser.uid;
-  var batch = db.batch();
-  var updated = 0;
-
-  notifData.forEach(function(n) {
-    if (n.dibaca === false && (n.userId === uid || n.userId === 'broadcast')) {
-      var ref = db.collection('notifikasi').doc(n._id);
-      batch.update(ref, { dibaca: true });
-      n.dibaca = true;
-      updated++;
-    }
-  });
-
-  if (updated > 0) {
-    batch.commit().then(function() {
-      renderNotifList();
-      updateNotifBadge();
-    }).catch(function(err) { console.error('[Notifikasi] Mark all error:', err); });
-  }
+  markAllNotifReadStorage();
+  renderNotifList();
+  updateNotifBadge();
 }
 
 // --- HANDLE NOTIF CLICK ---
 function handleNotifClick(notifId) {
   // Mark as read
-  var notif = notifData.find(function(n) { return n._id === notifId; });
-  if (notif && notif.dibaca === false) {
-    db.collection('notifikasi').doc(notifId).update({ dibaca: true });
-    notif.dibaca = true;
+  if (!isNotifRead(notifId)) {
+    markNotifRead(notifId);
     renderNotifList();
     updateNotifBadge();
   }
+  var notif = notifData.find(function(n) { return n._id === notifId; });
   if (!notif) return;
 
   // Navigate based on type
   toggleNotifPanel();
-  var tipe = notif.tipe || 'system';
-  if (tipe === 'berita') { showView('berita'); }
-  else if (tipe === 'produk') { showView('store'); }
-  else if (tipe === 'pengumuman') { showView('pengumuman'); }
-  else if (tipe === 'checkin') {
-    navigateToDashboard();
-    setTimeout(function() { showDashboardSection('tugas'); }, 300);
-  }
-  else if (tipe === 'reward') {
-    navigateToDashboard();
-    setTimeout(function() { showDashboardSection('misi-reward'); }, 300);
-  }
-  else if (tipe === 'aspirasi') { showView('qr-aspirasi'); }
+  var src = notif._src || 'system';
+  if (src === 'berita') { showView('berita'); }
+  else if (src === 'produk') { showView('store'); }
+  else if (src === 'pengumuman') { showView('pengumuman'); }
 }
 
 // --- IN-APP TOAST ---
@@ -5828,57 +5915,6 @@ function createNotifikasi(data) {
   });
 }
 
-// --- LISTEN: BERITA BARU (untuk notifikasi real-time) ---
-function listenBeritaNew() {
-  var lastBeritaTime = null;
-  db.collection('berita').orderBy('createdAt', 'desc').limit(1).onSnapshot(function(snap) {
-    if (snap.empty) return;
-    snap.docChanges().forEach(function(change) {
-      if (change.type === 'added' && lastBeritaTime !== null) {
-        var v = change.doc.data();
-        showToast('Berita Baru!', v.judul || 'Ada berita baru dari DPC', 'berita');
-        playNotifSound();
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      }
-    });
-    if (!snap.empty) { lastBeritaTime = Date.now(); }
-  });
-}
-
-// --- LISTEN: PRODUK BARU ---
-function listenProdukNew() {
-  var lastProdukTime = null;
-  db.collection('produk').orderBy('createdAt', 'desc').limit(1).onSnapshot(function(snap) {
-    if (snap.empty) return;
-    snap.docChanges().forEach(function(change) {
-      if (change.type === 'added' && lastProdukTime !== null) {
-        var v = change.doc.data();
-        showToast('Produk Baru!', v.nama || 'Produk baru di Store UMKM', 'produk');
-        playNotifSound();
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      }
-    });
-    if (!snap.empty) { lastProdukTime = Date.now(); }
-  });
-}
-
-// --- LISTEN: PENGUMUMAN BARU ---
-function listenPengumumanNew() {
-  var lastPengumumanTime = null;
-  db.collection('pengumuman').orderBy('createdAt', 'desc').limit(1).onSnapshot(function(snap) {
-    if (snap.empty) return;
-    snap.docChanges().forEach(function(change) {
-      if (change.type === 'added' && lastPengumumanTime !== null) {
-        var v = change.doc.data();
-        showToast('Pengumuman Baru!', v.judul || v.isi || 'Pengumuman dari DPC', 'pengumuman');
-        playNotifSound();
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      }
-    });
-    if (!snap.empty) { lastPengumumanTime = Date.now(); }
-  });
-}
-
 // --- CHECK-IN DAILY REMINDER TIMER ---
 let checkinReminderTimer = null;
 function startCheckinReminder() {
@@ -5906,10 +5942,6 @@ window.onload = function() {
   initAnalytics(); // Sekarang async - akan fetch API dulu baru listen Firestore
   loadBerita();
   loadPengumuman();
-  // Start real-time listeners for notifications
-  listenBeritaNew();
-  listenProdukNew();
-  listenPengumumanNew();
   startCheckinReminder();
 };
 
