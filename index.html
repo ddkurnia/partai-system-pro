@@ -163,7 +163,6 @@ body.notif-open .bottom-nav { display: none !important; }
   visibility: visible;
   pointer-events: auto;
 }
-.notif-panel-backdrop { display: none !important; }
 
 .notif-panel-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -258,12 +257,12 @@ body.notif-open .bottom-nav { display: none !important; }
   background: var(--bg-card); border: 1px solid var(--border-color);
   border-radius: 16px; padding: 12px 18px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-  z-index: 7000; display: flex; align-items: center; gap: 12px;
+  z-index: 7000; display: none; align-items: center; gap: 12px;
   max-width: 380px; width: calc(100% - 40px);
-  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), display 0s;
   cursor: pointer;
 }
-.notif-toast.show { transform: translateX(-50%) translateY(0); }
+.notif-toast.show { display: flex; transform: translateX(-50%) translateY(0); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), display 0s; }
 .notif-toast-icon {
   width: 36px; height: 36px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -5659,7 +5658,7 @@ function showToast(title, desc, tipe) {
 
 function hideToast() {
   var toast = document.getElementById('notifToast');
-  if (toast) toast.classList.remove('show');
+  if (toast) toast.style.display = 'none';
   if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
 }
 
