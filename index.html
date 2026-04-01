@@ -3425,7 +3425,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-const messaging = firebase.messaging();
+let messaging = null;
+try {
+  if (typeof firebase.messaging === 'function') {
+    messaging = firebase.messaging();
+  }
+} catch(e) {
+  console.warn('[FCM] messaging tidak tersedia:', e.message);
+}
 
 // ==========================================
 // 2. GLOBALS
@@ -5616,6 +5623,10 @@ function handleCheckinReminder() {
 
 // --- FCM: REQUEST PERMISSION & TOKEN ---
 async function initFCM() {
+  if (!messaging) {
+    console.log('[FCM] messaging tidak tersedia, skip FCM init');
+    return;
+  }
   if (!('Notification' in window)) {
     console.log('[FCM] Browser tidak mendukung notifikasi');
     return;
