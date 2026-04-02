@@ -3361,7 +3361,7 @@ const TENTANG_PDI = {
     <!-- Kategori Bantuan -->
     <div style="font-size:0.78rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Pilih Topik Bantuan</div>
 
-    <div style="display:flex;flex-direction:column;gap:10px">
+    <div id="bantuanTopicsGrid" style="display:flex;flex-direction:column;gap:10px">
 
       <!-- Item Akun -->
       <div onclick="openBantuanChat('Masalah Akun & Login')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor='#E31E25'" onmouseleave="this.style.borderColor='var(--border-color)'">
@@ -7002,8 +7002,10 @@ function switchTpdiTab(tab) {
 }
 
 function renderTentangPDI() {
-  if (typeof TENTANG_PDI === 'undefined') return;
-  const D = TENTANG_PDI;
+  const D = window._tentangPdiData
+    ? normalizeFirestoreTentangPDI(window._tentangPdiData)
+    : (typeof TENTANG_PDI !== 'undefined' ? TENTANG_PDI : null);
+  if (!D) return;
 
   // --- TAB TENTANG ---
   const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -7171,7 +7173,14 @@ function filterFaq(cat) {
 
 function openBantuanChat(topik) {
   const waNum = window.dynamicWANumber || '6281234567890';
-  const pesan = encodeURIComponent('Halo Admin PDI Perjuangan Meranti, saya butuh bantuan terkait: *' + topik + '*\n\nNama: \nMasalah: ');
+  let pesan;
+  if (topik.toLowerCase().startsWith('halo')) {
+    // Already a complete message (from Firestore chatMessage)
+    pesan = encodeURIComponent(topik + '\n\nNama: \nMasalah: ');
+  } else {
+    // Topic name only, wrap in default message
+    pesan = encodeURIComponent('Halo Admin PDI Perjuangan Meranti, saya butuh bantuan terkait: *' + topik + '*\n\nNama: \nMasalah: ');
+  }
   window.open('https://wa.me/' + waNum + '?text=' + pesan, '_blank');
 }
 
@@ -7629,6 +7638,135 @@ function saveGaleriImage() {
     });
 }
 
+// ==========================================
+// NORMALIZE FIRESTORE TENTANG PDI DATA
+// Converts Firestore format to hardcoded TENTANG_PDI format
+// ==========================================
+function normalizeFirestoreTentangPDI(data) {
+  // Normalize info: Firestore has { label, value } -> need { icon, label, nilai }
+  const infoIconMap = {
+    'berdiri': 'fas fa-calendar-alt',
+    'wilayah': 'fas fa-map-marked-alt',
+    'kader': 'fas fa-users',
+    'total kader': 'fas fa-users',
+    'periode': 'fas fa-trophy',
+    'kepengurusan': 'fas fa-trophy'
+  };
+  const info = (data.info || []).map(function(i) {
+    return {
+      icon: infoIconMap[(i.label || '').toLowerCase()] || 'fas fa-info-circle',
+      label: i.label,
+      nilai: i.value
+    };
+  });
+
+  // Normalize sekretariat: Firestore has { nama, jabatan } -> add default icon
+  const sekrIconMap = {
+    'sekretaris': 'fas fa-pen-nib',
+    'wakil sekretaris': 'fas fa-pen-nib',
+    'bendahara': 'fas fa-wallet',
+    'wakil bendahara': 'fas fa-wallet'
+  };
+  const sekretariat = (data.sekretariat || []).map(function(s) {
+    return {
+      nama: s.nama,
+      jabatan: s.jabatan,
+      icon: sekrIconMap[(s.jabatan || '').toLowerCase()] || 'fas fa-user-tie'
+    };
+  });
+
+  // Normalize PAC status to capitalized
+  const pac = (data.pac || []).map(function(p) {
+    return {
+      kecamatan: p.kecamatan,
+      ketua: p.ketua,
+      status: p.status ? (p.status.charAt(0).toUpperCase() + p.status.slice(1)) : 'Aktif'
+    };
+  });
+
+  // Normalize alamat -> sekretariatAlamat
+  var sekretariatAlamat = data.alamat || data.sekretariatAlamat || {
+    nama: '', jalan: '', kelurahan: '', kota: '', kodePos: '', mapsUrl: '#'
+  };
+
+  // Normalize kontak: { jenis, nomor, label } -> { ikon, warna, label, nilai, url }
+  var kontakIconMap = {
+    'whatsapp': { ikon: 'fab fa-whatsapp', warna: '#25D366', prefix: 'https://wa.me/' },
+    'telepon': { ikon: 'fas fa-phone', warna: '#2563EB', prefix: 'tel:' },
+    'email': { ikon: 'fas fa-envelope', warna: '#E31E25', prefix: 'mailto:' }
+  };
+  const kontak = (data.kontak || []).map(function(k) {
+    var jKey = (k.jenis || '').toLowerCase();
+    var mapped = kontakIconMap[jKey] || { ikon: 'fas fa-link', warna: '#64748B', prefix: '' };
+    var nomor = k.nomor || '';
+    return {
+      ikon: mapped.ikon,
+      warna: mapped.warna,
+      label: k.label || k.jenis,
+      nilai: nomor,
+      url: mapped.prefix + nomor.replace(/[^0-9+@.]/g, '')
+    };
+  });
+
+  // Normalize sosmed: { platform, nama, url, iconClass } -> { ikon, warna, label, nama, url }
+  var sosmedWarnaMap = {
+    'facebook': '#1877F2',
+    'instagram': '#E1306C',
+    'youtube': '#FF0000',
+    'tiktok': '#000000',
+    'twitter': '#1DA1F2',
+    'x': '#1DA1F2'
+  };
+  const sosmed = (data.sosmed || []).map(function(s) {
+    return {
+      ikon: s.iconClass || 'fas fa-globe',
+      warna: sosmedWarnaMap[(s.platform || '').toLowerCase()] || '#64748B',
+      label: s.platform || 'Sosial Media',
+      nama: s.nama,
+      url: s.url
+    };
+  });
+
+  // Normalize jamOperasional: { hari, waktu, status } -> { hari, jam, buka }
+  const jamOperasional = (data.jamOperasional || []).map(function(j) {
+    return {
+      hari: j.hari,
+      jam: j.waktu,
+      buka: (j.status || '').toLowerCase() === 'buka'
+    };
+  });
+
+  return {
+    visi: data.visi || { judul: '', isi: '' },
+    misi: data.misi || [],
+    sejarah: data.sejarah || { judul: '', isi: '' },
+    info: info,
+    pimpinan: data.pimpinan || [],
+    sekretariat: sekretariat,
+    bidang: data.bidang || [],
+    pac: pac,
+    sekretariatAlamat: sekretariatAlamat,
+    kontak: kontak,
+    sosmed: sosmed,
+    jamOperasional: jamOperasional
+  };
+}
+
+// Load Tentang PDI content from Firestore
+async function loadTentangPDI() {
+  try {
+    const doc = await db.doc('website_config/tentang_pdi').get();
+    if (doc.exists) {
+      window._tentangPdiData = doc.data();
+      // Re-render the Tentang PDI view
+      if (typeof renderTentangPDI === 'function') renderTentangPDI();
+      console.log('[Dynamic] Tentang PDI loaded from Firestore');
+    }
+  } catch(e) {
+    console.log('Tentang PDI load failed, using hardcoded fallback:', e);
+  }
+}
+
 async function loadBantuan() {
   try {
     const doc = await db.doc('website_config/bantuan').get();
@@ -7638,11 +7776,34 @@ async function loadBantuan() {
       if (data.whatsappNumber) {
         window.dynamicWANumber = data.whatsappNumber.replace(/[^0-9]/g, '');
         // Update all WA links in the bantuan section
-        document.querySelectorAll('#view-bantuan a[href*="wa.me"]').forEach(a => {
-          const text = a.getAttribute('href').split('?text=')[1] || '';
+        document.querySelectorAll('#view-bantuan a[href*="wa.me"]').forEach(function(a) {
+          var text = a.getAttribute('href').split('?text=')[1] || '';
           a.href = 'https://wa.me/' + window.dynamicWANumber + (text ? '?text=' + text : '');
         });
         console.log('[Dynamic] Bantuan WA number updated');
+      }
+      // Render topics dynamically if available
+      if (data.topics && data.topics.length > 0) {
+        var grid = document.getElementById('bantuanTopicsGrid');
+        if (grid) {
+          grid.innerHTML = data.topics.map(function(t) {
+            var icon = t.icon || 'fas fa-question-circle';
+            var nama = t.nama || 'Bantuan';
+            var desc = t.deskripsi || '';
+            // Use chatMessage if available, otherwise construct default message
+            var msg = t.chatMessage || ('Halo Admin, saya butuh bantuan untuk: ' + nama);
+            var escapedMsg = msg.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            return '<div onclick="openBantuanChat(\'' + escapedMsg + '\')" style="display:flex;align-items:center;gap:12px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s" onmouseenter="this.style.borderColor=\'#E31E25\'" onmouseleave="this.style.borderColor=\'var(--border-color)\'">'
+              + '<div style="width:40px;height:40px;background:rgba(227,30,37,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#E31E25;font-size:1rem;flex-shrink:0"><i class="' + icon + '"></i></div>'
+              + '<div style="flex:1">'
+              + '<div style="font-weight:700;font-size:0.82rem;color:var(--text-main)">' + nama + '</div>'
+              + '<div style="font-size:0.7rem;color:var(--text-muted)">' + desc + '</div>'
+              + '</div>'
+              + '<i class="fas fa-chevron-right" style="color:var(--text-muted);font-size:0.75rem"></i>'
+              + '</div>';
+          }).join('');
+          console.log('[Dynamic] Bantuan topics rendered:', data.topics.length, 'topics');
+        }
       }
     }
   } catch(e) {
@@ -7655,7 +7816,8 @@ async function loadWebsiteContent() {
     loadHeroSlider(),
     loadFAQ(),
     loadGaleri(),
-    loadBantuan()
+    loadBantuan(),
+    loadTentangPDI()
   ]);
 }
 
