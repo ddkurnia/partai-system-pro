@@ -703,45 +703,150 @@ table.data-table tbody tr:last-child td{border-bottom:none}
 
       <!-- ==================== PAGE: TENTANG PDI ==================== -->
       <div class="page" id="page-tentang-pdi">
-        <div class="grid-2" style="margin-bottom:20px">
-          <div class="card">
-            <div class="card-header"><div class="card-title"><i class="fas fa-eye" style="color:var(--primary)"></i> Visi</div></div>
-            <div class="form-group"><textarea class="form-textarea" id="tpdiVisi" placeholder="Visi partai..." rows="5"></textarea></div>
+        <!-- Tab Navigation -->
+        <div class="tab-pills" id="tpdiTabNav" style="margin-bottom:20px">
+          <div class="tab-pill active" onclick="switchTPDITab('tentang',this)"><i class="fas fa-info-circle" style="margin-right:4px"></i> Tentang</div>
+          <div class="tab-pill" onclick="switchTPDITab('pimpinan',this)"><i class="fas fa-users-cog" style="margin-right:4px"></i> Pimpinan</div>
+          <div class="tab-pill" onclick="switchTPDITab('organisasi',this)"><i class="fas fa-sitemap" style="margin-right:4px"></i> Organisasi</div>
+          <div class="tab-pill" onclick="switchTPDITab('kontak',this)"><i class="fas fa-address-book" style="margin-right:4px"></i> Kontak</div>
+        </div>
+
+        <!-- Tab 1: Tentang (Visi, Misi, Sejarah, Info) -->
+        <div id="tpdiTab-tentang" class="tpdi-tab-content">
+          <div class="grid-2" style="margin-bottom:20px">
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="fas fa-eye" style="color:var(--primary)"></i> Visi</div></div>
+              <div class="form-group"><label class="form-label">Judul Visi</label><input class="form-input" id="tpdiVisiJudul" placeholder="Visi PDI Perjuangan"></div>
+              <div class="form-group"><label class="form-label">Isi Visi</label><textarea class="form-textarea" id="tpdiVisiIsi" placeholder="Isi visi partai..." rows="4"></textarea></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-bullseye" style="color:var(--warning)"></i> Misi</div>
+                <button class="btn btn-sm btn-primary" onclick="addMisiItem()"><i class="fas fa-plus"></i> Tambah</button>
+              </div>
+              <div id="tpdiMisiList" style="max-height:300px;overflow-y:auto"></div>
+            </div>
           </div>
+          <div class="grid-2" style="margin-bottom:20px">
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="fas fa-book" style="color:var(--info)"></i> Sejarah</div></div>
+              <div class="form-group"><label class="form-label">Judul Sejarah</label><input class="form-input" id="tpdiSejarahJudul" placeholder="Sejarah PDI Perjuangan"></div>
+              <div class="form-group"><label class="form-label">Isi Sejarah</label><textarea class="form-textarea" id="tpdiSejarahIsi" placeholder="Isi sejarah partai..." rows="6"></textarea></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="fas fa-chart-bar" style="color:var(--success)"></i> Info Grid</div></div>
+              <div id="tpdiInfoGridContainer">
+                <div class="form-row" style="margin-bottom:12px">
+                  <div class="form-group"><label class="form-label">Label 1</label><input class="form-input" id="tpdiInfoLabel1" placeholder="Berdiri"></div>
+                  <div class="form-group"><label class="form-label">Nilai 1</label><input class="form-input" id="tpdiInfoValue1" placeholder="2009"></div>
+                </div>
+                <div class="form-row" style="margin-bottom:12px">
+                  <div class="form-group"><label class="form-label">Label 2</label><input class="form-input" id="tpdiInfoLabel2" placeholder="Wilayah"></div>
+                  <div class="form-group"><label class="form-label">Nilai 2</label><input class="form-input" id="tpdiInfoValue2" placeholder="9 Kecamatan"></div>
+                </div>
+                <div class="form-row" style="margin-bottom:12px">
+                  <div class="form-group"><label class="form-label">Label 3</label><input class="form-input" id="tpdiInfoLabel3" placeholder="Total Kader"></div>
+                  <div class="form-group"><label class="form-label">Nilai 3</label><input class="form-input" id="tpdiInfoValue3" placeholder="..."></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label class="form-label">Label 4</label><input class="form-input" id="tpdiInfoLabel4" placeholder="Periode"></div>
+                  <div class="form-group"><label class="form-label">Nilai 4</label><input class="form-input" id="tpdiInfoValue4" placeholder="2024-2029"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button class="btn btn-primary" onclick="saveTentangPDI()"><i class="fas fa-save"></i> Simpan Semua Data</button>
+          </div>
+        </div>
+
+        <!-- Tab 2: Pimpinan -->
+        <div id="tpdiTab-pimpinan" class="tpdi-tab-content" style="display:none">
           <div class="card">
             <div class="card-header">
-              <div class="card-title"><i class="fas fa-bullseye" style="color:var(--warning)"></i> Misi</div>
-              <button class="btn btn-sm btn-primary" onclick="addMisiItem()"><i class="fas fa-plus"></i> Tambah</button>
+              <div class="card-title"><i class="fas fa-users-cog" style="color:var(--purple)"></i> Pimpinan DPC</div>
+              <button class="btn btn-sm btn-primary" onclick="addPimpinanItem()"><i class="fas fa-plus"></i> Tambah Pimpinan</button>
             </div>
-            <div id="tpdiMisiList" style="max-height:300px;overflow-y:auto"></div>
+            <div id="tpdiPimpinanList" style="max-height:600px;overflow-y:auto"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px">
+            <button class="btn btn-primary" onclick="saveTentangPDI()"><i class="fas fa-save"></i> Simpan Pimpinan</button>
           </div>
         </div>
-        <div class="grid-2" style="margin-bottom:20px">
-          <div class="card">
-            <div class="card-header"><div class="card-title"><i class="fas fa-book" style="color:var(--info)"></i> Sejarah</div></div>
-            <div class="form-group"><textarea class="form-textarea" id="tpdiSejarah" placeholder="Sejarah partai..." rows="6"></textarea></div>
+
+        <!-- Tab 3: Organisasi (Sekretariat, Bidang & Komisi, PAC) -->
+        <div id="tpdiTab-organisasi" class="tpdi-tab-content" style="display:none">
+          <div class="grid-2" style="margin-bottom:20px">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-building" style="color:var(--primary)"></i> Sekretariat</div>
+                <button class="btn btn-sm btn-primary" onclick="addSekretariatItem()"><i class="fas fa-plus"></i> Tambah</button>
+              </div>
+              <div id="tpdiSekretariatList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-landmark" style="color:var(--warning)"></i> Bidang & Komisi</div>
+                <button class="btn btn-sm btn-primary" onclick="addBidangItem()"><i class="fas fa-plus"></i> Tambah</button>
+              </div>
+              <div id="tpdiBidangList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
           </div>
-          <div class="card">
-            <div class="card-header"><div class="card-title"><i class="fas fa-chart-bar" style="color:var(--success)"></i> Info Kader</div></div>
-            <div class="form-row">
-              <div class="form-group"><label class="form-label">Total Kader</label><input class="form-input" id="tpdiTotalKader" placeholder="0"></div>
-              <div class="form-group"><label class="form-label">Kecamatan</label><input class="form-input" id="tpdiKecamatan" placeholder="0"></div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header">
+              <div class="card-title"><i class="fas fa-map-marked-alt" style="color:var(--success)"></i> PAC Kecamatan</div>
+              <button class="btn btn-sm btn-primary" onclick="addPACItem()"><i class="fas fa-plus"></i> Tambah</button>
             </div>
-            <div class="form-row">
-              <div class="form-group"><label class="form-label">Kelurahan/Desa</label><input class="form-input" id="tpdiKelurahan" placeholder="0"></div>
-              <div class="form-group"><label class="form-label">Ranting</label><input class="form-input" id="tpdiRanting" placeholder="0"></div>
-            </div>
+            <div id="tpdiPACList" style="max-height:400px;overflow-y:auto"></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button class="btn btn-primary" onclick="saveTentangPDI()"><i class="fas fa-save"></i> Simpan Data Organisasi</button>
           </div>
         </div>
-        <div class="card" style="margin-bottom:20px">
-          <div class="card-header">
-            <div class="card-title"><i class="fas fa-users-cog" style="color:var(--purple)"></i> Pimpinan DPC</div>
-            <button class="btn btn-sm btn-primary" onclick="addPimpinanItem()"><i class="fas fa-plus"></i> Tambah</button>
+
+        <!-- Tab 4: Kontak -->
+        <div id="tpdiTab-kontak" class="tpdi-tab-content" style="display:none">
+          <div class="grid-2" style="margin-bottom:20px">
+            <div class="card">
+              <div class="card-header"><div class="card-title"><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Alamat Sekretariat</div></div>
+              <div class="form-group"><label class="form-label">Nama</label><input class="form-input" id="tpdiAlamatNama" placeholder="Kantor DPC PDI Perjuangan"></div>
+              <div class="form-group"><label class="form-label">Jalan</label><input class="form-input" id="tpdiAlamatJalan" placeholder="Jl. ..."></div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Kelurahan</label><input class="form-input" id="tpdiAlamatKelurahan" placeholder="Kelurahan/Desa"></div>
+                <div class="form-group"><label class="form-label">Kota</label><input class="form-input" id="tpdiAlamatKota" placeholder="Kabupaten/Kota"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Kode Pos</label><input class="form-input" id="tpdiAlamatKodePos" placeholder="28700"></div>
+                <div class="form-group"><label class="form-label">URL Google Maps</label><input class="form-input" id="tpdiAlamatMapsUrl" placeholder="https://maps.google.com/..."></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-phone-alt" style="color:var(--info)"></i> Kontak Langsung</div>
+                <button class="btn btn-sm btn-primary" onclick="addKontakItem()"><i class="fas fa-plus"></i> Tambah</button>
+              </div>
+              <div id="tpdiKontakList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
           </div>
-          <div id="tpdiPimpinanList" style="max-height:400px;overflow-y:auto"></div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;gap:10px">
-          <button class="btn btn-primary" onclick="saveTentangPDI()"><i class="fas fa-save"></i> Simpan Semua Data</button>
+          <div class="grid-2" style="margin-bottom:20px">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-share-alt" style="color:var(--pink)"></i> Media Sosial</div>
+                <button class="btn btn-sm btn-primary" onclick="addSosmedItem()"><i class="fas fa-plus"></i> Tambah</button>
+              </div>
+              <div id="tpdiSosmedList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i class="fas fa-clock" style="color:var(--success)"></i> Jam Operasional</div>
+                <button class="btn btn-sm btn-primary" onclick="addJamItem()"><i class="fas fa-plus"></i> Tambah</button>
+              </div>
+              <div id="tpdiJamList" style="max-height:400px;overflow-y:auto"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:10px">
+            <button class="btn btn-primary" onclick="saveTentangPDI()"><i class="fas fa-save"></i> Simpan Data Kontak</button>
+          </div>
         </div>
       </div>
 
@@ -1104,7 +1209,7 @@ const pageTitles = {
   pengaturan: ['Pengaturan', 'Pengaturan akun admin & sistem'],
   'hero-slider': ['Hero Slider', 'Kelola gambar slider di halaman utama website'],
   layanan: ['Layanan', 'Kelola layanan yang ditampilkan di website'],
-  'tentang-pdi': ['Tentang PDI', 'Kelola informasi tentang PDI Perjuangan'],
+  'tentang-pdi': ['Tentang PDI', 'Kelola visi, misi, sejarah, struktur organisasi & kontak PDI'],
   'faq-manage': ['FAQ', 'Kelola pertanyaan yang sering diajukan'],
   'galeri-manage': ['Galeri', 'Kelola galeri foto website'],
   bantuan: ['Bantuan', 'Kelola halaman bantuan & kontak WhatsApp']
@@ -2262,20 +2367,77 @@ function saveLayanan() {
 // TENTANG PDI
 // ==========================================
 let tentangPDI = {};
+
+// --- Tab Switching ---
+function switchTPDITab(tab, el) {
+  document.querySelectorAll('.tpdi-tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('#tpdiTabNav .tab-pill').forEach(t => t.classList.remove('active'));
+  const target = document.getElementById('tpdiTab-' + tab);
+  if (target) target.style.display = 'block';
+  if (el) el.classList.add('active');
+}
+
+// --- Master Load ---
 function loadTentangPDI() {
   db.doc('website_config/tentang_pdi').get().then(doc => {
     tentangPDI = doc.exists ? doc.data() : {};
-    document.getElementById('tpdiVisi').value = tentangPDI.visi || '';
-    document.getElementById('tpdiSejarah').value = tentangPDI.sejarah || '';
-    document.getElementById('tpdiTotalKader').value = tentangPDI.totalKader || '';
-    document.getElementById('tpdiKecamatan').value = tentangPDI.kecamatan || '';
-    document.getElementById('tpdiKelurahan').value = tentangPDI.kelurahan || '';
-    document.getElementById('tpdiRanting').value = tentangPDI.ranting || '';
+    // Tab 1: Tentang
+    const visi = tentangPDI.visi || {};
+    document.getElementById('tpdiVisiJudul').value = visi.judul || '';
+    document.getElementById('tpdiVisiIsi').value = visi.isi || '';
     renderMisiList();
+    const sejarah = tentangPDI.sejarah || {};
+    document.getElementById('tpdiSejarahJudul').value = sejarah.judul || '';
+    document.getElementById('tpdiSejarahIsi').value = sejarah.isi || '';
+    renderInfoGrid();
+    // Tab 2: Pimpinan
     renderPimpinanList();
+    // Tab 3: Organisasi
+    renderSekretariatList();
+    renderBidangList();
+    renderPACList();
+    // Tab 4: Kontak
+    renderAlamatForm();
+    renderKontakList();
+    renderSosmedList();
+    renderJamList();
   }).catch(err => console.error('loadTentangPDI:', err));
 }
 
+// --- Master Save ---
+function saveTentangPDI() {
+  // Visi
+  tentangPDI.visi = {
+    judul: document.getElementById('tpdiVisiJudul').value.trim(),
+    isi: document.getElementById('tpdiVisiIsi').value.trim()
+  };
+  // Sejarah
+  tentangPDI.sejarah = {
+    judul: document.getElementById('tpdiSejarahJudul').value.trim(),
+    isi: document.getElementById('tpdiSejarahIsi').value.trim()
+  };
+  // Info Grid
+  tentangPDI.info = [];
+  for (let i = 1; i <= 4; i++) {
+    const label = document.getElementById('tpdiInfoLabel' + i).value.trim();
+    const value = document.getElementById('tpdiInfoValue' + i).value.trim();
+    if (label || value) tentangPDI.info.push({ label, value });
+  }
+  // Alamat
+  tentangPDI.alamat = {
+    nama: document.getElementById('tpdiAlamatNama').value.trim(),
+    jalan: document.getElementById('tpdiAlamatJalan').value.trim(),
+    kelurahan: document.getElementById('tpdiAlamatKelurahan').value.trim(),
+    kota: document.getElementById('tpdiAlamatKota').value.trim(),
+    kodePos: document.getElementById('tpdiAlamatKodePos').value.trim(),
+    mapsUrl: document.getElementById('tpdiAlamatMapsUrl').value.trim()
+  };
+  db.doc('website_config/tentang_pdi').set(tentangPDI, { merge: true }).then(() => {
+    toast('Data Tentang PDI berhasil disimpan!', 'success');
+  }).catch(err => toast('Gagal menyimpan: ' + err.message, 'error'));
+}
+
+// --- Misi (Dynamic List) ---
 function renderMisiList() {
   const el = document.getElementById('tpdiMisiList');
   const misi = tentangPDI.misi || [];
@@ -2284,17 +2446,30 @@ function renderMisiList() {
   misi.forEach((m, i) => { h += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><span style="font-weight:800;color:var(--primary);min-width:24px">' + (i+1) + '.</span><input class="form-input" value="' + (m || '').replace(/"/g, '&quot;') + '" onchange="updateMisiItem(' + i + ',this.value)" style="flex:1"><button class="btn btn-xs btn-danger" onclick="deleteMisiItem(' + i + ')"><i class="fas fa-trash"></i></button></div>'; });
   el.innerHTML = h;
 }
-
 function addMisiItem() { if (!tentangPDI.misi) tentangPDI.misi = []; tentangPDI.misi.push(''); renderMisiList(); }
 function updateMisiItem(i, val) { if (tentangPDI.misi) tentangPDI.misi[i] = val; }
 function deleteMisiItem(i) { if (!tentangPDI.misi) return; tentangPDI.misi.splice(i, 1); renderMisiList(); }
 
+// --- Info Grid ---
+function renderInfoGrid() {
+  const info = tentangPDI.info || [];
+  for (let i = 1; i <= 4; i++) {
+    const item = info[i - 1] || {};
+    document.getElementById('tpdiInfoLabel' + i).value = item.label || '';
+    document.getElementById('tpdiInfoValue' + i).value = item.value || '';
+  }
+}
+
+// --- Pimpinan (Dynamic List with Modal) ---
 function renderPimpinanList() {
   const el = document.getElementById('tpdiPimpinanList');
   const pimpinan = tentangPDI.pimpinan || [];
   if (!pimpinan.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada pimpinan</p></div>'; return; }
   let h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">';
-  pimpinan.forEach((p, i) => { h += '<div class="card" style="padding:16px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:12px"><div style="width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-user-tie" style="color:var(--primary)"></i></div><div style="flex:1;min-width:0"><strong style="font-size:.88rem">' + (p.nama || '-') + '</strong><br><span style="font-size:.75rem;color:var(--text2)">' + (p.jabatan || '-') + '</span></div></div><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editPimpinanItem(' + i + ')"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-xs btn-danger" onclick="deletePimpinanItem(' + i + ')"><i class="fas fa-trash"></i></button></div></div>'; });
+  pimpinan.forEach((p, i) => {
+    const fotoHtml = p.foto ? '<img src="' + p.foto + '" style="width:48px;height:48px;border-radius:12px;object-fit:cover;flex-shrink:0" onerror="this.outerHTML=\'<div style=\\\'width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0\\\'><i class=\\\'fas fa-user-tie\\\' style=\\\'color:var(--primary)\\\'></i></div>\'">' : '<div style="width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-user-tie" style="color:var(--primary)"></i></div>';
+    h += '<div class="card" style="padding:16px"><div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">' + fotoHtml + '<div style="flex:1;min-width:0"><strong style="font-size:.88rem">' + (p.nama || '-') + '</strong><br><span style="font-size:.75rem;color:var(--text2)">' + (p.jabatan || '-') + '</span></div></div><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editPimpinanItem(' + i + ')"><i class="fas fa-edit"></i> Edit</button><button class="btn btn-xs btn-danger" onclick="deletePimpinanItem(' + i + ')"><i class="fas fa-trash"></i></button></div></div>';
+  });
   h += '</div>';
   el.innerHTML = h;
 }
@@ -2304,22 +2479,196 @@ function addPimpinanItem() { if (!tentangPDI.pimpinan) tentangPDI.pimpinan = [];
 function editPimpinanItem(idx) {
   const p = tentangPDI.pimpinan[idx] || {};
   document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-user-tie" style="color:var(--purple)"></i> Edit Pimpinan';
-  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Nama</label><input class="form-input" id="editPimpNama" value="' + (p.nama || '') + '" placeholder="Nama lengkap"></div><div class="form-group"><label class="form-label">Jabatan</label><input class="form-input" id="editPimpJabatan" value="' + (p.jabatan || '') + '" placeholder="Ketua DPC"></div><div class="form-group"><label class="form-label">URL Foto</label><input class="form-input" id="editPimpFoto" value="' + (p.foto || '') + '" placeholder="https://..."></div><div class="form-group"><label class="form-label">Nomor HP</label><input class="form-input" id="editPimpHP" value="' + (p.hp || '') + '" placeholder="08xxxxxxxxxx"></div>';
-  document.getElementById('kontenEditSaveBtn').onclick = function() { tentangPDI.pimpinan[idx] = { nama: document.getElementById('editPimpNama').value.trim(), jabatan: document.getElementById('editPimpJabatan').value.trim(), foto: document.getElementById('editPimpFoto').value.trim(), hp: document.getElementById('editPimpHP').value.trim() }; renderPimpinanList(); closeModal('modalKontenEdit'); };
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Nama</label><input class="form-input" id="editPimpNama" value="' + (p.nama || '').replace(/"/g, '&quot;') + '" placeholder="Nama lengkap"></div><div class="form-group"><label class="form-label">Jabatan</label><input class="form-input" id="editPimpJabatan" value="' + (p.jabatan || '').replace(/"/g, '&quot;') + '" placeholder="Ketua DPC"></div><div class="form-group"><label class="form-label">URL Foto</label><input class="form-input" id="editPimpFoto" value="' + (p.foto || '').replace(/"/g, '&quot;') + '" placeholder="https://..."></div><div class="form-group"><label class="form-label">Nomor HP</label><input class="form-input" id="editPimpHP" value="' + (p.hp || '').replace(/"/g, '&quot;') + '" placeholder="08xxxxxxxxxx"></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.pimpinan[idx] = { nama: document.getElementById('editPimpNama').value.trim(), jabatan: document.getElementById('editPimpJabatan').value.trim(), foto: document.getElementById('editPimpFoto').value.trim(), hp: document.getElementById('editPimpHP').value.trim() };
+    renderPimpinanList(); closeModal('modalKontenEdit');
+  };
   openModal('modalKontenEdit');
 }
 
 function deletePimpinanItem(idx) { showConfirm('Hapus Pimpinan', 'Yakin ingin menghapus data pimpinan ini?', () => { tentangPDI.pimpinan.splice(idx, 1); renderPimpinanList(); }); }
 
-function saveTentangPDI() {
-  tentangPDI.visi = document.getElementById('tpdiVisi').value.trim();
-  tentangPDI.sejarah = document.getElementById('tpdiSejarah').value.trim();
-  tentangPDI.totalKader = document.getElementById('tpdiTotalKader').value.trim();
-  tentangPDI.kecamatan = document.getElementById('tpdiKecamatan').value.trim();
-  tentangPDI.kelurahan = document.getElementById('tpdiKelurahan').value.trim();
-  tentangPDI.ranting = document.getElementById('tpdiRanting').value.trim();
-  db.doc('website_config/tentang_pdi').set(tentangPDI, { merge: true }).then(() => { toast('Data Tentang PDI berhasil disimpan!', 'success'); }).catch(err => toast('Gagal menyimpan: ' + err.message, 'error'));
+// --- Sekretariat (Dynamic List with Modal) ---
+function renderSekretariatList() {
+  const el = document.getElementById('tpdiSekretariatList');
+  const list = tentangPDI.sekretariat || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada data sekretariat</p></div>'; return; }
+  let h = '<div class="tbl-wrap"><table class="data-table"><thead><tr><th>Nama</th><th>Jabatan</th><th>Aksi</th></tr></thead><tbody>';
+  list.forEach((item, i) => {
+    h += '<tr><td><strong>' + (item.nama || '-') + '</strong></td><td>' + (item.jabatan || '-') + '</td><td><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editSekretariatItem(' + i + ')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="deleteSekretariatItem(' + i + ')"><i class="fas fa-trash"></i></button></div></td></tr>';
+  });
+  h += '</tbody></table></div>';
+  el.innerHTML = h;
 }
+
+function addSekretariatItem() { if (!tentangPDI.sekretariat) tentangPDI.sekretariat = []; tentangPDI.sekretariat.push({ nama: '', jabatan: '' }); renderSekretariatList(); editSekretariatItem(tentangPDI.sekretariat.length - 1); }
+
+function editSekretariatItem(idx) {
+  const item = tentangPDI.sekretariat[idx] || {};
+  document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-building" style="color:var(--primary)"></i> Edit Sekretariat';
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Nama</label><input class="form-input" id="editSekNama" value="' + (item.nama || '').replace(/"/g, '&quot;') + '" placeholder="Nama lengkap"></div><div class="form-group"><label class="form-label">Jabatan</label><input class="form-input" id="editSekJabatan" value="' + (item.jabatan || '').replace(/"/g, '&quot;') + '" placeholder="Sekretaris DPC"></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.sekretariat[idx] = { nama: document.getElementById('editSekNama').value.trim(), jabatan: document.getElementById('editSekJabatan').value.trim() };
+    renderSekretariatList(); closeModal('modalKontenEdit');
+  };
+  openModal('modalKontenEdit');
+}
+
+function deleteSekretariatItem(idx) { showConfirm('Hapus Sekretariat', 'Yakin ingin menghapus data ini?', () => { tentangPDI.sekretariat.splice(idx, 1); renderSekretariatList(); }); }
+
+// --- Bidang & Komisi (Dynamic List with Modal) ---
+function renderBidangList() {
+  const el = document.getElementById('tpdiBidangList');
+  const list = tentangPDI.bidang || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada bidang/komisi</p></div>'; return; }
+  let h = '';
+  list.forEach((item, i) => {
+    const warna = item.warna || '#E31E25';
+    h += '<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px"><div style="width:40px;height:40px;border-radius:10px;background:' + warna + ';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="' + (item.icon || 'fas fa-star') + '" style="color:#fff;font-size:.9rem"></i></div><div style="flex:1;min-width:0"><strong style="font-size:.85rem">' + (item.nama || '-') + '</strong><br><span style="font-size:.72rem;color:var(--text3)">' + (item.icon || '-') + ' &middot; ' + warna + '</span></div><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editBidangItem(' + i + ')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="deleteBidangItem(' + i + ')"><i class="fas fa-trash"></i></button></div></div>';
+  });
+  el.innerHTML = h;
+}
+
+function addBidangItem() { if (!tentangPDI.bidang) tentangPDI.bidang = []; tentangPDI.bidang.push({ nama: '', icon: 'fas fa-star', warna: '#E31E25' }); renderBidangList(); editBidangItem(tentangPDI.bidang.length - 1); }
+
+function editBidangItem(idx) {
+  const item = tentangPDI.bidang[idx] || {};
+  document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-landmark" style="color:var(--warning)"></i> Edit Bidang & Komisi';
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Nama Bidang/Komisi</label><input class="form-input" id="editBidNama" value="' + (item.nama || '').replace(/"/g, '&quot;') + '" placeholder="Nama bidang"></div><div class="form-group"><label class="form-label">Icon Class (Font Awesome)</label><input class="form-input" id="editBidIcon" value="' + (item.icon || 'fas fa-star').replace(/"/g, '&quot;') + '" placeholder="fas fa-vote-yea"></div><div class="form-group"><label class="form-label">Warna (hex)</label><input class="form-input" id="editBidWarna" value="' + (item.warna || '#E31E25').replace(/"/g, '&quot;') + '" placeholder="#E31E25"></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.bidang[idx] = { nama: document.getElementById('editBidNama').value.trim(), icon: document.getElementById('editBidIcon').value.trim(), warna: document.getElementById('editBidWarna').value.trim() };
+    renderBidangList(); closeModal('modalKontenEdit');
+  };
+  openModal('modalKontenEdit');
+}
+
+function deleteBidangItem(idx) { showConfirm('Hapus Bidang', 'Yakin ingin menghapus bidang ini?', () => { tentangPDI.bidang.splice(idx, 1); renderBidangList(); }); }
+
+// --- PAC Kecamatan (Dynamic List with Modal) ---
+function renderPACList() {
+  const el = document.getElementById('tpdiPACList');
+  const list = tentangPDI.pac || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada data PAC</p></div>'; return; }
+  let h = '<div class="tbl-wrap"><table class="data-table"><thead><tr><th>Kecamatan</th><th>Ketua</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+  list.forEach((item, i) => {
+    const statusBadge = item.status === 'aktif' ? 'badge-success' : 'badge-danger';
+    h += '<tr><td><strong>' + (item.kecamatan || '-') + '</strong></td><td>' + (item.ketua || '-') + '</td><td><span class="badge ' + statusBadge + '">' + (item.status || 'aktif') + '</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editPACItem(' + i + ')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="deletePACItem(' + i + ')"><i class="fas fa-trash"></i></button></div></td></tr>';
+  });
+  h += '</tbody></table></div>';
+  el.innerHTML = h;
+}
+
+function addPACItem() { if (!tentangPDI.pac) tentangPDI.pac = []; tentangPDI.pac.push({ kecamatan: '', ketua: '', status: 'aktif' }); renderPACList(); editPACItem(tentangPDI.pac.length - 1); }
+
+function editPACItem(idx) {
+  const item = tentangPDI.pac[idx] || {};
+  document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-map-marked-alt" style="color:var(--success)"></i> Edit PAC Kecamatan';
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Kecamatan</label><input class="form-input" id="editPacKecamatan" value="' + (item.kecamatan || '').replace(/"/g, '&quot;') + '" placeholder="Nama kecamatan"></div><div class="form-group"><label class="form-label">Ketua PAC</label><input class="form-input" id="editPacKetua" value="' + (item.ketua || '').replace(/"/g, '&quot;') + '" placeholder="Nama ketua"></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="editPacStatus"><option value="aktif"' + (item.status === 'aktif' ? ' selected' : '') + '>Aktif</option><option value="nonaktif"' + (item.status === 'nonaktif' ? ' selected' : '') + '>Nonaktif</option></select></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.pac[idx] = { kecamatan: document.getElementById('editPacKecamatan').value.trim(), ketua: document.getElementById('editPacKetua').value.trim(), status: document.getElementById('editPacStatus').value };
+    renderPACList(); closeModal('modalKontenEdit');
+  };
+  openModal('modalKontenEdit');
+}
+
+function deletePACItem(idx) { showConfirm('Hapus PAC', 'Yakin ingin menghapus data PAC ini?', () => { tentangPDI.pac.splice(idx, 1); renderPACList(); }); }
+
+// --- Alamat Form (Load into inputs) ---
+function renderAlamatForm() {
+  const alamat = tentangPDI.alamat || {};
+  document.getElementById('tpdiAlamatNama').value = alamat.nama || '';
+  document.getElementById('tpdiAlamatJalan').value = alamat.jalan || '';
+  document.getElementById('tpdiAlamatKelurahan').value = alamat.kelurahan || '';
+  document.getElementById('tpdiAlamatKota').value = alamat.kota || '';
+  document.getElementById('tpdiAlamatKodePos').value = alamat.kodePos || '';
+  document.getElementById('tpdiAlamatMapsUrl').value = alamat.mapsUrl || '';
+}
+
+// --- Kontak Langsung (Dynamic List with Modal) ---
+function renderKontakList() {
+  const el = document.getElementById('tpdiKontakList');
+  const list = tentangPDI.kontak || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada kontak</p></div>'; return; }
+  let h = '';
+  list.forEach((item, i) => {
+    const jenisIcon = item.jenis === 'WhatsApp' ? 'fab fa-whatsapp' : (item.jenis === 'Telepon' ? 'fas fa-phone' : (item.jenis === 'Email' ? 'fas fa-envelope' : 'fas fa-phone-alt'));
+    h += '<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px"><div style="width:40px;height:40px;border-radius:10px;background:var(--info-light);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="' + jenisIcon + '" style="color:var(--info)"></i></div><div style="flex:1;min-width:0"><strong style="font-size:.85rem">' + (item.jenis || '-') + ': ' + (item.nomor || '-') + '</strong><br><span style="font-size:.75rem;color:var(--text2)">' + (item.label || '-') + '</span></div><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editKontakItem(' + i + ')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="deleteKontakItem(' + i + ')"><i class="fas fa-trash"></i></button></div></div>';
+  });
+  el.innerHTML = h;
+}
+
+function addKontakItem() { if (!tentangPDI.kontak) tentangPDI.kontak = []; tentangPDI.kontak.push({ jenis: 'WhatsApp', nomor: '', label: '' }); renderKontakList(); editKontakItem(tentangPDI.kontak.length - 1); }
+
+function editKontakItem(idx) {
+  const item = tentangPDI.kontak[idx] || {};
+  document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-phone-alt" style="color:var(--info)"></i> Edit Kontak';
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Jenis</label><select class="form-select" id="editKonJenis"><option value="WhatsApp"' + (item.jenis === 'WhatsApp' ? ' selected' : '') + '>WhatsApp</option><option value="Telepon"' + (item.jenis === 'Telepon' ? ' selected' : '') + '>Telepon</option><option value="Email"' + (item.jenis === 'Email' ? ' selected' : '') + '>Email</option></select></div><div class="form-group"><label class="form-label">Nomor / Alamat</label><input class="form-input" id="editKonNomor" value="' + (item.nomor || '').replace(/"/g, '&quot;') + '" placeholder="08xxxxxxxxxx / email@..."></div><div class="form-group"><label class="form-label">Label</label><input class="form-input" id="editKonLabel" value="' + (item.label || '').replace(/"/g, '&quot;') + '" placeholder="Contoh: Admin Utama"></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.kontak[idx] = { jenis: document.getElementById('editKonJenis').value, nomor: document.getElementById('editKonNomor').value.trim(), label: document.getElementById('editKonLabel').value.trim() };
+    renderKontakList(); closeModal('modalKontenEdit');
+  };
+  openModal('modalKontenEdit');
+}
+
+function deleteKontakItem(idx) { showConfirm('Hapus Kontak', 'Yakin ingin menghapus kontak ini?', () => { tentangPDI.kontak.splice(idx, 1); renderKontakList(); }); }
+
+// --- Media Sosial (Dynamic List with Modal) ---
+function renderSosmedList() {
+  const el = document.getElementById('tpdiSosmedList');
+  const list = tentangPDI.sosmed || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada media sosial</p></div>'; return; }
+  let h = '';
+  list.forEach((item, i) => {
+    const platformIcon = item.platform === 'Facebook' ? 'fab fa-facebook-f' : (item.platform === 'Instagram' ? 'fab fa-instagram' : (item.platform === 'YouTube' ? 'fab fa-youtube' : 'fab fa-tiktok'));
+    h += '<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px"><div style="width:40px;height:40px;border-radius:10px;background:var(--pink);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="' + platformIcon + '" style="color:#fff"></i></div><div style="flex:1;min-width:0"><strong style="font-size:.85rem">' + (item.platform || '-') + ': ' + (item.nama || '-') + '</strong><br><span style="font-size:.72rem;color:var(--text3)">' + (item.url || '-') + '</span></div><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editSosmedItem(' + i + ')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="deleteSosmedItem(' + i + ')"><i class="fas fa-trash"></i></button></div></div>';
+  });
+  el.innerHTML = h;
+}
+
+function addSosmedItem() { if (!tentangPDI.sosmed) tentangPDI.sosmed = []; tentangPDI.sosmed.push({ platform: 'Facebook', nama: '', url: '', iconClass: '' }); renderSosmedList(); editSosmedItem(tentangPDI.sosmed.length - 1); }
+
+function editSosmedItem(idx) {
+  const item = tentangPDI.sosmed[idx] || {};
+  document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-share-alt" style="color:var(--pink)"></i> Edit Media Sosial';
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="editSosPlatform"><option value="Facebook"' + (item.platform === 'Facebook' ? ' selected' : '') + '>Facebook</option><option value="Instagram"' + (item.platform === 'Instagram' ? ' selected' : '') + '>Instagram</option><option value="YouTube"' + (item.platform === 'YouTube' ? ' selected' : '') + '>YouTube</option><option value="TikTok"' + (item.platform === 'TikTok' ? ' selected' : '') + '>TikTok</option></select></div><div class="form-group"><label class="form-label">Nama Akun</label><input class="form-input" id="editSosNama" value="' + (item.nama || '').replace(/"/g, '&quot;') + '" placeholder="Nama akun"></div><div class="form-group"><label class="form-label">URL</label><input class="form-input" id="editSosUrl" value="' + (item.url || '').replace(/"/g, '&quot;') + '" placeholder="https://..."></div><div class="form-group"><label class="form-label">Icon Class (opsional)</label><input class="form-input" id="editSosIcon" value="' + (item.iconClass || '').replace(/"/g, '&quot;') + '" placeholder="fab fa-facebook-f"></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.sosmed[idx] = { platform: document.getElementById('editSosPlatform').value, nama: document.getElementById('editSosNama').value.trim(), url: document.getElementById('editSosUrl').value.trim(), iconClass: document.getElementById('editSosIcon').value.trim() };
+    renderSosmedList(); closeModal('modalKontenEdit');
+  };
+  openModal('modalKontenEdit');
+}
+
+function deleteSosmedItem(idx) { showConfirm('Hapus Media Sosial', 'Yakin ingin menghapus media sosial ini?', () => { tentangPDI.sosmed.splice(idx, 1); renderSosmedList(); }); }
+
+// --- Jam Operasional (Dynamic List with Modal) ---
+function renderJamList() {
+  const el = document.getElementById('tpdiJamList');
+  const list = tentangPDI.jamOperasional || [];
+  if (!list.length) { el.innerHTML = '<div class="empty-state" style="padding:20px"><p style="font-size:.82rem">Belum ada jam operasional</p></div>'; return; }
+  let h = '<div class="tbl-wrap"><table class="data-table"><thead><tr><th>Hari</th><th>Waktu</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+  list.forEach((item, i) => {
+    const statusBadge = item.status === 'buka' ? 'badge-success' : 'badge-danger';
+    h += '<tr><td><strong>' + (item.hari || '-') + '</strong></td><td>' + (item.waktu || '-') + '</td><td><span class="badge ' + statusBadge + '">' + (item.status || 'buka') + '</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-xs btn-info" onclick="editJamItem(' + i + ')"><i class="fas fa-edit"></i></button><button class="btn btn-xs btn-danger" onclick="deleteJamItem(' + i + ')"><i class="fas fa-trash"></i></button></div></td></tr>';
+  });
+  h += '</tbody></table></div>';
+  el.innerHTML = h;
+}
+
+function addJamItem() { if (!tentangPDI.jamOperasional) tentangPDI.jamOperasional = []; tentangPDI.jamOperasional.push({ hari: '', waktu: '', status: 'buka' }); renderJamList(); editJamItem(tentangPDI.jamOperasional.length - 1); }
+
+function editJamItem(idx) {
+  const item = tentangPDI.jamOperasional[idx] || {};
+  document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-clock" style="color:var(--success)"></i> Edit Jam Operasional';
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Hari</label><input class="form-input" id="editJamHari" value="' + (item.hari || '').replace(/"/g, '&quot;') + '" placeholder="Senin - Jumat"></div><div class="form-group"><label class="form-label">Waktu</label><input class="form-input" id="editJamWaktu" value="' + (item.waktu || '').replace(/"/g, '&quot;') + '" placeholder="08:00 - 16:00"></div><div class="form-group"><label class="form-label">Status</label><select class="form-select" id="editJamStatus"><option value="buka"' + (item.status === 'buka' ? ' selected' : '') + '>Buka</option><option value="tutup"' + (item.status === 'tutup' ? ' selected' : '') + '>Tutup</option></select></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() {
+    tentangPDI.jamOperasional[idx] = { hari: document.getElementById('editJamHari').value.trim(), waktu: document.getElementById('editJamWaktu').value.trim(), status: document.getElementById('editJamStatus').value };
+    renderJamList(); closeModal('modalKontenEdit');
+  };
+  openModal('modalKontenEdit');
+}
+
+function deleteJamItem(idx) { showConfirm('Hapus Jam', 'Yakin ingin menghapus data jam ini?', () => { tentangPDI.jamOperasional.splice(idx, 1); renderJamList(); }); }
 
 // ==========================================
 // FAQ
@@ -2388,7 +2737,7 @@ function saveGaleri() { db.doc('website_config/galeri').set({ items: galeriData 
 // ==========================================
 let bantuanData = {};
 function loadBantuan() {
-  db.doc('website_config/bantuan').get().then(doc => { bantuanData = doc.exists ? doc.data() : {}; document.getElementById('bantuanWA').value = bantuanData.waNumber || ''; renderBantuanTopics(); }).catch(err => console.error('loadBantuan:', err));
+  db.doc('website_config/bantuan').get().then(doc => { bantuanData = doc.exists ? doc.data() : {}; document.getElementById('bantuanWA').value = bantuanData.whatsappNumber || ''; renderBantuanTopics(); }).catch(err => console.error('loadBantuan:', err));
 }
 
 function renderBantuanTopics() {
@@ -2405,15 +2754,15 @@ function addBantuanTopic() { if (!bantuanData.topics) bantuanData.topics = []; b
 function editBantuanTopic(idx) {
   const t = bantuanData.topics[idx] || {};
   document.getElementById('kontenEditTitle').innerHTML = '<i class="fas fa-life-ring" style="color:var(--info)"></i> Edit Topik Bantuan';
-  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Icon (Font Awesome)</label><input class="form-input" id="editBanIcon" value="' + (t.icon || 'fas fa-question') + '" placeholder="fas fa-question"></div><div class="form-group"><label class="form-label">Nama Topik</label><input class="form-input" id="editBanNama" value="' + (t.nama || '') + '" placeholder="Nama topik"></div><div class="form-group"><label class="form-label">Deskripsi</label><textarea class="form-textarea" id="editBanDesc" rows="3" placeholder="Deskripsi topik">' + (t.deskripsi || '') + '</textarea></div>';
-  document.getElementById('kontenEditSaveBtn').onclick = function() { bantuanData.topics[idx] = { icon: document.getElementById('editBanIcon').value.trim(), nama: document.getElementById('editBanNama').value.trim(), deskripsi: document.getElementById('editBanDesc').value.trim() }; renderBantuanTopics(); closeModal('modalKontenEdit'); };
+  document.getElementById('kontenEditBody').innerHTML = '<div class="form-group"><label class="form-label">Icon (Font Awesome)</label><input class="form-input" id="editBanIcon" value="' + (t.icon || 'fas fa-question').replace(/"/g, '&quot;') + '" placeholder="fas fa-question"></div><div class="form-group"><label class="form-label">Nama Topik</label><input class="form-input" id="editBanNama" value="' + (t.nama || '').replace(/"/g, '&quot;') + '" placeholder="Nama topik"></div><div class="form-group"><label class="form-label">Deskripsi</label><textarea class="form-textarea" id="editBanDesc" rows="3" placeholder="Deskripsi topik">' + (t.deskripsi || '') + '</textarea></div><div class="form-group"><label class="form-label">Pesan WhatsApp (chatMessage)</label><textarea class="form-textarea" id="editBanChat" rows="3" placeholder="Pesan yang dikirim otomatis ke WhatsApp saat user memilih topik ini">' + (t.chatMessage || '') + '</textarea></div>';
+  document.getElementById('kontenEditSaveBtn').onclick = function() { bantuanData.topics[idx] = { icon: document.getElementById('editBanIcon').value.trim(), nama: document.getElementById('editBanNama').value.trim(), deskripsi: document.getElementById('editBanDesc').value.trim(), chatMessage: document.getElementById('editBanChat').value.trim() }; renderBantuanTopics(); closeModal('modalKontenEdit'); };
   openModal('modalKontenEdit');
 }
 
 function deleteBantuanTopic(idx) { showConfirm('Hapus Topik', 'Yakin ingin menghapus topik bantuan ini?', () => { bantuanData.topics.splice(idx, 1); renderBantuanTopics(); }); }
 
 function saveBantuan() {
-  bantuanData.waNumber = document.getElementById('bantuanWA').value.trim();
+  bantuanData.whatsappNumber = document.getElementById('bantuanWA').value.trim();
   db.doc('website_config/bantuan').set(bantuanData, { merge: true }).then(() => { toast('Data bantuan berhasil disimpan!', 'success'); }).catch(err => toast('Gagal menyimpan: ' + err.message, 'error'));
 }
 
