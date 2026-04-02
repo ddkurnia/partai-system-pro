@@ -364,6 +364,7 @@ table.data-table tbody tr:last-child td{border-bottom:none}
       <div class="nav-item" data-page="faq-manage" onclick="navigate('faq-manage')"><i class="fas fa-question-circle"></i> FAQ</div>
       <div class="nav-item" data-page="galeri-manage" onclick="navigate('galeri-manage')"><i class="fas fa-camera"></i> Galeri</div>
       <div class="nav-item" data-page="bantuan" onclick="navigate('bantuan')"><i class="fas fa-life-ring"></i> Bantuan</div>
+      <div class="nav-item" data-page="syarat-kebijakan" onclick="navigate('syarat-kebijakan')"><i class="fas fa-file-contract"></i> S&amp;K &amp; Privasi</div>
       <div class="nav-label">Lainnya</div>
       <div class="nav-item" data-page="statistik" onclick="navigate('statistik')"><i class="fas fa-chart-bar"></i> Statistik</div>
       <div class="nav-item" data-page="pengaturan" onclick="navigate('pengaturan')"><i class="fas fa-cog"></i> Pengaturan</div>
@@ -891,6 +892,28 @@ table.data-table tbody tr:last-child td{border-bottom:none}
         </div>
       </div>
 
+      <!-- ==================== PAGE: SYARAT & KEBIJAKAN ==================== -->
+      <div class="page" id="page-syarat-kebijakan">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="fas fa-file-contract" style="color:var(--primary)"></i> Syarat &amp; Ketentuan</div></div>
+            <div class="form-group">
+              <label class="form-label">Konten Syarat &amp; Ketentuan (HTML)</label>
+              <textarea class="form-textarea" id="syaratKetentuanContent" rows="20" placeholder="Tulis konten Syarat &amp; Ketentuan di sini. Mendukung tag HTML." style="font-size:.82rem;line-height:1.6"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveSyaratKetentuan()"><i class="fas fa-save"></i> Simpan Syarat &amp; Ketentuan</button>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i class="fas fa-shield-alt" style="color:#2563EB"></i> Kebijakan Privasi</div></div>
+            <div class="form-group">
+              <label class="form-label">Konten Kebijakan Privasi (HTML)</label>
+              <textarea class="form-textarea" id="kebijakanPrivasiContent" rows="20" placeholder="Tulis konten Kebijakan Privasi di sini. Mendukung tag HTML." style="font-size:.82rem;line-height:1.6"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveKebijakanPrivasi()"><i class="fas fa-save"></i> Simpan Kebijakan Privasi</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ==================== PAGE: PENGATURAN ==================== -->
       <div class="page" id="page-pengaturan">
         <div class="grid-2">
@@ -1212,7 +1235,8 @@ const pageTitles = {
   'tentang-pdi': ['Tentang PDI', 'Kelola visi, misi, sejarah, struktur organisasi & kontak PDI'],
   'faq-manage': ['FAQ', 'Kelola pertanyaan yang sering diajukan'],
   'galeri-manage': ['Galeri', 'Kelola galeri foto website'],
-  bantuan: ['Bantuan', 'Kelola halaman bantuan & kontak WhatsApp']
+  bantuan: ['Bantuan', 'Kelola halaman bantuan & kontak WhatsApp'],
+  'syarat-kebijakan': ['S&K & Privasi', 'Kelola Syarat & Ketentuan serta Kebijakan Privasi website']
 };
 
 function navigate(page) {
@@ -2266,6 +2290,7 @@ function initWebsiteConfig() {
   loadFAQ();
   loadGaleri();
   loadBantuan();
+  loadSyaratKebijakan();
 }
 
 // ==========================================
@@ -2764,6 +2789,36 @@ function deleteBantuanTopic(idx) { showConfirm('Hapus Topik', 'Yakin ingin mengh
 function saveBantuan() {
   bantuanData.whatsappNumber = document.getElementById('bantuanWA').value.trim();
   db.doc('website_config/bantuan').set(bantuanData, { merge: true }).then(() => { toast('Data bantuan berhasil disimpan!', 'success'); }).catch(err => toast('Gagal menyimpan: ' + err.message, 'error'));
+}
+
+// ==========================================
+// SYARAT & KEBIJAKAN
+// ==========================================
+function loadSyaratKebijakan() {
+  db.doc('website_config/syarat_ketentuan').get().then(doc => {
+    if (doc.exists && doc.data().konten) {
+      document.getElementById('syaratKetentuanContent').value = doc.data().konten;
+    }
+  }).catch(err => console.error('loadSyaratKetentuan:', err));
+  db.doc('website_config/kebijakan_privasi').get().then(doc => {
+    if (doc.exists && doc.data().konten) {
+      document.getElementById('kebijakanPrivasiContent').value = doc.data().konten;
+    }
+  }).catch(err => console.error('loadKebijakanPrivasi:', err));
+}
+
+function saveSyaratKetentuan() {
+  var konten = document.getElementById('syaratKetentuanContent').value.trim();
+  db.doc('website_config/syarat_ketentuan').set({ konten: konten }, { merge: true }).then(() => {
+    toast('Syarat & Ketentuan berhasil disimpan!', 'success');
+  }).catch(err => toast('Gagal menyimpan: ' + err.message, 'error'));
+}
+
+function saveKebijakanPrivasi() {
+  var konten = document.getElementById('kebijakanPrivasiContent').value.trim();
+  db.doc('website_config/kebijakan_privasi').set({ konten: konten }, { merge: true }).then(() => {
+    toast('Kebijakan Privasi berhasil disimpan!', 'success');
+  }).catch(err => toast('Gagal menyimpan: ' + err.message, 'error'));
 }
 
 
