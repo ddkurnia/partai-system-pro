@@ -2995,6 +2995,7 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
       <div class="menu-item" onclick="showView('qr-aspirasi')"><div class="menu-icon" style="background:linear-gradient(135deg,#ffffff,#f1f5f9);border:1px solid #e2e8f0;"><i class="fas fa-qrcode" style="color:#E31E25"></i></div><span class="menu-text">QR Aspirasi</span></div>
       <div class="menu-item" onclick="showView('faq')"><div class="menu-icon c-orange"><i class="fas fa-question-circle"></i></div><span class="menu-text">FAQ</span></div>
       <div class="menu-item" onclick="showView('bantuan')"><div class="menu-icon c-blue"><i class="fas fa-headset"></i></div><span class="menu-text">Bantuan</span></div>
+      <div class="menu-item" onclick="showView('syarat-ketentuan')"><div class="menu-icon c-gray"><i class="fas fa-file-contract"></i></div><span class="menu-text">S&K</span></div>
     </div>
   </div>
 
@@ -3524,7 +3525,11 @@ const TENTANG_PDI = {
       </div>
     </div>
 
-    <div style="text-align:center;margin-top:16px;font-size:0.68rem;color:var(--text-muted)">Versi App: 2.0.0 &middot; &copy; 2026 DPC PDI Perjuangan Kab. Kepulauan Meranti</div>
+    <div style="text-align:center;margin-top:16px;font-size:0.68rem;color:var(--text-muted)">
+      <a href="javascript:void(0)" onclick="showView('syarat-ketentuan')" style="color:var(--primary);text-decoration:underline;margin-right:8px">Syarat &amp; Ketentuan</a> &middot; 
+      <a href="javascript:void(0)" onclick="showView('kebijakan-privasi')" style="color:var(--primary);text-decoration:underline;margin-right:8px">Kebijakan Privasi</a><br>
+      Versi App: 2.0.0 &middot; &copy; 2026 DPC PDI Perjuangan Kab. Kepulauan Meranti
+    </div>
   </div>
 </div>
 
@@ -4474,7 +4479,7 @@ Info lebih lanjut? Hubungi sekretariat DPC PDI Perjuangan Kab. Kepulauan Meranti
       <label class="form-label">Password *</label>
       <input type="password" id="regPassword" placeholder="Min. 6 karakter">
       <button onclick="signup()" style="margin-top:20px"><i class="fas fa-user-plus"></i> Daftar</button>
-      <div style="text-align:center;margin-top:14px;font-size:0.72rem;color:var(--text-muted);line-height:1.5">Dengan mendaftar, Anda menyetujui <a href="javascript:void(0)" onclick="showView('syarat-ketentuan')" style="color:var(--primary);font-weight:600;text-decoration:underline">Syarat &amp; Ketentuan</a> serta <a href="javascript:void(0)" onclick="showView('kebijakan-privasi')" style="color:var(--primary);font-weight:600;text-decoration:underline">Kebijakan Privasi</a> kami.</div>
+      <div style="text-align:center;margin-top:14px;font-size:0.72rem;color:var(--text-muted);line-height:1.5">Dengan mendaftar, Anda menyetujui <a href="javascript:void(0)" onclick="document.getElementById('authModal').style.display='none';showView('syarat-ketentuan')" style="color:var(--primary);font-weight:600;text-decoration:underline">Syarat &amp; Ketentuan</a> serta <a href="javascript:void(0)" onclick="document.getElementById('authModal').style.display='none';showView('kebijakan-privasi')" style="color:var(--primary);font-weight:600;text-decoration:underline">Kebijakan Privasi</a> kami.</div>
       <div onclick="showLog()" style="cursor:pointer; color:var(--primary); margin-top:15px; text-align:center; font-size:0.85rem">Sudah punya akun?</div>
     </div>
 
