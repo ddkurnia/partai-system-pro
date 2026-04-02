@@ -2761,18 +2761,19 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
     <button class="checkin-reminder-btn" onclick="event.stopPropagation(); handleCheckinReminder()">Check-in</button>
   </div>
   <!-- HERO -->
-  <div class="hero-banner">
-    <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
-    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
-    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1540910419892-4a36d2c3268c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+  <div class="hero-banner" id="heroBanner">
+    <!-- Fallback slides (shown if Firestore fails to load) -->
+    <div class="hero-slide active" id="heroFallbackSlide1" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+    <div class="hero-slide" id="heroFallbackSlide2" style="background-image: url('https://images.unsplash.com/photo-1574270981993-659d6ff7b89b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+    <div class="hero-slide" id="heroFallbackSlide3" style="background-image: url('https://images.unsplash.com/photo-1540910419892-4a36d2c3268c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
 
-    <div class="hero-overlay">
-      <span class="hero-tag">App Resmi</span>
-      <h2 class="hero-title">Satukan Langkah<br>Majukan Meranti</h2>
-      <p class="hero-desc">Platform digital untuk kader PDI Perjuangan.</p>
+    <div class="hero-overlay" id="heroOverlay">
+      <span class="hero-tag" id="heroTag">App Resmi</span>
+      <h2 class="hero-title" id="heroTitle">Satukan Langkah<br>Majukan Meranti</h2>
+      <p class="hero-desc" id="heroDesc">Platform digital untuk kader PDI Perjuangan.</p>
     </div>
 
-    <div class="hero-dots">
+    <div class="hero-dots" id="heroDots">
       <div class="dot active" onclick="goToSlide(0)"></div>
       <div class="dot" onclick="goToSlide(1)"></div>
       <div class="dot" onclick="goToSlide(2)"></div>
@@ -2857,7 +2858,18 @@ textarea.ts-form-input { resize: vertical; min-height: 60px; margin-top: 0; }
 <div id="view-struktur" class="view-section" style="display:none"></div>
 <div id="view-usulan" class="view-section" style="display:none"></div>
 <div id="view-kontak" class="view-section" style="display:none"></div>
-<div id="view-galeri" class="view-section"><div class="card"><h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4899"></i> Galeri</h3></div></div>
+<div id="view-galeri" class="view-section">
+  <div class="card">
+    <h3 style="margin-bottom:15px"><i class="fas fa-images" style="color:#EC4849"></i> Galeri Kegiatan</h3>
+    <div id="galeriGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+      <!-- Will be dynamically populated by loadGaleri() -->
+    </div>
+    <div id="galeriEmpty" style="display:none;text-align:center;padding:40px 20px;color:var(--text-muted)">
+      <i class="fas fa-images" style="font-size:2rem;margin-bottom:10px;display:block;opacity:.3"></i>
+      <p>Belum ada galeri.</p>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================ -->
 <!--  VIEW: TENTANG PDI PERJUANGAN KAB. KEPULAUAN MERANTI        -->
@@ -3266,8 +3278,8 @@ const TENTANG_PDI = {
       <span onclick="filterFaq('store')" id="faqCat-store" style="background:var(--bg-body);color:var(--text-muted);border:1px solid var(--border-color);padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer">Store</span>
     </div>
 
-    <!-- FAQ List -->
-    <div id="faqList" style="display:flex;flex-direction:column;gap:10px">
+    <!-- FAQ List (hardcoded fallback - will be replaced by loadFAQ if Firestore has data) -->
+    <div id="faqContainer" style="display:flex;flex-direction:column;gap:10px">
 
       <div class="faq-item" data-cat="akun" onclick="toggleFaq(this)">
         <div class="faq-q"><i class="fas fa-user-circle" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i><span>Bagaimana cara mendaftar sebagai kader?</span><i class="fas fa-chevron-down faq-arrow"></i></div>
@@ -4382,8 +4394,78 @@ function showResetPassword() { document.getElementById('loginForm').classList.re
 // ==========================================
 // 6. HERO
 // ==========================================
-function updateSlide() { const slides = document.querySelectorAll('.hero-slide'); const dots = document.querySelectorAll('.dot'); slides.forEach((s, i) => { s.classList.remove('active'); dots[i].classList.remove('active'); }); slideIndex++; if (slideIndex > slides.length) slideIndex = 1; slides[slideIndex-1].classList.add('active'); dots[slideIndex-1].classList.add('active'); setTimeout(updateSlide, 4000); }
-setTimeout(updateSlide, 4000);
+window.dynamicHeroSlides = null;
+window.dynamicSlideIndex = 0;
+let heroInterval = null;
+
+function goToSlide(index) {
+  const slides = document.querySelectorAll('#heroBanner .hero-slide');
+  const dots = document.querySelectorAll('#heroDots .dot');
+  if (slides.length === 0 || dots.length === 0) return;
+
+  slides.forEach((s) => s.classList.remove('active'));
+  dots.forEach((d) => d.classList.remove('active'));
+
+  if (index < 0) index = slides.length - 1;
+  if (index >= slides.length) index = 0;
+
+  slides[index].classList.add('active');
+  if (dots[index]) dots[index].classList.add('active');
+
+  // Update slide text if dynamic slides are loaded
+  if (window.dynamicHeroSlides && window.dynamicHeroSlides.length > 0) {
+    const slide = window.dynamicHeroSlides[index];
+    if (slide) {
+      document.getElementById('heroTag').textContent = slide.tag || '';
+      document.getElementById('heroTitle').innerHTML = (slide.title || '').replace(/\n/g, '<br>');
+      document.getElementById('heroDesc').textContent = slide.desc || '';
+    }
+    window.dynamicSlideIndex = index;
+  } else {
+    slideIndex = index;
+  }
+
+  // Reset auto-rotation timer
+  if (heroInterval) clearTimeout(heroInterval);
+  heroInterval = setTimeout(updateSlide, 4000);
+}
+
+function updateSlide() {
+  const slides = document.querySelectorAll('#heroBanner .hero-slide');
+  const dots = document.querySelectorAll('#heroDots .dot');
+  if (slides.length === 0) { heroInterval = setTimeout(updateSlide, 4000); return; }
+
+  let currentIndex;
+  if (window.dynamicHeroSlides && window.dynamicHeroSlides.length > 0) {
+    currentIndex = window.dynamicSlideIndex;
+  } else {
+    currentIndex = slideIndex;
+  }
+
+  currentIndex++;
+  if (currentIndex >= slides.length) currentIndex = 0;
+
+  slides.forEach((s) => s.classList.remove('active'));
+  dots.forEach((d) => d.classList.remove('active'));
+  if (slides[currentIndex]) slides[currentIndex].classList.add('active');
+  if (dots[currentIndex]) dots[currentIndex].classList.add('active');
+
+  // Update text for dynamic slides
+  if (window.dynamicHeroSlides && window.dynamicHeroSlides.length > 0) {
+    const slide = window.dynamicHeroSlides[currentIndex];
+    if (slide) {
+      document.getElementById('heroTag').textContent = slide.tag || '';
+      document.getElementById('heroTitle').innerHTML = (slide.title || '').replace(/\n/g, '<br>');
+      document.getElementById('heroDesc').textContent = slide.desc || '';
+    }
+    window.dynamicSlideIndex = currentIndex;
+  } else {
+    slideIndex = currentIndex;
+  }
+
+  heroInterval = setTimeout(updateSlide, 4000);
+}
+heroInterval = setTimeout(updateSlide, 4000);
 
 // ==========================================
 // 7. AUTH STATE
@@ -6907,8 +6989,9 @@ function filterFaq(cat) {
 }
 
 function openBantuanChat(topik) {
+  const waNum = window.dynamicWANumber || '6281234567890';
   const pesan = encodeURIComponent('Halo Admin PDI Perjuangan Meranti, saya butuh bantuan terkait: *' + topik + '*\n\nNama: \nMasalah: ');
-  window.open('https://wa.me/6281234567890?text=' + pesan, '_blank');
+  window.open('https://wa.me/' + waNum + '?text=' + pesan, '_blank');
 }
 
 
@@ -7105,6 +7188,211 @@ function startCheckinReminder() {
 }
 
 // ==========================================
+// DYNAMIC CONTENT LOADING FROM FIRESTORE
+// ==========================================
+
+// Global dynamic WA number (updated by loadBantuan)
+window.dynamicWANumber = '6281234567890';
+
+async function loadHeroSlider() {
+  try {
+    const doc = await db.doc('website_config/hero_slides').get();
+    if (doc.exists) {
+      const data = doc.data();
+      const slides = [data.slide1, data.slide2, data.slide3].filter(Boolean);
+      if (slides.length > 0) {
+        const banner = document.getElementById('heroBanner');
+        const dotsContainer = document.getElementById('heroDots');
+        const overlay = document.getElementById('heroOverlay');
+
+        // Remove existing fallback slides
+        banner.querySelectorAll('.hero-slide').forEach(s => s.remove());
+        dotsContainer.innerHTML = '';
+
+        // Create dynamic slides
+        slides.forEach((slide, i) => {
+          const slideEl = document.createElement('div');
+          slideEl.className = 'hero-slide' + (i === 0 ? ' active' : '');
+          slideEl.style.backgroundImage = 'url(\'' + slide.imageUrl + '\')';
+          banner.insertBefore(slideEl, overlay);
+
+          const dot = document.createElement('div');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dot.onclick = function() { goToSlide(i); };
+          dotsContainer.appendChild(dot);
+        });
+
+        // Set first slide text
+        if (slides[0]) {
+          document.getElementById('heroTag').textContent = slides[0].tag || '';
+          document.getElementById('heroTitle').innerHTML = (slides[0].title || '').replace(/\n/g, '<br>');
+          document.getElementById('heroDesc').textContent = slides[0].desc || '';
+        }
+
+        // Store slides for rotation
+        window.dynamicHeroSlides = slides;
+        window.dynamicSlideIndex = 0;
+        slideIndex = 0;
+
+        // Reset hero rotation
+        if (heroInterval) clearTimeout(heroInterval);
+        heroInterval = setTimeout(updateSlide, 4000);
+
+        console.log('[Dynamic] Hero slider loaded:', slides.length, 'slides');
+      }
+    }
+  } catch(e) {
+    console.log('Hero slider load failed, using defaults:', e);
+  }
+}
+
+async function loadFAQ() {
+  try {
+    const doc = await db.doc('website_config/faq').get();
+    if (doc.exists) {
+      const faqItems = doc.data().items || [];
+      if (faqItems.length > 0) {
+        renderFAQItems(faqItems);
+
+        // Also update category filter pills if new categories exist
+        const categories = [...new Set(faqItems.map(item => item.kategori || 'Akun'))];
+        updateFAQCategoryPills(categories);
+
+        console.log('[Dynamic] FAQ loaded:', faqItems.length, 'items');
+        return;
+      }
+    }
+  } catch(e) {
+    console.log('FAQ load failed, using defaults:', e);
+  }
+  // Keep existing hardcoded FAQ as fallback - do nothing
+}
+
+function renderFAQItems(items) {
+  const container = document.getElementById('faqContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  items.forEach((item, idx) => {
+    const faqEl = document.createElement('div');
+    faqEl.className = 'faq-item';
+    faqEl.setAttribute('data-cat', item.kategori || 'akun');
+    faqEl.onclick = function() { toggleFaq(this); };
+    faqEl.innerHTML =
+      '<div class="faq-q">' +
+        '<i class="fas fa-question-circle" style="color:var(--primary);margin-right:8px;font-size:0.85rem"></i>' +
+        '<span>' + item.pertanyaan + '</span>' +
+        '<i class="fas fa-chevron-down faq-arrow"></i>' +
+      '</div>' +
+      '<div class="faq-a">' + item.jawaban + '</div>';
+    container.appendChild(faqEl);
+  });
+}
+
+function updateFAQCategoryPills(categories) {
+  // Build set of standard categories
+  const standardCats = ['semua', 'akun', 'poin', 'misi', 'store'];
+  const hasNewCats = categories.some(c => !standardCats.includes(c.toLowerCase()));
+
+  if (hasNewCats) {
+    const pillsContainer = document.querySelector('#view-faq .card > div[style*="display:flex"][style*="gap:8px"]');
+    if (pillsContainer) {
+      // Keep "Semua" pill, regenerate category pills
+      const semuaPill = document.getElementById('faqCat-semua');
+      pillsContainer.innerHTML = '';
+      if (semuaPill) pillsContainer.appendChild(semuaPill);
+
+      // Add all unique categories from data
+      const uniqueCats = [...new Set(categories.map(c => c.toLowerCase()))];
+      uniqueCats.forEach(cat => {
+        if (cat === 'semua') return;
+        const pill = document.createElement('span');
+        pill.id = 'faqCat-' + cat;
+        pill.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+        pill.style.cssText = 'background:var(--bg-body);color:var(--text-muted);border:1px solid var(--border-color);padding:5px 14px;border-radius:20px;font-size:0.7rem;font-weight:700;cursor:pointer';
+        pill.onclick = function() { filterFaq(cat); };
+        pillsContainer.appendChild(pill);
+      });
+    }
+  }
+}
+
+async function loadGaleri() {
+  try {
+    const doc = await db.doc('website_config/galeri').get();
+    if (doc.exists) {
+      const items = doc.data().items || [];
+      const grid = document.getElementById('galeriGrid');
+      const empty = document.getElementById('galeriEmpty');
+
+      if (items.length > 0) {
+        grid.style.display = 'grid';
+        empty.style.display = 'none';
+        grid.innerHTML = '';
+
+        items.forEach((item, idx) => {
+          const card = document.createElement('div');
+          card.style.cssText = 'border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08);border:1px solid var(--border-color)';
+          card.innerHTML =
+            '<img src="' + item.imageUrl + '" style="width:100%;height:140px;object-fit:cover;display:block" onerror="this.style.background=\'var(--bg-body)\';this.style.height=\'100px\'" loading="lazy">' +
+            '<div style="padding:8px 10px">' +
+              '<p style="font-size:.72rem;color:var(--text-muted);line-height:1.4">' + (item.caption || '') + '</p>' +
+            '</div>';
+          grid.appendChild(card);
+        });
+
+        console.log('[Dynamic] Galeri loaded:', items.length, 'images');
+      } else {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+      }
+    } else {
+      // No galeri doc yet - show empty state
+      const grid = document.getElementById('galeriGrid');
+      const empty = document.getElementById('galeriEmpty');
+      if (grid) grid.style.display = 'none';
+      if (empty) empty.style.display = 'block';
+    }
+  } catch(e) {
+    console.log('Galeri load failed:', e);
+    const grid = document.getElementById('galeriGrid');
+    const empty = document.getElementById('galeriEmpty');
+    if (grid) grid.style.display = 'none';
+    if (empty) empty.style.display = 'block';
+  }
+}
+
+async function loadBantuan() {
+  try {
+    const doc = await db.doc('website_config/bantuan').get();
+    if (doc.exists) {
+      const data = doc.data();
+      // Update WhatsApp number if configured
+      if (data.whatsappNumber) {
+        window.dynamicWANumber = data.whatsappNumber.replace(/[^0-9]/g, '');
+        // Update all WA links in the bantuan section
+        document.querySelectorAll('#view-bantuan a[href*="wa.me"]').forEach(a => {
+          const text = a.getAttribute('href').split('?text=')[1] || '';
+          a.href = 'https://wa.me/' + window.dynamicWANumber + (text ? '?text=' + text : '');
+        });
+        console.log('[Dynamic] Bantuan WA number updated');
+      }
+    }
+  } catch(e) {
+    console.log('Bantuan load failed:', e);
+  }
+}
+
+async function loadWebsiteContent() {
+  await Promise.all([
+    loadHeroSlider(),
+    loadFAQ(),
+    loadGaleri(),
+    loadBantuan()
+  ]);
+}
+
+// ==========================================
 // INIT
 // ==========================================
 window.onload = function() {
@@ -7115,6 +7403,8 @@ window.onload = function() {
   loadBerita();
   loadPengumuman();
   startCheckinReminder();
+  // Load dynamic website content from Firestore
+  loadWebsiteContent();
 };
 
 </script>
